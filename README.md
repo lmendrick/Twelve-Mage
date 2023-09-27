@@ -1,10 +1,10 @@
-# **GAME TITLE** by TEAM_NAME
+# **Twelve Mage** by TEAM_UINSTALLATIONFEE
 ## IGME-106 Spring 2023
 
 _This README contains basic information about the project and its artifacts. If kept up to date, it will act as a primary dashboard for the project._
 
 ## Team Members
-- MEMBER1
+- Anthony Maldonado
 - MEMBER2
 - MEMBER3
 - MEMBER4
