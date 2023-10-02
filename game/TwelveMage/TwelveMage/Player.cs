@@ -11,20 +11,14 @@ using System.Threading.Tasks;
  * This class handles the player character,
  * including movement, actions, scores, etc.
  * No known issues
+ * Anthony: Removed uneeded fields and enum
  */
 
 namespace TwelveMage
 {
-    enum PlayerState // Enum for Player FSM
-    {
-
-    }
     internal class Player : GameObject
     {
-            // FIELDS
-        // Objects
-        private Rectangle position; // Location of the Player; used for position calculations & sprite drawing
-        private Texture2D texture;
+           
 
             // Values
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
@@ -32,7 +26,6 @@ namespace TwelveMage
         //private int _ammo; // Ammunition count (Not yet implemented)
 
             // PROPERTIES
-        public Rectangle Position { get { return position; } }
         public int Health { get { return _health; } }
 
             // METHODS
@@ -46,8 +39,7 @@ namespace TwelveMage
             // CONSTRUCTORS
         public Player(Rectangle position, Texture2D texture) : base(position, texture)
         {
-            this.position = position;
-            this.texture = texture;
+            
         }
     }
 }

@@ -4,10 +4,16 @@ using Microsoft.Xna.Framework.Input;
 
 namespace TwelveMage
 {
+    //Anthony Maldonado
+    //creating enum for game states
+    enum GameState { Menu, Game, Pause, GameOver}
     public class Game1 : Game
     {
+        //fields
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private GameState currentState = GameState.Menu;
+        private KeyboardState currentKBState;
 
         public Game1()
         {
@@ -36,7 +42,37 @@ namespace TwelveMage
                 Exit();
 
             // TODO: Add your update logic here
-
+            //Anthony Maldonado
+            //switches made for the game states 
+            switch (currentState)
+            {
+                case GameState.Menu:
+                    if (currentKBState.IsKeyDown(Keys.Enter))
+                    {
+                        currentState = GameState.Game;
+                    }
+                    break;
+                case GameState.Game:
+                    if (currentKBState.IsKeyDown(Keys.P))
+                    {
+                        currentState = GameState.Pause;
+                    }
+                    break;
+                case GameState.Pause:
+                    if (currentKBState.IsKeyDown(Keys.P))
+                    {
+                        currentState = GameState.Game;
+                    }
+                    break;
+                case GameState.GameOver:
+                    if (currentKBState.IsKeyDown(Keys.Enter))
+                    {
+                        currentState = GameState.Menu;
+                    }
+                    break;
+                default:
+                    break;
+            }
             base.Update(gameTime);
         }
 
@@ -45,7 +81,35 @@ namespace TwelveMage
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            //switch to ensure what happens in each state
+            //will add more after discussion and more work
+            switch (currentState)
 
+            {
+                case GameState.Menu:
+                    _spriteBatch.Begin();
+                    
+                    _spriteBatch.End();
+                    break;
+                case GameState.Game:
+                    _spriteBatch.Begin();
+
+                    _spriteBatch.End();
+                    break;
+                case GameState.Pause:
+                    if (currentKBState.IsKeyDown(Keys.P))
+                    {
+                        currentState = GameState.Game;
+                    }
+                    break;
+                case GameState.GameOver:
+                    
+                    _spriteBatch.Begin();
+                    
+                    _spriteBatch.End();
+                    break;
+
+            }
             base.Draw(gameTime);
         }
     }
