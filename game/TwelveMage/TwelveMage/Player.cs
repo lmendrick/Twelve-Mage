@@ -22,11 +22,11 @@ namespace TwelveMage
 
             // Values
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
-        private int _health;
+        //private int _health;
         //private int _ammo; // Ammunition count (Not yet implemented)
 
             // PROPERTIES
-        public int Health { get { return _health; } }
+        //public int Health { get { return _health; } }
 
             // METHODS
         public override void Update(GameTime gameTime) { } // Necessary for inheriting from GameObject
@@ -37,7 +37,8 @@ namespace TwelveMage
         }
 
             // CONSTRUCTORS
-        public Player(Rectangle position, Texture2D texture) : base(position, texture)
+            // Luke: Added health inherited from GameObject
+        public Player(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
             
         }

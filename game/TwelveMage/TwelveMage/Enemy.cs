@@ -20,13 +20,14 @@ namespace TwelveMage
     internal class Enemy : GameObject
     {
         //fields
-        private int health;
+        //private int health;
         private const int MAX_Health = 200;
         private int damage;
 
 
         // Constructor
-        public Enemy(Rectangle position, Texture2D texture) : base(position, texture)
+        // Luke: added health inherited from GameObject
+        public Enemy(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
 
         }

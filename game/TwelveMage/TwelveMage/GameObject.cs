@@ -13,12 +13,15 @@ public abstract class GameObject
 {
 	protected Rectangle position;
 	protected Texture2D texture;
+	protected int health;
 	public Rectangle Position {  get { return position; } }
+	public int Health { get { return health; } set { health = value; } }
 
-	protected GameObject(Rectangle position, Texture2D texture)
+	protected GameObject(Rectangle position, Texture2D texture, int health)
 	{
 		this.position = position;
 		this.texture = texture;
+		this.health = health;
 	}
 
 	// Luke
