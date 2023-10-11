@@ -45,6 +45,10 @@ namespace TwelveMage
         const int MarioRectHeight = 72;     // The height of a single frame
         const int MarioRectWidth = 44;      // The width of a single frame
 
+        // Move player with vector2
+        Vector2 dir = Vector2.Zero;
+        float speed = 5f;
+
         // CONSTRUCTORS
         // Luke: Added health inherited from GameObject
         public Player(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
@@ -65,20 +69,29 @@ namespace TwelveMage
             // normalized values to have diagonals same speed
             if (kbState.IsKeyDown(Keys.W))
             {
-                position.Y -= 1;
+                dir.Y -= 1;
             }
             if (kbState.IsKeyDown(Keys.S))
             {
-                position.Y += 1;
+                dir.Y += 1;
             }
             if (kbState.IsKeyDown (Keys.D))
             {
-                position.X += 1;
+                dir.X += 1;
             }
             if (kbState.IsKeyDown (Keys.A))
             {
-                position.X -= 1;
+                dir.X -= 1;
             }
+
+            if (dir != Vector2.Zero)
+            {
+                dir.Normalize();
+            }
+            
+            // Set positon of rectangle based on direction vector and speed
+            position.Y += (int)dir.Y * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
+            position.X += (int)dir.X * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
 
         }
 
