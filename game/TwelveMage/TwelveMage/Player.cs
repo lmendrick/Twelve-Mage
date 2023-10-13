@@ -13,10 +13,20 @@ using System.Threading.Tasks;
  * including movement, actions, scores, etc.
  * No known issues
  * Anthony: Removed uneeded fields and enum
+ * Luke: Added Player movement and Animations
  */
 
 namespace TwelveMage
 {
+
+    enum PlayerState
+    {
+        FaceLeft,
+        FaceRight,
+        WalkLeft,
+        WalkRight
+    }
+
     internal class Player : GameObject
     {
            
@@ -33,6 +43,8 @@ namespace TwelveMage
         // Texture and drawing
         Texture2D spriteSheet;  // The single image with all of the animation frames
 
+        PlayerState state;
+
         // Animation
         int frame;              // The current animation frame
         double timeCounter;     // The amount of time that has passed
@@ -40,15 +52,23 @@ namespace TwelveMage
         double timePerFrame;    // The amount of time (in fractional seconds) per frame
 
         // Constants for "source" rectangle (inside the image)
-        const int WalkFrameCount = 4;       // The number of frames in the animation
-        const int WizardRectOffsetY = 35;   // How far down in the image are the frames?
+        const int WalkFrameCount = 3;       // The number of frames in the animation
+        const int WizardRectOffsetY = 36;   // How far down in the image are the frames?
         const int WizardRectOffsetX = 4;
-        const int WizardRectHeight = 26;     // The height of a single frame
-        const int WizardRectWidth = 29;      // The width of a single frame
+        const int WizardRectHeight = 30;     // The height of a single frame
+        const int WizardRectWidth = 34;      // The width of a single frame
 
         // Move player with vector2
-        Vector2 dir = Vector2.Zero;
-        float speed = 5f;
+        //Vector2 dir = Vector2.Zero;
+        //float speed = 5f;
+
+
+
+        public PlayerState State
+        {
+            get { return state; }
+            set { state = value; }
+        }
 
         // CONSTRUCTORS
         // Luke: Added health inherited from GameObject
@@ -57,6 +77,9 @@ namespace TwelveMage
            // this.position = position;
             this.spriteSheet = texture;
            // this.health = health;
+
+            // Default sprite direction
+            state = PlayerState.FaceRight;
 
             // Initialize
             fps = 10.0;                     // Will cycle through 10 walk frames per second
@@ -135,8 +158,28 @@ namespace TwelveMage
             return false;
         }
 
+
+        private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                spriteSheet,
+                new Vector2(position.X, position.Y),
+                new Rectangle(
+                    0,
+                    WizardRectOffsetY,
+                    WizardRectWidth,
+                    WizardRectHeight),
+                Color.White,
+                0,
+                Vector2.Zero,
+                1.0f,
+                flipSprite,
+                0);
+        }
+
         private void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
+            // Luke: Pass in vector2 from Game1 instead of creating new vector2?
             spriteBatch.Draw(
                 spriteSheet,
                 new Vector2(position.X, position.Y),
