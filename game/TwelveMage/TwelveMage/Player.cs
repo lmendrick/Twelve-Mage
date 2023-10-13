@@ -62,6 +62,8 @@ namespace TwelveMage
         //Vector2 dir = Vector2.Zero;
         //float speed = 5f;
 
+        Rectangle prevPosition;
+
 
 
         public PlayerState State
@@ -79,7 +81,7 @@ namespace TwelveMage
            // this.health = health;
 
             // Default sprite direction
-            state = PlayerState.FaceRight;
+            //state = PlayerState.FaceRight;
 
             // Initialize
             fps = 10.0;                     // Will cycle through 10 walk frames per second
@@ -91,28 +93,102 @@ namespace TwelveMage
         {
             KeyboardState kbState = Keyboard.GetState();
 
-            // Luke: Movement using WASD, probably should use Vector2 in future with
-            // normalized values to have diagonals same speed
             if (kbState.IsKeyDown(Keys.W))
             {
                 this.position.Y -= 1;
-              //  dir.Y -= 1;
+                //  dir.Y -= 1;
             }
             if (kbState.IsKeyDown(Keys.S))
             {
                 this.position.Y += 1;
-               // dir.Y += 1;
+                // dir.Y += 1;
             }
-            if (kbState.IsKeyDown (Keys.D))
+            if (kbState.IsKeyDown(Keys.D))
             {
                 this.position.X += 1;
-              //  dir.X += 1;
+                //  dir.X += 1;
             }
-            if (kbState.IsKeyDown (Keys.A))
+            if (kbState.IsKeyDown(Keys.A))
             {
                 this.position.X -= 1;
-               // dir.X -= 1;
+                // dir.X -= 1;
             }
+
+            switch (state)
+            {
+                case PlayerState.FaceRight:
+
+                    // Face left 
+                    if (position.X < prevPosition.X)
+                    {
+                        state = PlayerState.FaceLeft;
+                    }
+
+                    // Walk Right 
+                    if (position.X > prevPosition.X || position.Y != prevPosition.Y)
+                    {
+                        state = PlayerState.WalkRight;
+                    }
+                    break;
+
+                case PlayerState.FaceLeft:
+                    
+                    // Face Right 
+                    if (position.X > prevPosition.X)
+                    {
+                        state = PlayerState.FaceRight;
+                    }
+
+                    // Walk Left 
+                    else if (position.X < prevPosition.X || position.Y != prevPosition.Y)
+                    {
+                        state = PlayerState.WalkLeft;
+                    }
+                    break;
+
+                case PlayerState.WalkRight:
+
+                    if (position.X <= prevPosition.X && position.Y == prevPosition.Y)
+                    {
+                        state = PlayerState.FaceRight;
+                    }
+                    break;
+
+                case PlayerState.WalkLeft:
+
+                    if (position.X >= prevPosition.X && position.Y == prevPosition.Y)
+                    {
+                        state = PlayerState.FaceLeft;
+                    }
+                    break;
+
+
+            }
+            prevPosition = position;
+
+            
+            // Luke: Movement using WASD, probably should use Vector2 in future with
+            // normalized values to have diagonals same speed
+            //if (kbState.IsKeyDown(Keys.W))
+            //{
+            //    this.position.Y -= 1;
+            //  //  dir.Y -= 1;
+            //}
+            //if (kbState.IsKeyDown(Keys.S))
+            //{
+            //    this.position.Y += 1;
+            //   // dir.Y += 1;
+            //}
+            //if (kbState.IsKeyDown (Keys.D))
+            //{
+            //    this.position.X += 1;
+            //  //  dir.X += 1;
+            //}
+            //if (kbState.IsKeyDown (Keys.A))
+            //{
+            //    this.position.X -= 1;
+            //   // dir.X -= 1;
+            //}
 
             //if (dir != Vector2.Zero)
             //{
@@ -151,12 +227,28 @@ namespace TwelveMage
         // Necessary for inheriting from GameObject
         public override void Draw(SpriteBatch spriteBatch)
         {
-            DrawWalking(SpriteEffects.None, spriteBatch);
+
+            switch (state)
+            {
+                case PlayerState.FaceRight:
+                    DrawStanding(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.FaceLeft:
+                    DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
+
+                case PlayerState.WalkRight:
+                    DrawWalking(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case PlayerState.WalkLeft:
+                    DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
+            }
+
+            
         } 
-        public Boolean CheckCollision(GameObject _gameObject) // Checks collision with a given GameObject
-        {
-            return false;
-        }
 
 
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
@@ -196,6 +288,9 @@ namespace TwelveMage
                 0);
         }
 
-        
+        public Boolean CheckCollision(GameObject _gameObject) // Checks collision with a given GameObject
+        {
+            return false;
+        }
     }
 }

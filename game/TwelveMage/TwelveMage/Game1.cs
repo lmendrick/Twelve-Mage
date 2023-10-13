@@ -44,6 +44,7 @@ namespace TwelveMage
             // Luke: Instantiate player
             Rectangle playerRec = new Rectangle(30, 30, spriteSheet.Width, spriteSheet.Height);
             player = new Player(playerRec, spriteSheet, 100);
+            player.State = PlayerState.FaceRight;
 
         }
 
@@ -101,23 +102,22 @@ namespace TwelveMage
             GraphicsDevice.Clear(Color.CornflowerBlue);
 
             // TODO: Add your drawing code here
+            _spriteBatch.Begin();
             //switch to ensure what happens in each state
             //will add more after discussion and more work
             switch (currentState)
 
             {
                 case GameState.Menu:
-                    _spriteBatch.Begin();
+
 
                     // Luke: Testing player sprite
                     player.Draw(_spriteBatch);
 
-                    _spriteBatch.End();
+
                     break;
                 case GameState.Game:
-                    _spriteBatch.Begin();
-                    
-                    _spriteBatch.End();
+
                     break;
                 case GameState.Pause:
                     if (currentKBState.IsKeyDown(Keys.P))
@@ -126,13 +126,12 @@ namespace TwelveMage
                     }
                     break;
                 case GameState.GameOver:
-                    
-                    _spriteBatch.Begin();
-                    
-                    _spriteBatch.End();
+
                     break;
 
             }
+
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }
