@@ -40,10 +40,11 @@ namespace TwelveMage
         double timePerFrame;    // The amount of time (in fractional seconds) per frame
 
         // Constants for "source" rectangle (inside the image)
-        const int WalkFrameCount = 3;       // The number of frames in the animation
-        const int MarioRectOffsetY = 116;   // How far down in the image are the frames?
-        const int MarioRectHeight = 72;     // The height of a single frame
-        const int MarioRectWidth = 44;      // The width of a single frame
+        const int WalkFrameCount = 4;       // The number of frames in the animation
+        const int WizardRectOffsetY = 35;   // How far down in the image are the frames?
+        const int WizardRectOffsetX = 4;
+        const int WizardRectHeight = 26;     // The height of a single frame
+        const int WizardRectWidth = 29;      // The width of a single frame
 
         // Move player with vector2
         Vector2 dir = Vector2.Zero;
@@ -53,7 +54,9 @@ namespace TwelveMage
         // Luke: Added health inherited from GameObject
         public Player(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
+           // this.position = position;
             this.spriteSheet = texture;
+           // this.health = health;
 
             // Initialize
             fps = 10.0;                     // Will cycle through 10 walk frames per second
@@ -69,29 +72,33 @@ namespace TwelveMage
             // normalized values to have diagonals same speed
             if (kbState.IsKeyDown(Keys.W))
             {
-                dir.Y -= 1;
+                this.position.Y -= 1;
+              //  dir.Y -= 1;
             }
             if (kbState.IsKeyDown(Keys.S))
             {
-                dir.Y += 1;
+                this.position.Y += 1;
+               // dir.Y += 1;
             }
             if (kbState.IsKeyDown (Keys.D))
             {
-                dir.X += 1;
+                this.position.X += 1;
+              //  dir.X += 1;
             }
             if (kbState.IsKeyDown (Keys.A))
             {
-                dir.X -= 1;
+                this.position.X -= 1;
+               // dir.X -= 1;
             }
 
-            if (dir != Vector2.Zero)
-            {
-                dir.Normalize();
-            }
-            
+            //if (dir != Vector2.Zero)
+            //{
+            //    dir.Normalize();
+            //}
+
             // Set positon of rectangle based on direction vector and speed
-            position.Y += (int)dir.Y * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
-            position.X += (int)dir.X * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
+            //position.Y += (int)dir.Y * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
+            //position.X += (int)dir.X * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
 
         }
 
@@ -118,10 +125,32 @@ namespace TwelveMage
             }
         }
 
-        public override void Draw(SpriteBatch spriteBatch) { } // Necessary for inheriting from GameObject
+        // Necessary for inheriting from GameObject
+        public override void Draw(SpriteBatch spriteBatch)
+        {
+            DrawWalking(SpriteEffects.None, spriteBatch);
+        } 
         public Boolean CheckCollision(GameObject _gameObject) // Checks collision with a given GameObject
         {
             return false;
+        }
+
+        private void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                spriteSheet,
+                new Vector2(position.X, position.Y),
+                new Rectangle(
+                    frame * WizardRectWidth,
+                    WizardRectOffsetY,
+                    WizardRectWidth,
+                    WizardRectHeight),
+                Color.White,
+                0,
+                Vector2.Zero,
+                1.0f,
+                flipSprite,
+                0);
         }
 
         

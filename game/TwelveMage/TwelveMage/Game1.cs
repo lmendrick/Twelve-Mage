@@ -12,8 +12,9 @@ namespace TwelveMage
         //fields
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
-        private GameState currentState = GameState.Menu;
+        private GameState currentState;
         private KeyboardState currentKBState;
+        private Player player;
 
         public Game1()
         {
@@ -25,6 +26,7 @@ namespace TwelveMage
         protected override void Initialize()
         {
             // TODO: Add your initialization logic here
+            currentState = GameState.Menu;
 
             base.Initialize();
         }
@@ -34,6 +36,15 @@ namespace TwelveMage
             _spriteBatch = new SpriteBatch(GraphicsDevice);
 
             // TODO: use this.Content to load your game content here
+
+            
+            // Luke: Load in player character sprite sheet
+            Texture2D spriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
+
+            // Luke: Instantiate player
+            Rectangle playerRec = new Rectangle(30, 30, spriteSheet.Width, spriteSheet.Height);
+            player = new Player(playerRec, spriteSheet, 100);
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -41,12 +52,21 @@ namespace TwelveMage
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
+            currentKBState = Keyboard.GetState();
+
+            // Luke: Update the player sprite animation every frame
+            player.UpdateAnimation(gameTime);
+
             // TODO: Add your update logic here
             //Anthony Maldonado
             //switches made for the game states 
             switch (currentState)
             {
                 case GameState.Menu:
+
+                    // Luke: Testing player movement
+                    player.Update(gameTime);
+
                     if (currentKBState.IsKeyDown(Keys.Enter))
                     {
                         currentState = GameState.Game;
@@ -88,12 +108,15 @@ namespace TwelveMage
             {
                 case GameState.Menu:
                     _spriteBatch.Begin();
-                    
+
+                    // Luke: Testing player sprite
+                    player.Draw(_spriteBatch);
+
                     _spriteBatch.End();
                     break;
                 case GameState.Game:
                     _spriteBatch.Begin();
-
+                    
                     _spriteBatch.End();
                     break;
                 case GameState.Pause:
