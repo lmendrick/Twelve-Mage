@@ -15,6 +15,8 @@ namespace TwelveMage
         private GameState currentState;
         private KeyboardState currentKBState;
         private Player player;
+        private int playerWidth = 34;
+        private int playerHeight = 30;
 
         public Game1()
         {
@@ -42,7 +44,7 @@ namespace TwelveMage
             Texture2D spriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
 
             // Luke: Instantiate player
-            Rectangle playerRec = new Rectangle(30, 30, spriteSheet.Width, spriteSheet.Height);
+            Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
             player = new Player(playerRec, spriteSheet, 100);
             player.State = PlayerState.FaceRight;
 
