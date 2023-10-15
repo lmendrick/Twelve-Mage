@@ -65,6 +65,15 @@ namespace TwelveMage
         Rectangle prevPosition;
 
 
+        public int PlayerX
+        {
+            get { return position.X; }
+        }
+
+        public int PlayerY
+        {
+            get { return position.Y; }
+        }
 
         public PlayerState State
         {
@@ -76,7 +85,7 @@ namespace TwelveMage
         // Luke: Added health inherited from GameObject
         public Player(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
-           // this.position = position;
+            this.position = position;
             this.spriteSheet = texture;
            // this.health = health;
 
