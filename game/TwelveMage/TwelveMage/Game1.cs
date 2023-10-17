@@ -9,7 +9,7 @@ namespace TwelveMage
     enum GameState { Menu, Game, Pause, GameOver}
     public class Game1 : Game
     {
-        //fields
+        #region FIELDS
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
         private GameState currentState;
@@ -23,6 +23,7 @@ namespace TwelveMage
         private int windowWidth;
         private int windowHeight;
         private bool isPaused;
+        #endregion
 
         public Game1()
         {

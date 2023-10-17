@@ -28,9 +28,7 @@ namespace TwelveMage
 
     internal class Player : GameObject
     {
-
-
-        // Values
+        #region FIELDS
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
         //private int _health;
         //private int _ammo; // Ammunition count (Not yet implemented)
@@ -63,8 +61,9 @@ namespace TwelveMage
         float speed = 200f;
 
         Rectangle prevPosition;
+        #endregion
 
-
+        #region PROPERTIES
         public Rectangle Rec
         {
             get { return position; }
@@ -85,8 +84,9 @@ namespace TwelveMage
             get { return state; }
             set { state = value; }
         }
+        #endregion
 
-        // CONSTRUCTORS
+        #region CONSTRUCTORS
         // Luke: Added health inherited from GameObject
         public Player(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
@@ -102,12 +102,14 @@ namespace TwelveMage
             fps = 10.0;                     // Will cycle through 10 walk frames per second
             timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
         }
+        #endregion
 
-        // METHODS
+        #region METHODS
         public override void Update(GameTime gameTime) // Necessary for inheriting from GameObject
         {
             KeyboardState kbState = Keyboard.GetState();
 
+            #region WASD Processing
             if (kbState.IsKeyDown(Keys.W))
                 dir.Y -= 1;
             else if (kbState.IsKeyDown(Keys.S))
@@ -150,7 +152,7 @@ namespace TwelveMage
             position.X = (int)(pos.X);
             position.Y = (int)(pos.Y);
             prevPosition = position;
-
+            #endregion
 
             // Luke: Movement using WASD, probably should use Vector2 in future with
             // normalized values to have diagonals same speed
@@ -212,7 +214,7 @@ namespace TwelveMage
         // Necessary for inheriting from GameObject
         public override void Draw(SpriteBatch spriteBatch)
         {
-
+            #region State switch
             switch (state)
             {
                 case PlayerState.FaceRight:
@@ -231,7 +233,7 @@ namespace TwelveMage
                     DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
             }
-
+            #endregion
 
         }
 
@@ -277,5 +279,6 @@ namespace TwelveMage
         {
             return false;
         }
+        #endregion
     }
 }

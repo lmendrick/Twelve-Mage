@@ -19,22 +19,23 @@ namespace TwelveMage
  */
     internal class Enemy : GameObject
     {
-        //fields
+        #region FIELDS
         //private int health;
         private const int MAX_Health = 200;
         private int damage;
+        #endregion
 
-
-        // Constructor
+        #region CONSTRUCTORS
         // Luke: added health inherited from GameObject
         public Enemy(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
 
         }
+        #endregion
 
-        //methods
+        #region METHODS
         public override void Update(GameTime gameTime) { } // Necessary for inheriting from GameObject
         public override void Draw(SpriteBatch spriteBatch) { } // Necessary for inheriting from GameObject
-
+        #endregion
     }
 }
