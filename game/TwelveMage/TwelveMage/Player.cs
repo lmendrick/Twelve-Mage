@@ -127,7 +127,6 @@ namespace TwelveMage
                 dir.Normalize();
             }
 
-
             pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
