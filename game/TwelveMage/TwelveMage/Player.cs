@@ -1,11 +1,10 @@
-﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
+﻿using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework;
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using TwelveMage;
+
+
 /*
  * Chloe Hall
  * Twelve-Mage
@@ -29,9 +28,9 @@ namespace TwelveMage
 
     internal class Player : GameObject
     {
-           
 
-            // Values
+
+        // Values
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
         //private int _health;
         //private int _ammo; // Ammunition count (Not yet implemented)
@@ -59,8 +58,9 @@ namespace TwelveMage
         const int WizardRectWidth = 34;      // The width of a single frame
 
         // Move player with vector2
-        //Vector2 dir = Vector2.Zero;
-        //float speed = 5f;
+        Vector2 dir;
+        Vector2 pos;
+        float speed = 200f;
 
         Rectangle prevPosition;
 
@@ -75,6 +75,16 @@ namespace TwelveMage
             get { return position.Y; }
         }
 
+        public float VectorX
+        {
+            get { return dir.X; }
+        }
+
+        public float VectorY
+        {
+            get { return dir.Y; }
+        }
+
         public PlayerState State
         {
             get { return state; }
@@ -87,7 +97,8 @@ namespace TwelveMage
         {
             this.position = position;
             this.spriteSheet = texture;
-           // this.health = health;
+            this.pos = new Vector2(position.X, position.Y);
+            // this.health = health;
 
             // Default sprite direction
             //state = PlayerState.FaceRight;
@@ -103,79 +114,50 @@ namespace TwelveMage
             KeyboardState kbState = Keyboard.GetState();
 
             if (kbState.IsKeyDown(Keys.W))
-            {
-                this.position.Y -= 1;
-                //  dir.Y -= 1;
-            }
-            if (kbState.IsKeyDown(Keys.S))
-            {
-                this.position.Y += 1;
-                // dir.Y += 1;
-            }
+                dir.Y -= 1;
+            else if (kbState.IsKeyDown(Keys.S))
+                dir.Y += 1;
+            else
+                dir.Y = 0;
+
             if (kbState.IsKeyDown(Keys.D))
+                dir.X += 1;
+            else if (kbState.IsKeyDown(Keys.A))
+                dir.X -= 1;
+            else
+                dir.X = 0;
+
+            if (dir.X != 0 || dir.Y != 0)
             {
-                this.position.X += 1;
-                //  dir.X += 1;
-            }
-            if (kbState.IsKeyDown(Keys.A))
-            {
-                this.position.X -= 1;
-                // dir.X -= 1;
+                dir.Normalize();
             }
 
-            switch (state)
-            {
-                case PlayerState.FaceRight:
 
-                    // Face left 
-                    if (position.X < prevPosition.X)
-                    {
-                        state = PlayerState.FaceLeft;
-                    }
+            pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
-                    // Walk Right 
-                    if (position.X > prevPosition.X || position.Y != prevPosition.Y)
-                    {
-                        state = PlayerState.WalkRight;
-                    }
-                    break;
+            if (dir.X < 0)
+                state = PlayerState.WalkLeft;
+            if (dir.X > 0)
+                state = PlayerState.WalkRight;
 
-                case PlayerState.FaceLeft:
-                    
-                    // Face Right 
-                    if (position.X > prevPosition.X)
-                    {
-                        state = PlayerState.FaceRight;
-                    }
+            if (dir.Y != 0)
+                if (state == PlayerState.WalkLeft || state == PlayerState.FaceLeft)
+                    state = PlayerState.WalkLeft;
+            if (state == PlayerState.WalkRight || state == PlayerState.FaceRight)
+                state = PlayerState.WalkRight;
 
-                    // Walk Left 
-                    else if (position.X < prevPosition.X || position.Y != prevPosition.Y)
-                    {
-                        state = PlayerState.WalkLeft;
-                    }
-                    break;
+            if (dir.X == 0 && dir.Y == 0)
+                if (state == PlayerState.WalkLeft)
+                    state = PlayerState.FaceLeft;
+                else if (state == PlayerState.WalkRight)
+                    state = PlayerState.FaceRight;
 
-                case PlayerState.WalkRight:
-
-                    if (position.X <= prevPosition.X && position.Y == prevPosition.Y)
-                    {
-                        state = PlayerState.FaceRight;
-                    }
-                    break;
-
-                case PlayerState.WalkLeft:
-
-                    if (position.X >= prevPosition.X && position.Y == prevPosition.Y)
-                    {
-                        state = PlayerState.FaceLeft;
-                    }
-                    break;
-
-
-            }
+            position.X = (int)(pos.X);
+            position.Y = (int)(pos.Y);
             prevPosition = position;
 
-            
+
             // Luke: Movement using WASD, probably should use Vector2 in future with
             // normalized values to have diagonals same speed
             //if (kbState.IsKeyDown(Keys.W))
@@ -256,15 +238,15 @@ namespace TwelveMage
                     break;
             }
 
-            
-        } 
+
+        }
 
 
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 spriteSheet,
-                new Vector2(position.X, position.Y),
+                pos,
                 new Rectangle(
                     0,
                     WizardRectOffsetY,
@@ -283,7 +265,7 @@ namespace TwelveMage
             // Luke: Pass in vector2 from Game1 instead of creating new vector2?
             spriteBatch.Draw(
                 spriteSheet,
-                new Vector2(position.X, position.Y),
+                pos,
                 new Rectangle(
                     frame * WizardRectWidth,
                     WizardRectOffsetY,
