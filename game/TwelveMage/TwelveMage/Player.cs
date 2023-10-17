@@ -65,24 +65,19 @@ namespace TwelveMage
         Rectangle prevPosition;
 
 
-        public int PlayerX
+        public Rectangle Rec
         {
-            get { return position.X; }
+            get { return position; }
         }
 
-        public int PlayerY
-        {
-            get { return position.Y; }
+        public Vector2 PosVector 
+        { 
+            get { return pos; } 
         }
 
-        public float VectorX
+        public Vector2 DirVector
         {
-            get { return dir.X; }
-        }
-
-        public float VectorY
-        {
-            get { return dir.Y; }
+            get { return dir; }
         }
 
         public PlayerState State
