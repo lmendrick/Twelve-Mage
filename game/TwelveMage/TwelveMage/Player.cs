@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System;
 using TwelveMage;
+using System.Diagnostics;
 
 
 /*
@@ -59,8 +60,6 @@ namespace TwelveMage
         Vector2 dir;
         Vector2 pos;
         float speed = 200f;
-
-        Rectangle prevPosition;
         #endregion
 
         #region PROPERTIES
@@ -110,85 +109,87 @@ namespace TwelveMage
             KeyboardState kbState = Keyboard.GetState();
 
             #region WASD Processing
+            // Process W and S keys for vertical movement
             if (kbState.IsKeyDown(Keys.W))
-                dir.Y -= 1;
+            {
+                dir.Y -= 1; // Move up
+            }
             else if (kbState.IsKeyDown(Keys.S))
-                dir.Y += 1;
+            {
+                dir.Y += 1; // Move down
+            }
             else
-                dir.Y = 0;
+            {
+                dir.Y = 0; // No vertical movement
+            }
 
+            // Process A and D keys for horizontal movement
             if (kbState.IsKeyDown(Keys.D))
-                dir.X += 1;
+            {
+                dir.X += 1; // Move right
+            }
             else if (kbState.IsKeyDown(Keys.A))
-                dir.X -= 1;
+            {
+                dir.X -= 1; // Move left
+            }
             else
-                dir.X = 0;
+            {
+                dir.X = 0; // No horizontal movement
+            }
 
+            // Normalize the direction vector if there is any movement
             if (dir.X != 0 || dir.Y != 0)
             {
                 dir.Normalize();
             }
 
+            // Update the player's position based on direction, time elapsed, and speed
             pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
+            // Set the player's animation state based on movement direction
             if (dir.X < 0)
-                state = PlayerState.WalkLeft;
+            {
+                state = PlayerState.WalkLeft; // Walking left
+            }
             if (dir.X > 0)
-                state = PlayerState.WalkRight;
+            {
+                state = PlayerState.WalkRight; // Walking right
+            }
 
+            // Handle vertical movement state
             if (dir.Y != 0)
+            {
                 if (state == PlayerState.WalkLeft || state == PlayerState.FaceLeft)
-                    state = PlayerState.WalkLeft;
-            if (state == PlayerState.WalkRight || state == PlayerState.FaceRight)
-                state = PlayerState.WalkRight;
+                {
+                    state = PlayerState.WalkLeft; // Walking left
+                }
+                if (state == PlayerState.WalkRight || state == PlayerState.FaceRight)
+                {
+                    state = PlayerState.WalkRight; // Walking right
+                }
+            }
 
+            // Set the player's state to facing left or right when not moving
             if (dir.X == 0 && dir.Y == 0)
+            {
                 if (state == PlayerState.WalkLeft)
-                    state = PlayerState.FaceLeft;
+                {
+                    state = PlayerState.FaceLeft; // Facing left
+                }
                 else if (state == PlayerState.WalkRight)
-                    state = PlayerState.FaceRight;
+                {
+                    state = PlayerState.FaceRight; // Facing right
+                }
+            }
 
+            // Update recatangle position
             position.X = (int)(pos.X);
             position.Y = (int)(pos.Y);
-            prevPosition = position;
             #endregion
-
-            // Luke: Movement using WASD, probably should use Vector2 in future with
-            // normalized values to have diagonals same speed
-            //if (kbState.IsKeyDown(Keys.W))
-            //{
-            //    this.position.Y -= 1;
-            //  //  dir.Y -= 1;
-            //}
-            //if (kbState.IsKeyDown(Keys.S))
-            //{
-            //    this.position.Y += 1;
-            //   // dir.Y += 1;
-            //}
-            //if (kbState.IsKeyDown (Keys.D))
-            //{
-            //    this.position.X += 1;
-            //  //  dir.X += 1;
-            //}
-            //if (kbState.IsKeyDown (Keys.A))
-            //{
-            //    this.position.X -= 1;
-            //   // dir.X -= 1;
-            //}
-
-            //if (dir != Vector2.Zero)
-            //{
-            //    dir.Normalize();
-            //}
-
-            // Set positon of rectangle based on direction vector and speed
-            //position.Y += (int)dir.Y * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
-            //position.X += (int)dir.X * (int)gameTime.ElapsedGameTime.TotalSeconds * (int)speed;
-
         }
 
-        // Luke: Taken from PE - Mario Walking
+        // Luke: Adapted from PE - Mario Walking
         public void UpdateAnimation(GameTime gameTime)
         {
             // Handle animation timing
