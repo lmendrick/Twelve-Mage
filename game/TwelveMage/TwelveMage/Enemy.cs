@@ -27,7 +27,7 @@ namespace TwelveMage
 
         #region CONSTRUCTORS
         // Luke: added health inherited from GameObject
-        public Enemy(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
+        public Enemy(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
 
         }

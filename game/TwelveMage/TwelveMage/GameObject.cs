@@ -11,17 +11,17 @@ using Microsoft.Xna.Framework.Graphics;
 
 public abstract class GameObject
 {
-	protected Rectangle position;
+	protected Rectangle rec;
 	protected Texture2D texture;
 	protected int health;
     protected bool isActive = true;
-    public Rectangle Position {  get { return position; } }
+    public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
 	
 
-	protected GameObject(Rectangle position, Texture2D texture, int health)
+	protected GameObject(Rectangle rec, Texture2D texture, int health)
 	{
-		this.position = position;
+		this.rec = rec;
 		this.texture = texture;
 		this.health = health;
 	}
@@ -38,7 +38,7 @@ public abstract class GameObject
         else
         {
             //but if its active check if they instersect and if they do return true
-            if (position.Intersects(check.Position))
+            if (rec.Intersects(check.Rec))
             {
                 isActive = false;
                 return true;
@@ -53,7 +53,7 @@ public abstract class GameObject
     // Restrictions: Color is always white. May want to add a color field in the future.
     public virtual void Draw(SpriteBatch spriteBatch)
 	{
-		spriteBatch.Draw(texture, position, Color.White);
+		spriteBatch.Draw(texture, rec, Color.White);
 	}
 
 	// Luke

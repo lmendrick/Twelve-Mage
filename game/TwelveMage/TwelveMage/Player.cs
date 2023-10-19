@@ -63,11 +63,6 @@ namespace TwelveMage
         #endregion
 
         #region PROPERTIES
-        public Rectangle Rec
-        {
-            get { return position; }
-        }
-
         public Vector2 PosVector 
         { 
             get { return pos; } 
@@ -87,11 +82,11 @@ namespace TwelveMage
 
         #region CONSTRUCTORS
         // Luke: Added health inherited from GameObject
-        public Player(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
+        public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
-            this.position = position;
+            this.rec = rec;
             this.spriteSheet = texture;
-            this.pos = new Vector2(position.X, position.Y);
+            this.pos = new Vector2(rec.X, rec.Y);
             // this.health = health;
 
             // Default sprite direction
@@ -184,8 +179,8 @@ namespace TwelveMage
             }
 
             // Update recatangle position
-            position.X = (int)(pos.X);
-            position.Y = (int)(pos.Y);
+            rec.X = (int)(pos.X);
+            rec.Y = (int)(pos.Y);
             #endregion
         }
 
