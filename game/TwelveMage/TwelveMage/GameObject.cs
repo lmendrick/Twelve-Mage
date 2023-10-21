@@ -47,7 +47,7 @@ public abstract class GameObject
         }
     }
 
-    // Luke
+    // Lucas
     // Purpose: Use a SpriteBatch obejct to draw the GameObject
     // Params: spriteBatch - The SpriteBatch object passed in from the main Draw()
     // Restrictions: Color is always white. May want to add a color field in the future.
@@ -56,7 +56,7 @@ public abstract class GameObject
 		spriteBatch.Draw(texture, rec, Color.White);
 	}
 
-	// Luke
+	// Lucas
 	// Purpose: Implemented by child classes so that they can update themselves
 	// Params: gameTime - GameTime object passed in from the main Update() 
 	public abstract void Update(GameTime gameTime);

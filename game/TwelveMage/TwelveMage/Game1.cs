@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System.Collections.Generic;
 
 namespace TwelveMage
 {
@@ -23,6 +24,12 @@ namespace TwelveMage
         private int windowWidth;
         private int windowHeight;
         private bool isPaused;
+
+        // Single enemy for testing
+        private Enemy enemy;
+
+        // List of enemies to add to for each wave
+        private List<Enemy> enemies;
         #endregion
 
         public Game1()
@@ -50,16 +57,24 @@ namespace TwelveMage
 
             // TODO: use this.Content to load your game content here
 
-            // Load in fonts (Luke)
+            // Load in fonts (Lucas)
             titleFont = this.Content.Load<SpriteFont>("TitleFont");
             menuFont = this.Content.Load<SpriteFont>("MenuFont");
 
-            // Load in player character sprite sheet (Luke)
+            // Load in player character sprite sheet (Lucas)
             Texture2D spriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
 
-            // Instantiate player (Luke)
+            // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
             player = new Player(playerRec, spriteSheet, 100);
+
+            // Load enemy sprite (Lucas)
+            Texture2D enemySprite = this.Content.Load<Texture2D>("enemy");
+
+            // Instantiate single test enemy (Lucas)
+            // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
+            Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
+            enemy = new Enemy(enemyRec, enemySprite, 100);
 
         }
 
@@ -70,7 +85,7 @@ namespace TwelveMage
 
             currentKBState = Keyboard.GetState();
 
-            // Update the player sprite animation every frame (Luke)
+            // Update the player sprite animation every frame (Lucas)
             player.UpdateAnimation(gameTime);
 
             // TODO: Add your update logic here
@@ -88,14 +103,20 @@ namespace TwelveMage
                 case GameState.Game:
 
                     // *PUT GAME LOGIC HERE*
-                    // If game is not paused, update game logic (Luke)
+                    // If game is not paused, update game logic (Lucas)
                     if (!isPaused)
                     {
-                        // Player movement (Luke)
+                        // Player movement (Lucas)
                         player.Update(gameTime);
+
+                        // Enemy movement (Lucas)
+                        enemy.Update(gameTime);
+
+                        // Pass current player position to enemies (Lucas)
+                        enemy.PlayerPos = player.PosVector;
                     }
 
-                    // Pause game logic and switch to pause state (Luke)
+                    // Pause game logic and switch to pause state (Lucas)
                     // Note: May be simpler to not have a pause state, and just make an overlay
                     if (SingleKeyPress(Keys.P, currentKBState))
                     {
@@ -103,7 +124,7 @@ namespace TwelveMage
                         currentState = GameState.Pause;
                     }
 
-                    // Press Q to go to Game Over state for testing (Luke)
+                    // Press Q to go to Game Over state for testing (Lucas)
                     if (currentKBState.IsKeyDown(Keys.Q))
                     {
                         currentState = GameState.GameOver;
@@ -112,7 +133,7 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
-                    // Unpause game and return to game state (Luke)
+                    // Unpause game and return to game state (Lucas)
                     if (SingleKeyPress(Keys.P, currentKBState))
                     {
                         isPaused = false;
@@ -122,7 +143,7 @@ namespace TwelveMage
 
                 case GameState.GameOver:
 
-                    // Return to main menu (Luke)
+                    // Return to main menu (Lucas)
                     // Note: Single key press is needed otherwise will start new game
                     if (SingleKeyPress(Keys.Enter, currentKBState))
                     {
@@ -151,7 +172,7 @@ namespace TwelveMage
             {
                 case GameState.Menu:
 
-                    // Temp main menu display, can replace these with buttons later (Luke)
+                    // Temp main menu display, can replace these with buttons later (Lucas)
 
                     // Title
                     _spriteBatch.DrawString(
@@ -177,7 +198,7 @@ namespace TwelveMage
                         ((windowHeight / 2))),
                         Color.Black);
 
-                    // Instructions
+                    // Controls
                     _spriteBatch.DrawString(
                         menuFont,
                         "Instructions: Use WASD to move and click to shoot enemies.",
@@ -196,10 +217,13 @@ namespace TwelveMage
 
                 case GameState.Game:
 
-                    // Player sprite/animations (Luke)
+                    // Player sprite/animations (Lucas)
                     player.Draw(_spriteBatch);
 
-                    // Pause button (P) (Luke)
+                    // Enemy sprite (Lucas)
+                    enemy.Draw(_spriteBatch);
+
+                    // Pause button (P) (Lucas)
                     _spriteBatch.DrawString(
                         menuFont,
                         "Pause (P)",
@@ -210,7 +234,7 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
-                    // Temp pause menu display (Luke)
+                    // Temp pause menu display (Lucas)
 
                     // Game Paused title
                     _spriteBatch.DrawString(
@@ -239,7 +263,7 @@ namespace TwelveMage
 
                 case GameState.GameOver:
 
-                    // Temp GameOver display (Luke)
+                    // Temp GameOver display (Lucas)
 
                     //Game over title
                     _spriteBatch.DrawString(
@@ -281,7 +305,7 @@ namespace TwelveMage
         }
 
         /// <summary>
-        /// Luke
+        /// Lucas
         /// Checks if a given key was pressed only once
         /// </summary>
         /// <param name="key">
