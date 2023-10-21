@@ -11,7 +11,7 @@ namespace TwelveMage
     /*
     * Chloe Hall
     * Twelve-Mage
-    * This abstract class is a base for background tiles, 
+    * This class handles individual background tiles,
     * such as grass, stones, flowers, etc.
     * No known issues.
     */
@@ -31,7 +31,7 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        protected Tile(Texture2D texture, Vector2 loc)
+        protected Tile(Texture2D texture, Vector2 loc) // Default constructor; requres a texture and a location to function
         {
             this.texture = texture;
             this.loc = loc;
@@ -43,6 +43,15 @@ namespace TwelveMage
         {
             // Cast the tile's float location to a square (Rectangle) with TextureScale length sides
             Rectangle drawLocation = new Rectangle((int)loc.X, (int)loc.Y, TextureScale, TextureScale);
+            _spriteBatch.Draw(texture, drawLocation, Color.White); // Draw this tile
+        }
+
+        public void Draw(SpriteBatch _spriteBatch, Vector2 offset) // Draws this tile with a Vector2 offset (for later)
+        {
+            // Add the offset to the original location
+            Vector2 drawVector = loc + offset;
+            // Cast the offset location to a square (Rectangle) with TextureScale length sides
+            Rectangle drawLocation = new Rectangle((int)drawVector.X, (int)drawVector.Y, TextureScale, TextureScale);
             _spriteBatch.Draw(texture, drawLocation, Color.White); // Draw this tile
         }
         #endregion
