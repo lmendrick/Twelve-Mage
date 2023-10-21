@@ -60,7 +60,6 @@ namespace TwelveMage
             // Instantiate player (Luke)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
             player = new Player(playerRec, spriteSheet, 100);
-            player.State = PlayerState.FaceRight;
 
         }
 

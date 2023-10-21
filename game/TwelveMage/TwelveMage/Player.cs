@@ -13,7 +13,7 @@ using System.Diagnostics;
  * including movement, actions, scores, etc.
  * No known issues
  * Anthony: Removed uneeded fields and enum
- * Luke: Added Player movement and Animations
+ * Lucas: Added Player Movement, States, and Animations
  */
 
 namespace TwelveMage
@@ -81,16 +81,15 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        // Luke: Added health inherited from GameObject
         public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
             this.rec = rec;
             this.spriteSheet = texture;
             this.pos = new Vector2(rec.X, rec.Y);
-            // this.health = health;
+            this.health = health;
 
             // Default sprite direction
-            //state = PlayerState.FaceRight;
+            state = PlayerState.FaceRight;
 
             // Initialize
             fps = 10.0;                     // Will cycle through 10 walk frames per second
@@ -99,7 +98,15 @@ namespace TwelveMage
         #endregion
 
         #region METHODS
-        public override void Update(GameTime gameTime) // Necessary for inheriting from GameObject
+
+        /// <summary>
+        /// Lucas:
+        /// Handles user input, player movement, and State change for animations
+        /// </summary>
+        /// <param name="gameTime">
+        /// GameTime passed in from main
+        /// </param>
+        public override void Update(GameTime gameTime)
         {
             KeyboardState kbState = Keyboard.GetState();
 
@@ -178,13 +185,20 @@ namespace TwelveMage
                 }
             }
 
-            // Update recatangle position
+            // Update rectangle position
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
             #endregion
         }
 
-        // Luke: Adapted from PE - Mario Walking
+        /// <summary>
+        /// Lucas:
+        /// Updates the player animation
+        /// Adapted from Mario Walking PE
+        /// </summary>
+        /// <param name="gameTime">
+        /// GameTime passed in from main
+        /// </param>
         public void UpdateAnimation(GameTime gameTime)
         {
             // Handle animation timing
@@ -207,7 +221,13 @@ namespace TwelveMage
             }
         }
 
-        // Necessary for inheriting from GameObject
+        /// <summary>
+        /// Lucas:
+        /// Draws the animated player sprite based on current State
+        /// </summary>
+        /// <param name="spriteBatch">
+        /// The SpriteBatch passed in from main
+        /// </param>
         public override void Draw(SpriteBatch spriteBatch)
         {
             #region State switch
@@ -233,7 +253,17 @@ namespace TwelveMage
 
         }
 
-
+        /// <summary>
+        /// Lucas:
+        /// Draws the player character idle animation.
+        /// Adapted from Mario Walking PE.
+        /// </summary>
+        /// <param name="flipSprite">
+        /// Allows the sprite to be flipped horizontally when facing directions
+        /// </param>
+        /// <param name="spriteBatch">
+        /// The SpriteBatch passed in from main
+        /// </param>
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
@@ -252,28 +282,33 @@ namespace TwelveMage
                 0);
         }
 
+        /// <summary>
+        /// Lucas:
+        /// Draws the player character walking animation, based on current frame.
+        /// Adapted from Mario Walking PE.
+        /// </summary>
+        /// <param name="flipSprite">
+        /// Allows the sprite to be flipped horizontally when facing directions
+        /// </param>
+        /// <param name="spriteBatch">
+        /// The SpriteBatch passed in from main
+        /// </param>
         private void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
-            // Luke: Pass in vector2 from Game1 instead of creating new vector2?
             spriteBatch.Draw(
-                spriteSheet,
-                pos,
-                new Rectangle(
-                    frame * WizardRectWidth,
-                    WizardRectOffsetY,
-                    WizardRectWidth,
-                    WizardRectHeight),
-                Color.White,
-                0,
-                Vector2.Zero,
-                1.0f,
-                flipSprite,
-                0);
-        }
-
-        public Boolean CheckCollision(GameObject _gameObject) // Checks collision with a given GameObject
-        {
-            return false;
+                spriteSheet,                            // - The texture to draw
+                pos,                                    // - The location to draw on the screen
+                new Rectangle(                          // - The "source" rectangle
+                    frame * WizardRectWidth,            // - This rectangle specifies
+                    WizardRectOffsetY,                  //	 where "inside" the texture
+                    WizardRectWidth,                    //   to get pixels (We don't want to
+                    WizardRectHeight),                  //   draw the whole thing)
+                Color.White,                            // - The color
+                0,                                      // - Rotation (none currently)
+                Vector2.Zero,                           // - Origin inside the image (top left)
+                1.0f,                                   // - Scale (100% - no change)
+                flipSprite,                             // - Can be used to flip the image
+                0);                                     // - Layer depth (unused)
         }
         #endregion
     }
