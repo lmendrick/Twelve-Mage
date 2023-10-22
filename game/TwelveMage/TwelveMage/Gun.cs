@@ -20,13 +20,12 @@ namespace TwelveMage
         //fields
         Texture2D gunTexture;
         // Move gun with player
-        Vector2 dir;
-        Vector2 pos;
-        GunState state;
-        float speed = 200f;
-        const int GunRectHeight = 45;     // The height the image
-        const int GunRectWidth = 25;        // The width of the image 
-        const int GunRectOffsetY = 1;
+        private Vector2 dir;
+        private Vector2 pos;
+        private GunState state;
+        private const int GunRectHeight = 45;     // The height the image
+        private const int GunRectWidth = 25;        // The width of the image 
+        private const int GunRectOffsetY = 1;
         
         //gun face
         public GunState State
@@ -45,6 +44,7 @@ namespace TwelveMage
         public Vector2 DirVector
         {
             get { return dir; }
+            set {  dir = value; }
         }
 
 
