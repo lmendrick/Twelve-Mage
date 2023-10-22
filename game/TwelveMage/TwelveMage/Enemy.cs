@@ -60,7 +60,7 @@ namespace TwelveMage
         /// <param name="gameTime">
         /// GameTime from main
         /// </param>
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
             // Set enemy direction based on current player position
             dir = playerPos - this.pos;

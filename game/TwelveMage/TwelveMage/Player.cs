@@ -4,6 +4,7 @@ using Microsoft.Xna.Framework;
 using System;
 using TwelveMage;
 using System.Diagnostics;
+using System.Collections.Generic;
 
 
 /*
@@ -34,14 +35,25 @@ namespace TwelveMage
         //private int _health;
         //private int _ammo; // Ammunition count (Not yet implemented)
 
+       
+
+        Texture2D bullet;
+
         // PROPERTIES
         //public int Health { get { return _health; } }
 
+        public Texture2D Bullet
+        {
+            get { return bullet; }
+            set { bullet = value; }
+        }
 
-        // Texture and drawing
-        Texture2D spriteSheet;  // The single image with all of the animation frames
+        
 
         PlayerState state;
+
+        private KeyboardState currentKB;
+        private KeyboardState previousKB;
 
         // Animation
         int frame;              // The current animation frame
@@ -84,7 +96,6 @@ namespace TwelveMage
         public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
             this.rec = rec;
-            this.spriteSheet = texture;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
 
@@ -106,17 +117,19 @@ namespace TwelveMage
         /// <param name="gameTime">
         /// GameTime passed in from main
         /// </param>
-        public override void Update(GameTime gameTime)
+        public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
-            KeyboardState kbState = Keyboard.GetState();
+
+            currentKB = Keyboard.GetState();
+
 
             #region WASD Processing
             // Process W and S keys for vertical movement
-            if (kbState.IsKeyDown(Keys.W))
+            if (currentKB.IsKeyDown(Keys.W))
             {
                 dir.Y -= 1; // Move up
             }
-            else if (kbState.IsKeyDown(Keys.S))
+            else if (currentKB.IsKeyDown(Keys.S))
             {
                 dir.Y += 1; // Move down
             }
@@ -126,17 +139,22 @@ namespace TwelveMage
             }
 
             // Process A and D keys for horizontal movement
-            if (kbState.IsKeyDown(Keys.D))
+            if (currentKB.IsKeyDown(Keys.D))
             {
                 dir.X += 1; // Move right
             }
-            else if (kbState.IsKeyDown(Keys.A))
+            else if (currentKB.IsKeyDown(Keys.A))
             {
                 dir.X -= 1; // Move left
             }
             else
             {
                 dir.X = 0; // No horizontal movement
+            }
+            if (currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
+            {
+                AddBullet(bullets);
+                Debug.WriteLine("AHHHHHHHHH");
             }
 
             // Normalize the direction vector if there is any movement
@@ -188,8 +206,36 @@ namespace TwelveMage
             // Update rectangle position
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
+            previousKB = currentKB;
             #endregion
         }
+
+
+        private void AddBullet(List<GameObject> bullets)
+        {
+            Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health);
+            if(dir == Vector2.Zero)
+            {
+                project.Direction = Vector2.One;
+            }
+            else
+            {
+                project.Direction = dir;
+            }
+            
+
+            bullets.Add(project);
+
+            //var bullet = projectile.Clone() as Projectile;
+            //bullet.Direction = dir;
+            //bullet.Position = pos;
+            //bullet.LinearVelocity = this.LinearVelocity * 2;
+            //bullet.LifeSpan = 2f;
+            //bullet.Parent = this;
+            //sprites.Add(bullet);
+        }
+
+
 
         /// <summary>
         /// Lucas:
@@ -220,6 +266,12 @@ namespace TwelveMage
                                                 // This keeps the time passed 
             }
         }
+
+
+
+
+
+
 
         /// <summary>
         /// Lucas:
@@ -267,7 +319,7 @@ namespace TwelveMage
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                spriteSheet,
+                texture,
                 pos,
                 new Rectangle(
                     0,
@@ -296,7 +348,7 @@ namespace TwelveMage
         private void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                spriteSheet,                            // - The texture to draw
+                texture,                            // - The texture to draw
                 pos,                                    // - The location to draw on the screen
                 new Rectangle(                          // - The "source" rectangle
                     frame * WizardRectWidth,            // - This rectangle specifies

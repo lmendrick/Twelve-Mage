@@ -8,6 +8,8 @@
 
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using System.Collections.Generic;
+using TwelveMage;
 
 public abstract class GameObject
 {
@@ -15,12 +17,31 @@ public abstract class GameObject
 	protected Texture2D texture;
 	protected int health;
     protected bool isActive = true;
+
+    public Vector2 Position;
+    public Vector2 Origin;
+
+    public Vector2 Direction = new Vector2(4,4);
+
+    
+    public float LinearVelocity = 4f;
+
+    public GameObject Parent;
+
+    public float LifeSpan = 4f;
+
+    public bool IsRemoved = false;
+
+
+
+
     public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
 	
 
 	protected GameObject(Rectangle rec, Texture2D texture, int health)
 	{
+        Direction.Normalize();
 		this.rec = rec;
 		this.texture = texture;
 		this.health = health;
@@ -59,5 +80,12 @@ public abstract class GameObject
 	// Lucas
 	// Purpose: Implemented by child classes so that they can update themselves
 	// Params: gameTime - GameTime object passed in from the main Update() 
-	public abstract void Update(GameTime gameTime);
+	public abstract void Update(GameTime gameTime, List<GameObject> bullets);
+
+    
+
+    public object Clone()
+    {
+        return this.MemberwiseClone();
+    }
 }

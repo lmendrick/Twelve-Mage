@@ -17,13 +17,27 @@ namespace TwelveMage
         private KeyboardState currentKBState;
         private KeyboardState prevKBState;
         private Player player;
+        private Gun gun;
+
+        private Texture2D bulletSprite;
+
         private int playerWidth = 34;
         private int playerHeight = 30;
+
+        private List<GameObject> bullets;
+
+        private int gunWidth = 45;
+        private int gunHeight = 25;
+
+
         private SpriteFont titleFont;
         private SpriteFont menuFont;
         private int windowWidth;
         private int windowHeight;
         private bool isPaused;
+
+
+       
 
         // Single enemy for testing
         private Enemy enemy;
@@ -63,10 +77,23 @@ namespace TwelveMage
 
             // Load in player character sprite sheet (Lucas)
             Texture2D spriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
+            bulletSprite = this.Content.Load<Texture2D>("bullet2");
+
+            //Load in gun image
+            Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
             player = new Player(playerRec, spriteSheet, 100);
+            player.Bullet = bulletSprite;
+
+            bullets = new List<GameObject>();
+            
+
+
+            Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
+            gun = new Gun(gunRec, gunSprite, 1000, player, GunState.FaceRight);
+           
 
             // Load enemy sprite (Lucas)
             Texture2D enemySprite = this.Content.Load<Texture2D>("enemy");
@@ -107,13 +134,38 @@ namespace TwelveMage
                     if (!isPaused)
                     {
                         // Player movement (Lucas)
-                        player.Update(gameTime);
+                        player.Update(gameTime, bullets);
 
                         // Enemy movement (Lucas)
-                        enemy.Update(gameTime);
+                        enemy.Update(gameTime, bullets);
 
                         // Pass current player position to enemies (Lucas)
                         enemy.PlayerPos = player.PosVector;
+
+                        foreach (GameObject project in bullets)
+                        {
+                            Projectile bullet;
+                            if(project is Projectile)
+                            {
+                                bullet = (Projectile)project;
+                                project.Update(gameTime, bullets);
+                            }
+                            ;
+                        }
+
+                        for (int i = 0; i < bullets.Count; i++)
+                        {
+                            if (bullets[i].IsRemoved)
+                            {
+                                bullets.RemoveAt(i); ;
+                                i--;
+                            }
+                        }
+
+                        //Addded gun but since its not tweaked fully commented out
+                        //gun.Update(gameTime);
+
+                        //gun.PosVector = player.PosVector;
                     }
 
                     // Pause game logic and switch to pause state (Lucas)
@@ -219,9 +271,18 @@ namespace TwelveMage
 
                     // Player sprite/animations (Lucas)
                     player.Draw(_spriteBatch);
-
+                    
                     // Enemy sprite (Lucas)
                     enemy.Draw(_spriteBatch);
+
+
+                    foreach (var sprite in bullets)
+                    {
+                        sprite.Draw(_spriteBatch);
+                    }
+
+                    //gun sprite
+                    //gun.Draw(_spriteBatch);
 
                     // Pause button (P) (Lucas)
                     _spriteBatch.DrawString(
