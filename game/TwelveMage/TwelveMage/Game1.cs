@@ -134,6 +134,7 @@ namespace TwelveMage
                     if (SingleKeyPress(Keys.L, currentKBState))
                     {
                         player = fileManager.LoadPlayer(playerSpriteSheet);
+                        player.Bullet = bulletSprite;
                         enemies = fileManager.LoadEnemies(enemySprite);
                         //enemy = enemies[0]; // Temporary
 
@@ -207,7 +208,7 @@ namespace TwelveMage
                 case GameState.Pause:
 
                     // Save Player & Enemy data (Chloe)
-                    if (SingleKeyPress(Keys.P, currentKBState))
+                    if (SingleKeyPress(Keys.S, currentKBState))
                     {
                         fileManager.SavePlayer(player);
                         fileManager.SaveEnemies(enemies);
