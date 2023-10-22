@@ -49,7 +49,7 @@ namespace TwelveMage
             //spriteBatch.Draw(texture, , null,
             //    Color.White, 0, Origin, Vector2.Zero, SpriteEffects.None, 0);
             //draw sprite
-            spriteBatch.Draw(texture, Rec, null, Color.White);
+            spriteBatch.Draw(texture, Rec, Color.White);
 
         } // Necessary for inheriting from GameObject
 

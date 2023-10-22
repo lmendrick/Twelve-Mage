@@ -1,1 +1,1 @@
-631,254,100,FaceRight
+585,310,100,WalkLeft
