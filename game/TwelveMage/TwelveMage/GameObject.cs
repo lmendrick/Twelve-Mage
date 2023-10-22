@@ -27,7 +27,6 @@ public abstract class GameObject
     
     protected float LinearVelocity = 2f;
 
-    protected GameObject Parent;
 
     protected float LifeSpan = 4f;
 
