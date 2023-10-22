@@ -85,16 +85,16 @@ namespace TwelveMage
             switch (state)
             {
                 case GunState.FaceRight:
-                    DrawStanding(SpriteEffects.None, spriteBatch);
+                    DrawFace(SpriteEffects.None, spriteBatch);
                     break;
 
                 case GunState.FaceLeft:
-                    DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
+                    DrawFace(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
             } // Necessary for inheriting from GameObject
         }
 
-        private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        private void DrawFace(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
                 texture,
