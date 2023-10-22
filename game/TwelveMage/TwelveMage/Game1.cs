@@ -20,6 +20,8 @@ namespace TwelveMage
         private Gun gun;
         private FileManager fileManager;
 
+        private Texture2D playerSpriteSheet;
+        Texture2D enemySprite;
         private Texture2D bulletSprite;
 
         private int playerWidth = 34;
@@ -77,7 +79,7 @@ namespace TwelveMage
             menuFont = this.Content.Load<SpriteFont>("MenuFont");
 
             // Load in player character sprite sheet (Lucas)
-            Texture2D spriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
+            playerSpriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
             //load in bullet sprite
             bulletSprite = this.Content.Load<Texture2D>("bullet2");
 
@@ -86,7 +88,7 @@ namespace TwelveMage
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
-            player = new Player(playerRec, spriteSheet, 100);
+            player = new Player(playerRec, playerSpriteSheet, 100);
             //set bullet sprite to bullet property for use
             player.Bullet = bulletSprite;
             //created set of bullets
@@ -100,7 +102,7 @@ namespace TwelveMage
            
 
             // Load enemy sprite (Lucas)
-            Texture2D enemySprite = this.Content.Load<Texture2D>("enemy");
+            enemySprite = this.Content.Load<Texture2D>("enemy");
 
             // Instantiate single test enemy (Lucas)
             // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
@@ -127,6 +129,16 @@ namespace TwelveMage
             switch (currentState)
             {
                 case GameState.Menu:
+
+                    // File loading (Chloe)
+                    if (SingleKeyPress(Keys.L, currentKBState))
+                    {
+                        player = fileManager.LoadPlayer(playerSpriteSheet);
+                        enemies = fileManager.LoadEnemies(enemySprite);
+                        //enemy = enemies[0]; // Temporary
+
+                        currentState = GameState.Game;
+                    }
 
                     if (currentKBState.IsKeyDown(Keys.Enter))
                     {

@@ -80,7 +80,7 @@ namespace TwelveMage
                 reader = new StreamReader(PlayerFilename);
                 // Player file format:
                 // Line 1   int pos.X,int pos.Y,int health,string state
-                string[] line = reader.ReadLine().Split(); // Split the line into a string[]
+                string[] line = reader.ReadLine().Split(','); // Split the line into a string[]
                 int.TryParse(line[0], out int X);
                 int.TryParse(line[1], out int Y);
                 int.TryParse(line[2], out int health);
@@ -91,9 +91,9 @@ namespace TwelveMage
             catch
             {
                 Console.WriteLine("Failed to read Player data from PlayerData.txt");
-                Environment.Exit(1); // If the player can't be loaded, exit the game
+                //Environment.Exit(1); // If the player can't be loaded, exit the game
             }
-            if (reader != null) writer.Close();
+            if (reader != null) reader.Close();
             return player;
         }
 
@@ -110,7 +110,7 @@ namespace TwelveMage
                 string currentLine = reader.ReadLine(); // Read the first line
                 while (currentLine != null) // Keep going until the next line is empty
                 {
-                    string[] line = currentLine.Split(); // Split the current line
+                    string[] line = currentLine.Split(','); // Split the current line
                     int.TryParse(line[0], out int X);
                     int.TryParse(line[1], out int Y);
                     int.TryParse(line[3], out int health);
@@ -122,9 +122,9 @@ namespace TwelveMage
             catch
             {
                 Console.WriteLine("Failed to read Enemy data from EnemiesData.txt");
-                Environment.Exit(1); // If the enemies can't be loaded, exit the game
+                //Environment.Exit(1); // If the enemies can't be loaded, exit the game
             }
-            if(reader != null) writer.Close();
+            if(reader != null) reader.Close();
             return enemies;
         }
         #endregion
