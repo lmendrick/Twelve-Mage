@@ -17,6 +17,7 @@ namespace TwelveMage
  * No known issues
  * might try to make it such that the player and enemy inherit health and max health in the future
  * Lucas: Added enemy movement
+ * Chloe: Added public getproperties for health and position, to save the enemies to a file
  */
     internal class Enemy : GameObject
     {
@@ -31,12 +32,21 @@ namespace TwelveMage
         private Vector2 pos;
         private float speed = 100f;
         private Vector2 playerPos;
+        #endregion
 
-        // Property to set the current player position
-        public Vector2 PlayerPos
+        #region PROPERTIES
+        public Vector2 Position // Property to set the current player position
+        {
+            get { return pos; }
+        }
+        public Vector2 PlayerPos // Property to set this enemy's position
         {
             get { return playerPos; }
             set { playerPos = value; }
+        }
+        public int Health
+        {
+            get { return health; }
         }
         #endregion
 

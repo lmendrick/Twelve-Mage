@@ -18,6 +18,7 @@ namespace TwelveMage
         private KeyboardState prevKBState;
         private Player player;
         private Gun gun;
+        private FileManager fileManager;
 
         private Texture2D bulletSprite;
 
@@ -91,7 +92,8 @@ namespace TwelveMage
             //created set of bullets
             bullets = new List<GameObject>();
             
-
+            // Create a FileManager (Chloe)
+            fileManager = new FileManager();
 
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
             gun = new Gun(gunRec, gunSprite, 1000, player, GunState.FaceRight);
@@ -104,6 +106,8 @@ namespace TwelveMage
             // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
             enemy = new Enemy(enemyRec, enemySprite, 100);
+
+            enemies = new List<Enemy> { enemy };
 
         }
 
@@ -189,6 +193,13 @@ namespace TwelveMage
                     break;
 
                 case GameState.Pause:
+
+                    // Save Player & Enemy data (Chloe)
+                    if (SingleKeyPress(Keys.P, currentKBState))
+                    {
+                        fileManager.SavePlayer(player);
+                        fileManager.SaveEnemies(enemies);
+                    }
 
                     // Unpause game and return to game state (Lucas)
                     if (SingleKeyPress(Keys.P, currentKBState))
