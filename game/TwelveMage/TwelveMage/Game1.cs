@@ -77,6 +77,7 @@ namespace TwelveMage
 
             // Load in player character sprite sheet (Lucas)
             Texture2D spriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
+            //load in bullet sprite
             bulletSprite = this.Content.Load<Texture2D>("bullet2");
 
             //Load in gun image
@@ -85,8 +86,9 @@ namespace TwelveMage
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
             player = new Player(playerRec, spriteSheet, 100);
+            //set bullet sprite to bullet property for use
             player.Bullet = bulletSprite;
-
+            //created set of bullets
             bullets = new List<GameObject>();
             
 
@@ -142,17 +144,20 @@ namespace TwelveMage
                         // Pass current player position to enemies (Lucas)
                         enemy.PlayerPos = player.PosVector;
 
+                        //for each game object in bullets make a bullet 
                         foreach (GameObject project in bullets)
                         {
                             Projectile bullet;
+                            //check that its a projectile if it is update
                             if(project is Projectile)
                             {
                                 bullet = (Projectile)project;
                                 project.Update(gameTime, bullets);
                             }
-                            ;
+                            
                         }
 
+                        //for bullets after timespan ends remove
                         for (int i = 0; i < bullets.Count; i++)
                         {
                             if (bullets[i].IsRemoved)
@@ -275,10 +280,14 @@ namespace TwelveMage
                     // Enemy sprite (Lucas)
                     enemy.Draw(_spriteBatch);
 
-
-                    foreach (var sprite in bullets)
+                    //draw bullets as long as its a projectile
+                    foreach (GameObject project in bullets)
                     {
-                        sprite.Draw(_spriteBatch);
+                        if(project is Projectile)
+                        {
+                            project.Draw(_spriteBatch);
+                        }
+                        
                     }
 
                     //gun sprite

@@ -27,14 +27,15 @@ namespace TwelveMage
         const int GunRectHeight = 45;     // The height the image
         const int GunRectWidth = 25;        // The width of the image 
         const int GunRectOffsetY = 1;
-        //properties
+        
+        //gun face
         public GunState State
         {
             get { return state; } 
             set { state = value; }
         }
 
-
+        //properties
         public Vector2 PosVector
         {
             get { return pos; }

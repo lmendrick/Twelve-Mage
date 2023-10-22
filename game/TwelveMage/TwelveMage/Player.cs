@@ -41,7 +41,7 @@ namespace TwelveMage
 
         // PROPERTIES
         //public int Health { get { return _health; } }
-
+        //bullet property to get bullet texture
         public Texture2D Bullet
         {
             get { return bullet; }
@@ -51,7 +51,7 @@ namespace TwelveMage
         
 
         PlayerState state;
-
+        //two new kb states to check if space is clicked only once as to not spam hold
         private KeyboardState currentKB;
         private KeyboardState previousKB;
 
@@ -92,6 +92,7 @@ namespace TwelveMage
         }
         #endregion
 
+        //removed texture b/c added it as a field in object
         #region CONSTRUCTORS
         public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
@@ -151,9 +152,11 @@ namespace TwelveMage
             {
                 dir.X = 0; // No horizontal movement
             }
+            //if space bar shoot bullet
             if (currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
             {
                 AddBullet(bullets);
+                //test
                 Debug.WriteLine("AHHHHHHHHH");
             }
 
@@ -210,6 +213,8 @@ namespace TwelveMage
             #endregion
         }
 
+        //Anthony Maldonado
+        //added bullet method to take the direction of the player and add that to a list of projectiles
 
         private void AddBullet(List<GameObject> bullets)
         {

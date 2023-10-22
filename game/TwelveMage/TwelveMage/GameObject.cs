@@ -13,6 +13,7 @@ using TwelveMage;
 
 public abstract class GameObject
 {
+    //fields 
 	protected Rectangle rec;
 	protected Texture2D texture;
 	protected int health;
@@ -24,21 +25,21 @@ public abstract class GameObject
     public Vector2 Direction = new Vector2(4,4);
 
     
-    public float LinearVelocity = 4f;
+    protected float LinearVelocity = 2f;
 
-    public GameObject Parent;
+    protected GameObject Parent;
 
-    public float LifeSpan = 4f;
+    protected float LifeSpan = 4f;
 
     public bool IsRemoved = false;
 
 
-
+    //properties
 
     public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
 	
-
+    //constructors
 	protected GameObject(Rectangle rec, Texture2D texture, int health)
 	{
         Direction.Normalize();
@@ -84,8 +85,5 @@ public abstract class GameObject
 
     
 
-    public object Clone()
-    {
-        return this.MemberwiseClone();
-    }
+    
 }
