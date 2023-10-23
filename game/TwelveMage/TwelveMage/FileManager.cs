@@ -81,9 +81,9 @@ namespace TwelveMage
                 // Player file format:
                 // Line 1   int pos.X,int pos.Y,int health,string state
                 string[] line = reader.ReadLine().Split(','); // Split the line into a string[]
-                int.TryParse(line[0], out int X);
-                int.TryParse(line[1], out int Y);
-                int.TryParse(line[2], out int health);
+                int.TryParse(line[0].Trim(), out int X);
+                int.TryParse(line[1].Trim(), out int Y);
+                int.TryParse(line[2].Trim(), out int health);
                 Rectangle pos = new Rectangle(X, Y, 34, 30); // Player height & width are 34 & 30
                 player = new Player(pos, spritesheet, health); // Create a new Player with the loaded data
                 player.State = Enum.Parse<PlayerState>(line[3]); // Parse the state data to PlayerState
@@ -108,15 +108,16 @@ namespace TwelveMage
                 // Line 2   int pos.X,int pos.Y,int health
                 // ...
                 string currentLine = reader.ReadLine(); // Read the first line
-                while (currentLine != null) // Keep going until the next line is empty
+                while (!String.IsNullOrEmpty(currentLine)) // Keep going until the next line is empty
                 {
                     string[] line = currentLine.Split(','); // Split the current line
-                    int.TryParse(line[0], out int X);
-                    int.TryParse(line[1], out int Y);
-                    int.TryParse(line[3], out int health);
+                    int.TryParse(line[0].Trim(), out int X);
+                    int.TryParse(line[1].Trim(), out int Y);
+                    int.TryParse(line[2].Trim(), out int health);
                     Rectangle pos = new Rectangle(X, Y, 30, 30); // Enemy height & width are 30 & 30
 
                     enemies.Add(new Enemy(pos, spritesheet, health));
+                    currentLine = reader.ReadLine();
                 }
             }
             catch
