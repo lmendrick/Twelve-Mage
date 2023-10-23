@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using System;
 using System.Collections.Generic;
 
 namespace TwelveMage
@@ -19,6 +20,7 @@ namespace TwelveMage
         private Player player;
         private Gun gun;
         private FileManager fileManager;
+        private Random rng;
 
         private Texture2D playerSpriteSheet;
         Texture2D enemySprite;
@@ -85,6 +87,8 @@ namespace TwelveMage
 
             //Load in gun image
             Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
+
+            rng = new Random();
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
@@ -156,10 +160,13 @@ namespace TwelveMage
                         player.Update(gameTime, bullets);
 
                         // Enemy movement (Lucas)
-                        enemy.Update(gameTime, bullets);
-
                         // Pass current player position to enemies (Lucas)
-                        enemy.PlayerPos = player.PosVector;
+                        foreach(Enemy enemy in enemies)
+                        {
+                            enemy.Update(gameTime, bullets);
+                            enemy.PlayerPos = player.PosVector;
+                        }
+                        
 
                         //for each game object in bullets make a bullet (AJ)
                         foreach (GameObject project in bullets)
@@ -183,26 +190,33 @@ namespace TwelveMage
                                 i--;
                             }
                         }
-                        // if bullet collides with enemy their health goes down
-                        //have to make a method that resets the health
-                        for(int i = 0;i < bullets.Count; i++)
-                        {
-                            if (bullets[i].CheckCollision(enemy))
-                            {
-                                enemy.Health -= gun.Health;
-                            }
-                        }
+
+
+                        //Enemy damage logic moved to enemy class
 
                         //if enemy collides with player health goes down
                         //have to tweak to tick multiple times for one player instance
 
-                        
-                            if (player.CheckCollision(enemy))
+                        foreach (Enemy enemy in enemies)
+                        {
+                            if (player.CheckCollision(enemy) && enemy.IsActive)
                             {
                                 player.Health -= gun.Health;
                             }
+                        }
                             
-                        
+                        for(int i = enemies.Count - 1; i >= 0; i--)
+                        {
+                            if (!enemies[i].IsActive)
+                            {
+                                enemies.RemoveAt(i);
+                            }
+                        }
+
+                        if(enemies.Count == 0)
+                        {
+                            enemies.Add(new Enemy(new Rectangle(250, 250, rng.Next(windowWidth), rng.Next(windowHeight)), enemySprite, 100));
+                        }
                         
 
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
@@ -322,7 +336,10 @@ namespace TwelveMage
                     player.Draw(_spriteBatch);
                     
                     // Enemy sprite (Lucas)
-                    enemy.Draw(_spriteBatch);
+                    foreach(Enemy enemy in enemies)
+                    {
+                        enemy.Draw(_spriteBatch);
+                    }
 
                     //draw bullets as long as its a projectile(AJ)
                     foreach (GameObject project in bullets)
@@ -340,7 +357,7 @@ namespace TwelveMage
                     //enenmy health display(AJ
                     _spriteBatch.DrawString(
                         menuFont,
-                        "Enemy Health: " + enemy.Health,
+                        "Enemy Health: " + enemies[0].Health,
                         new Vector2(10, 10),
                         Color.Black);
                     //player health display(AJ)
