@@ -13,7 +13,7 @@ using System.Collections.Generic;
  * This class handles the player character,
  * including movement, actions, scores, etc.
  * No known issues
- * Anthony: Removed uneeded fields and enum
+ * Anthony: Removed uneeded fields and enum, added projectile capability to player 
  * Lucas: Added Player Movement, States, and Animations
  */
 
