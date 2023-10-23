@@ -303,7 +303,7 @@ namespace TwelveMage
                     _spriteBatch.DrawString(
                         menuFont,
                         "Instructions: Use WASD to move and click to shoot enemies.",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Instructions: Use WASD to move and click to shoot enemies.").X / 2),
+                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Instructions: Use WASD to move and click spacebar to shoot enemies.").X / 2),
                         ((windowHeight / 2) + 50)),
                         Color.Black);
 
