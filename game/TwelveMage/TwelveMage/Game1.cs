@@ -98,7 +98,7 @@ namespace TwelveMage
             fileManager = new FileManager();
 
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
-            gun = new Gun(gunRec, gunSprite, 1000, player, GunState.FaceRight);
+            gun = new Gun(gunRec, gunSprite, 10, player, GunState.FaceRight);
            
 
             // Load enemy sprite (Lucas)
@@ -161,11 +161,11 @@ namespace TwelveMage
                         // Pass current player position to enemies (Lucas)
                         enemy.PlayerPos = player.PosVector;
 
-                        //for each game object in bullets make a bullet 
+                        //for each game object in bullets make a bullet (AJ)
                         foreach (GameObject project in bullets)
                         {
                             Projectile bullet;
-                            //check that its a projectile if it is update
+                            //check that its a projectile if it is update(AJ)
                             if(project is Projectile)
                             {
                                 bullet = (Projectile)project;
@@ -174,7 +174,7 @@ namespace TwelveMage
                             
                         }
 
-                        //for bullets after timespan ends remove
+                        //for bullets after timespan ends remove(AJ)
                         for (int i = 0; i < bullets.Count; i++)
                         {
                             if (bullets[i].IsRemoved)
@@ -183,10 +183,30 @@ namespace TwelveMage
                                 i--;
                             }
                         }
+                        // if bullet collides with enemy their health goes down
+                        //have to make a method that resets the health
+                        for(int i = 0;i < bullets.Count; i++)
+                        {
+                            if (bullets[i].CheckCollision(enemy))
+                            {
+                                enemy.Health -= gun.Health;
+                            }
+                        }
 
-                        //Addded gun but since its not tweaked fully commented out
+                        //if enemy collides with player health goes down
+                        //have to tweak to tick multiple times for one player instance
+
+                        
+                            if (player.CheckCollision(enemy))
+                            {
+                                player.Health -= gun.Health;
+                            }
+                            
+                        
+                        
+
+                        //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);
-
                         //gun.PosVector = player.PosVector;
                     }
 
@@ -304,7 +324,7 @@ namespace TwelveMage
                     // Enemy sprite (Lucas)
                     enemy.Draw(_spriteBatch);
 
-                    //draw bullets as long as its a projectile
+                    //draw bullets as long as its a projectile(AJ)
                     foreach (GameObject project in bullets)
                     {
                         if(project is Projectile)
@@ -316,6 +336,19 @@ namespace TwelveMage
 
                     //gun sprite
                     //gun.Draw(_spriteBatch);
+
+                    //enenmy health display(AJ
+                    _spriteBatch.DrawString(
+                        menuFont,
+                        "Enemy Health: " + enemy.Health,
+                        new Vector2(10, 10),
+                        Color.Black);
+                    //player health display(AJ)
+                    _spriteBatch.DrawString(
+                        menuFont,
+                        "Player Health: " + player.Health,
+                        new Vector2(10, 50),
+                        Color.Black);
 
                     // Pause button (P) (Lucas)
                     _spriteBatch.DrawString(

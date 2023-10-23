@@ -9,6 +9,12 @@ using System.Threading.Tasks;
 
 namespace TwelveMage
 {
+    /*
+         * Anthony Maldonado
+         * Twelve-Mage
+         * This class handles the gun being used by the player
+         * might remove in place of having the sprite put directly on the wizard
+         */
     //gunstates
     enum GunState
     {

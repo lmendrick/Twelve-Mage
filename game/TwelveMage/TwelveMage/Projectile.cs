@@ -11,9 +11,14 @@ namespace TwelveMage
 {
     internal class Projectile : GameObject
     {
+        /*
+         * Anthony Maldonado
+         * Twelve-Mage
+         * This class handles the projectile being shot by the player
+         */     
 
         //fields
-       
+
         private float timer;
 
         //methods

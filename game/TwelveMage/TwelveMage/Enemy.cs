@@ -47,6 +47,7 @@ namespace TwelveMage
         public int Health
         {
             get { return health; }
+            set { health = value; }
         }
         #endregion
 
