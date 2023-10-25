@@ -49,7 +49,10 @@ namespace TwelveMage
         int buttonCenterY;
 
 
-       
+        private int wave;
+        private int waveIncrease;
+        private Spawner spawner;
+        private List<Spawner> spawners;
 
         // Single enemy for testing
         private Enemy enemy;
@@ -78,7 +81,8 @@ namespace TwelveMage
             buttonCenterX = (windowWidth / 2) - (buttonWidth / 2);
             buttonCenterY = (windowHeight / 2) - (buttonHeight / 2);
 
-
+            wave = 1;
+            waveIncrease = 2;
             base.Initialize();
         }
 
@@ -119,6 +123,7 @@ namespace TwelveMage
 
             // Load enemy sprite (Lucas)
             enemySprite = this.Content.Load<Texture2D>("enemy");
+            
 
             // Instantiate single test enemy (Lucas)
             // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
@@ -126,6 +131,46 @@ namespace TwelveMage
             enemy = new Enemy(enemyRec, enemySprite, 100);
 
             enemies = new List<Enemy> { enemy };
+            spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100);
+            spawners = new List<Spawner>();
+
+
+            //spawners[0] is top spawner
+            //spawners[1] is bottom spawner
+            //spawners[2] is left spawner
+            //spawners[3] is right spawner
+
+            spawners.Add(new Spawner(
+                new Vector2(windowWidth / 2, -40),
+                windowWidth / 2,
+                0,
+                enemies,
+                enemySprite,
+                100));
+
+            spawners.Add(new Spawner(
+                new Vector2(windowWidth / 2, windowHeight + 40),
+                windowWidth / 2,
+                0,
+                enemies,
+                enemySprite,
+                100));
+
+            spawners.Add(new Spawner(
+                new Vector2(-40, windowHeight / 2),
+                0,
+                windowHeight / 2,
+                enemies,
+                enemySprite,
+                100));
+
+            spawners.Add(new Spawner(
+                new Vector2(windowWidth + 40, windowHeight / 2),
+                0,
+                windowHeight / 2,
+                enemies,
+                enemySprite,
+                100));
 
             // Create a few 100x200 buttons down the left side
             //buttons.Add(new Button(
@@ -203,6 +248,18 @@ namespace TwelveMage
                         // Player movement (Lucas)
                         player.Update(gameTime, bullets);
 
+                        if(SingleKeyPress(Keys.U, currentKBState))
+                        {
+                            //spawner.SpawnEnemy();
+
+                            spawners[rng.Next(0,4)].SpawnEnemy();
+                        }
+
+                        if(SingleKeyPress(Keys.C, currentKBState))
+                        {
+                            enemies.Clear();
+                        }
+
                         // Enemy movement (Lucas)
                         // Pass current player position to enemies (Lucas)
                         foreach(Enemy enemy in enemies)
@@ -259,7 +316,15 @@ namespace TwelveMage
 
                         if(enemies.Count == 0)
                         {
-                            enemies.Add(new Enemy(new Rectangle(250, 250, rng.Next(windowWidth), rng.Next(windowHeight)), enemySprite, 100));
+                            //enemies.Add(new Enemy(new Rectangle(250, 250, rng.Next(windowWidth), rng.Next(windowHeight)), enemySprite, 100));
+
+                            
+
+                            for(int i = 0; i < wave * waveIncrease; i++)
+                            {
+                                spawners[rng.Next(0, 4)].SpawnEnemy();
+                            }
+                            wave++;
                         }
                         
 
@@ -419,6 +484,12 @@ namespace TwelveMage
                         menuFont,
                         "Player Health: " + player.Health,
                         new Vector2(10, 50),
+                        Color.Black);
+                    //Wave counter display
+                    _spriteBatch.DrawString(
+                        menuFont,
+                        "Wave: " + wave,
+                        new Vector2(10, 90),
                         Color.Black);
 
                     // Pause button (P) (Lucas)
