@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace TwelveMage
 {
@@ -40,6 +41,8 @@ namespace TwelveMage
         private int windowWidth;
         private int windowHeight;
         private bool isPaused;
+
+        private List<Button> buttons = new List<Button>();
 
 
        
@@ -115,6 +118,15 @@ namespace TwelveMage
 
             enemies = new List<Enemy> { enemy };
 
+            // Create a few 100x200 buttons down the left side
+            //buttons.Add(new Button(
+            //        _graphics.GraphicsDevice,           // device to create a custom texture
+            //        new Rectangle(10, 40, 200, 100),    // where to put the button
+            //        "Start New Game",                        // button label
+            //        menuFont,                               // label font
+            //        Color.Purple));                     // button color
+            //buttons[0].OnButtonClick += this.NewGame;
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -149,6 +161,19 @@ namespace TwelveMage
                     {
                         currentState = GameState.Game;
                     }
+
+                    // New Game Button
+                    // Create a new 100x200 button tied to NewGame method
+                    // NOTE: Could make this button somewhere else (such as LoadContent) and then add
+                    // it to the list here for better readability in future
+                    buttons.Add(new Button(
+                    _graphics.GraphicsDevice,           // device to create a custom texture
+                    new Rectangle(10, 40, 200, 100),    // where to put the button
+                    "Start New Game",                        // button label
+                    menuFont,                               // label font
+                    Color.DarkBlue));                     // button color
+                    buttons[0].OnButtonClick += this.NewGame;
+
                     break;
                 case GameState.Game:
 
@@ -269,6 +294,16 @@ namespace TwelveMage
                 default:
                     break;
             }
+
+
+            // Checks each button in list for clicks
+            // NOTE: ".ToList()" is necessary to avoid error
+            foreach (Button button in buttons.ToList())
+            {
+                button.Update();
+            }
+
+
             prevKBState = currentKBState;
             base.Update(gameTime);
 
@@ -444,6 +479,15 @@ namespace TwelveMage
 
             }
 
+
+            // Draws each button in the list
+            // NOTE: ".ToList()" is necessary to avoid error
+            foreach (Button button in buttons.ToList())
+            {
+                button.Draw(_spriteBatch);
+            }
+
+
             _spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -469,6 +513,15 @@ namespace TwelveMage
             {
                 return false;
             }
+        }
+
+        /// <summary>
+        /// When new game button is clicked, changes GameState to Game and clears buttons list
+        /// </summary>
+        private void NewGame()
+        {
+            currentState = GameState.Game;
+            buttons.Clear();
         }
     }
 }
