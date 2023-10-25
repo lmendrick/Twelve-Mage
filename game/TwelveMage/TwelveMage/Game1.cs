@@ -43,6 +43,10 @@ namespace TwelveMage
         private bool isPaused;
 
         private List<Button> buttons = new List<Button>();
+        int buttonWidth = 150;
+        int buttonHeight = 75;
+        int buttonCenterX;
+        int buttonCenterY;
 
 
        
@@ -69,6 +73,11 @@ namespace TwelveMage
             // Store the size of the window
             windowWidth = _graphics.GraphicsDevice.Viewport.Width;
             windowHeight = _graphics.GraphicsDevice.Viewport.Height;
+
+            // Reference values to center buttons in window
+            buttonCenterX = (windowWidth / 2) - (buttonWidth / 2);
+            buttonCenterY = (windowHeight / 2) - (buttonHeight / 2);
+
 
             base.Initialize();
         }
@@ -163,16 +172,26 @@ namespace TwelveMage
                     }
 
                     // New Game Button
-                    // Create a new 100x200 button tied to NewGame method
+                    // Create a new button tied to NewGame method
                     // NOTE: Could make this button somewhere else (such as LoadContent) and then add
                     // it to the list here for better readability in future
                     buttons.Add(new Button(
                     _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(10, 40, 200, 100),    // where to put the button
-                    "Start New Game",                        // button label
+                    new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
+                    "New Game",                        // button label
                     menuFont,                               // label font
                     Color.DarkBlue));                     // button color
                     buttons[0].OnButtonClick += this.NewGame;
+
+                    // Load Game Button
+                    // Create a new button tied to LoadGame method
+                    buttons.Add(new Button(
+                    _graphics.GraphicsDevice,           // device to create a custom texture
+                    new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
+                    "Load Game",                        // button label
+                    menuFont,                               // label font
+                    Color.DarkBlue));                     // button color
+                    buttons[1].OnButtonClick += this.LoadGame;
 
                     break;
                 case GameState.Game:
@@ -329,31 +348,31 @@ namespace TwelveMage
                         titleFont,
                         "Twelve-Mage",
                         new Vector2((windowWidth / 2) - (titleFont.MeasureString("Twelve-Mage").X / 2),
-                        (windowHeight / 2) - 100),
-                        Color.DarkBlue);
+                        75),
+                        Color.Yellow);
 
                     // Enter to Start
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Press Enter to start",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press Enter to start").X / 2),
-                        ((windowHeight / 2)) - 50),
-                        Color.Black);
+                    //_spriteBatch.DrawString(
+                    //    menuFont,
+                    //    "Press Enter to start",
+                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press Enter to start").X / 2),
+                    //    ((windowHeight / 2)) - 50),
+                    //    Color.Black);
 
                     // L to load
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Press L to load a game",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press L to load a game").X / 2),
-                        ((windowHeight / 2))),
-                        Color.Black);
+                    //_spriteBatch.DrawString(
+                    //    menuFont,
+                    //    "Press L to load a game",
+                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press L to load a game").X / 2),
+                    //    ((windowHeight / 2))),
+                    //    Color.Black);
 
                     // Controls
                     _spriteBatch.DrawString(
                         menuFont,
                         "Instructions: Use WASD to move and click to shoot enemies.",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Instructions: Use WASD to move and click spacebar to shoot enemies.").X / 2),
-                        ((windowHeight / 2) + 50)),
+                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Instructions: Use WASD to move and click to shoot enemies.").X / 2),
+                        ((windowHeight / 2) + 150)),
                         Color.Black);
 
                     // Instructions
@@ -361,7 +380,7 @@ namespace TwelveMage
                         menuFont,
                         "Survive as long as you can. If your health reaches 0, you lose.",
                         new Vector2((windowWidth / 2) - (menuFont.MeasureString("Survive as long as you can. If your health reaches 0, you lose.").X / 2),
-                        ((windowHeight / 2) + 70)),
+                        ((windowHeight / 2) + 175)),
                         Color.Black);
                     break;
 
@@ -520,6 +539,16 @@ namespace TwelveMage
         /// </summary>
         private void NewGame()
         {
+            currentState = GameState.Game;
+            buttons.Clear();
+        }
+
+        private void LoadGame()
+        {
+            player = fileManager.LoadPlayer(playerSpriteSheet);
+            player.Bullet = bulletSprite;
+            enemies = fileManager.LoadEnemies(enemySprite);
+
             currentState = GameState.Game;
             buttons.Clear();
         }
