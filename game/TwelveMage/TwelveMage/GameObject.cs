@@ -61,7 +61,7 @@ public abstract class GameObject
             //but if its active check if they instersect and if they do return true
             if (rec.Intersects(check.Rec))
             {
-                isActive = false;
+                //isActive = false;  // Was causing damage to only occur once
                 return true;
             }
             else { return false; }

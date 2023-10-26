@@ -24,8 +24,9 @@ namespace TwelveMage
         private Random rng;
 
         private Texture2D playerSpriteSheet;
-        Texture2D enemySprite;
+        private Texture2D enemySprite;
         private Texture2D bulletSprite;
+        private Texture2D healthBar;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
@@ -117,6 +118,9 @@ namespace TwelveMage
             // Pass window dimensions to Player
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
+
+            // Load Health Bar Assets
+            healthBar = this.Content.Load<Texture2D>("HB_1");
 
             // Create a FileManager (Chloe)
             fileManager = new FileManager();
@@ -535,6 +539,29 @@ namespace TwelveMage
                         new Vector2((windowWidth) - (2 * menuFont.MeasureString("Pause (P)").X / 2),
                         (10)),
                         Color.Black);
+
+                    // Player Health Bar Background (Lucas)
+                    _spriteBatch.Draw(healthBar,                // Texture
+                        new Vector2(windowWidth / 3, 30),       // Location
+                        null,                                   // Texture Region Rectangle
+                        Color.Black,                             // Color
+                        0,                                      // Rotation
+                        Vector2.Zero,                           // Center of the rotation
+                        new Vector2(1f, 0.5f),                  // Scale 
+                        SpriteEffects.None,                     // Effects
+                        0);                                     // Layer depth;
+
+                    // Player Health Bar (Lucas)
+                    // Scales Health Bar based on player health
+                    _spriteBatch.Draw(healthBar,                    // Texture
+                        new Vector2(windowWidth / 3, 30),           // Location
+                        null,                                       // Texture Region Rectangle
+                        Color.White,                                // Color
+                        0,                                          // Rotation
+                        Vector2.Zero,                               // Center of the rotation
+                        new Vector2(1f * player.Health/100, 0.5f),  // Scale 
+                        SpriteEffects.None,                         // Effects
+                        0);                                         // Layer depth
                     break;
 
                 case GameState.Pause:
@@ -659,6 +686,7 @@ namespace TwelveMage
         private void NewGame()
         {
             currentState = GameState.Game;
+            player.Health = 100;
             player.Center();
             buttons.Clear();
         }
