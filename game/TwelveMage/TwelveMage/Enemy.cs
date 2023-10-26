@@ -19,8 +19,19 @@ namespace TwelveMage
  * Lucas: Added enemy movement
  * Chloe: Added public getproperties for health and position, to save the enemies to a file
  */
+
+    
     internal class Enemy : GameObject
     {
+        private enum AdjustmentDirection
+        {
+            Up,
+            Down,
+            Left,
+            Right
+        }
+
+
         #region FIELDS
         //private int health;
         private const int MAX_Health = 200;
@@ -32,6 +43,8 @@ namespace TwelveMage
         private Vector2 pos;
         private float speed = 100f;
         private Vector2 playerPos;
+        private bool intersectionDetected;
+        private AdjustmentDirection direction;
 
         //Damage feedback
         private Color color = Color.White;
@@ -70,6 +83,7 @@ namespace TwelveMage
             this.sprite = texture;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
+            intersectionDetected = false;
             timer = 1f;
         }
         #endregion
@@ -129,6 +143,10 @@ namespace TwelveMage
         }
 
 
+        /// <summary>
+        /// Check the list of bullets to see if any have hit this enemy
+        /// </summary>
+        /// <param name="bulletList"></param>
         public void CheckHits(List<GameObject> bulletList)
         {
             for(int i = bulletList.Count - 1; i >= 0; i--)
@@ -148,11 +166,48 @@ namespace TwelveMage
         }
 
 
+        /// <summary>
+        /// If a collision with the player is detected, damage them
+        /// </summary>
+        /// <param name="player"></param>
         public void DamagePlayer(Player player)
         {
             if(this.CheckCollision(player))
             {
                 player.Health -= damage;
+            }
+        }
+
+
+        public void AvoidIntersections(List<Enemy> enemies)
+        {
+            //Determine if an intersection is detected
+            //If one is, determine the direction to go in
+            //Go in that direction until no intersection is detected
+            //Should only determine direction once
+            Enemy intersected;
+            Rectangle intersection;
+
+            if (!intersectionDetected)
+            {
+                foreach (Enemy enemy in enemies)
+                {
+                    if (this.CheckCollision(enemy))
+                    {
+                        intersected = enemy;
+                        
+                        intersectionDetected = true;
+                        break;
+                    }
+                }
+
+                if(intersectionDetected)
+                {
+                    //Determine the shortest direction to resolve the collision
+                    //Do this by checking the difference in position
+                    //Once a direction is chosen, adjust dir X or Y as appropriate. 
+                    //Since this method should be called before movement is calculated, simply setting the X or Y equal to a value should work
+                }
             }
         }
         #endregion
