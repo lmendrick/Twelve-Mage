@@ -1,1 +1,1 @@
-602,391,80,FaceRight
+30,30,90,FaceRight

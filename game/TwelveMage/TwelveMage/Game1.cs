@@ -41,6 +41,7 @@ namespace TwelveMage
         private int windowWidth;
         private int windowHeight;
         private bool isPaused;
+        private bool hasSaved = false;
 
         private List<Button> buttons = new List<Button>();
         int buttonWidth = 150;
@@ -350,6 +351,22 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
+                    buttons.Add(new Button(
+                    _graphics.GraphicsDevice,           // device to create a custom texture
+                    new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
+                    "Resume",                        // button label
+                    menuFont,                               // label font
+                    Color.DarkBlue));                     // button color
+                    buttons[0].OnButtonClick += this.Resume;
+
+                    buttons.Add(new Button(
+                    _graphics.GraphicsDevice,           // device to create a custom texture
+                    new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
+                    "Save",                        // button label
+                    menuFont,                               // label font
+                    Color.DarkBlue));
+                    buttons[1].OnButtonClick += this.Save;
+
                     // Save Player & Enemy data (Chloe)
                     if (SingleKeyPress(Keys.S, currentKBState))
                     {
@@ -510,24 +527,35 @@ namespace TwelveMage
                         titleFont,
                         "Game Paused",
                         new Vector2((windowWidth / 2) - (titleFont.MeasureString("Game Paused").X / 2),
-                        (windowHeight / 2) - 100),
+                        75),
                         Color.DarkBlue);
 
-                    // Press P to unpause
-                    _spriteBatch.DrawString(
+                    if (hasSaved)
+                    {
+                        _spriteBatch.DrawString(
                         menuFont,
-                        "Press P to unpause",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press P to unpause").X / 2),
-                        ((windowHeight / 2)) - 50),
+                        "Game Saved.",
+                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Game Saved.").X / 2),
+                        ((windowHeight - 50))),
                         Color.Black);
+                    }
+                    
+
+                    // Press P to unpause
+                    //_spriteBatch.DrawString(
+                    //    menuFont,
+                    //    "Press P to unpause",
+                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press P to unpause").X / 2),
+                    //    ((windowHeight / 2)) - 50),
+                    //    Color.Black);
 
                     // Press S to save game
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Press S to save game",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press S to save game").X / 2),
-                        ((windowHeight / 2))),
-                        Color.Black);
+                    //_spriteBatch.DrawString(
+                    //    menuFont,
+                    //    "Press S to save game",
+                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press S to save game").X / 2),
+                    //    ((windowHeight / 2))),
+                    //    Color.Black);
                     break;
 
                 case GameState.GameOver:
@@ -622,6 +650,21 @@ namespace TwelveMage
 
             currentState = GameState.Game;
             buttons.Clear();
+        }
+
+        private void Resume()
+        {
+            isPaused = false;
+            currentState = GameState.Game;
+            hasSaved = false;
+            buttons.Clear();
+        }
+
+        private void Save()
+        {
+            fileManager.SavePlayer(player);
+            fileManager.SaveEnemies(enemies);
+            hasSaved = true;
         }
     }
 }
