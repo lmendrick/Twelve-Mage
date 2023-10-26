@@ -114,7 +114,10 @@ namespace TwelveMage
             player.Bullet = bulletSprite;
             //created set of bullets
             bullets = new List<GameObject>();
-            
+            // Pass window dimensions to Player
+            player.WindowHeight = windowHeight;
+            player.WindowWidth = windowWidth;
+
             // Create a FileManager (Chloe)
             fileManager = new FileManager();
 
@@ -218,9 +221,6 @@ namespace TwelveMage
                     }
 
                     // New Game Button
-                    // Create a new button tied to NewGame method
-                    // NOTE: Could make this button somewhere else (such as LoadContent) and then add
-                    // it to the list here for better readability in future
                     buttons.Add(new Button(
                     _graphics.GraphicsDevice,           // device to create a custom texture
                     new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
@@ -230,7 +230,6 @@ namespace TwelveMage
                     buttons[0].OnButtonClick += this.NewGame;
 
                     // Load Game Button
-                    // Create a new button tied to LoadGame method
                     buttons.Add(new Button(
                     _graphics.GraphicsDevice,           // device to create a custom texture
                     new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
@@ -351,6 +350,7 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
+                    // Resume button
                     buttons.Add(new Button(
                     _graphics.GraphicsDevice,           // device to create a custom texture
                     new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
@@ -359,6 +359,7 @@ namespace TwelveMage
                     Color.DarkBlue));                     // button color
                     buttons[0].OnButtonClick += this.Resume;
 
+                    // Save button
                     buttons.Add(new Button(
                     _graphics.GraphicsDevice,           // device to create a custom texture
                     new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
@@ -367,22 +368,40 @@ namespace TwelveMage
                     Color.DarkBlue));
                     buttons[1].OnButtonClick += this.Save;
 
-                    // Save Player & Enemy data (Chloe)
-                    if (SingleKeyPress(Keys.S, currentKBState))
-                    {
-                        fileManager.SavePlayer(player);
-                        fileManager.SaveEnemies(enemies);
-                    }
+                    //// Save Player & Enemy data (Chloe)
+                    //if (SingleKeyPress(Keys.S, currentKBState))
+                    //{
+                    //    fileManager.SavePlayer(player);
+                    //    fileManager.SaveEnemies(enemies);
+                    //}
 
-                    // Unpause game and return to game state (Lucas)
-                    if (SingleKeyPress(Keys.P, currentKBState))
-                    {
-                        isPaused = false;
-                        currentState = GameState.Game;
-                    }
+                    //// Unpause game and return to game state (Lucas)
+                    //if (SingleKeyPress(Keys.P, currentKBState))
+                    //{
+                    //    isPaused = false;
+                    //    currentState = GameState.Game;
+                    //}
                     break;
 
                 case GameState.GameOver:
+
+                    // New Game Button
+                    buttons.Add(new Button(
+                    _graphics.GraphicsDevice,           // device to create a custom texture
+                    new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
+                    "New Game",                        // button label
+                    menuFont,                               // label font
+                    Color.DarkBlue));                     // button color
+                    buttons[0].OnButtonClick += this.NewGame;
+
+                    // Main Menu Button
+                    buttons.Add(new Button(
+                    _graphics.GraphicsDevice,           // device to create a custom texture
+                    new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
+                    "Main Menu",                        // button label
+                    menuFont,                               // label font
+                    Color.DarkBlue));
+                    buttons[1].OnButtonClick += this.MainMenu;
 
                     // Return to main menu (Lucas)
                     // Note: Single key press is needed otherwise will start new game
@@ -567,23 +586,23 @@ namespace TwelveMage
                         titleFont,
                         "Game Over",
                         new Vector2((windowWidth / 2) - (titleFont.MeasureString("Game Over").X / 2),
-                        (windowHeight / 2) - 100),
+                        75),
                         Color.DarkBlue);
 
                     // Enter to return to menu
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Press Enter to return to menu",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press Enter to return to menu").X / 2),
-                        ((windowHeight / 2)) - 50),
-                        Color.Black);
+                    //_spriteBatch.DrawString(
+                    //    menuFont,
+                    //    "Press Enter to return to menu",
+                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press Enter to return to menu").X / 2),
+                    //    ((windowHeight / 2)) - 50),
+                    //    Color.Black);
 
                     // Game score
                     _spriteBatch.DrawString(
                         menuFont,
                         "Score: ",
                         new Vector2((windowWidth / 2) - (menuFont.MeasureString("Score: ").X / 2),
-                        ((windowHeight / 2)) - 20),
+                        ((windowHeight  - 75))),
                         Color.Black);
 
                     // Highscore
@@ -591,8 +610,9 @@ namespace TwelveMage
                         menuFont,
                         "Highscore: ",
                         new Vector2((windowWidth / 2) - (menuFont.MeasureString("Highscore: ").X / 2),
-                        ((windowHeight / 2))),
+                        ((windowHeight - 50))),
                         Color.Black);
+
                     break;
 
             }
@@ -639,9 +659,13 @@ namespace TwelveMage
         private void NewGame()
         {
             currentState = GameState.Game;
+            player.Center();
             buttons.Clear();
         }
 
+        /// <summary>
+        /// Loads a game from a file, advances game state, and clears buttons.
+        /// </summary>
         private void LoadGame()
         {
             player = fileManager.LoadPlayer(playerSpriteSheet);
@@ -652,19 +676,38 @@ namespace TwelveMage
             buttons.Clear();
         }
 
+        /// <summary>
+        /// Resumes gameplay from pause menu.
+        /// </summary>
         private void Resume()
         {
             isPaused = false;
             currentState = GameState.Game;
+
+            // Sets save status back to false, disabling "Game Saved" text
             hasSaved = false;
             buttons.Clear();
         }
 
+        /// <summary>
+        /// Saves Player and Enemy Data to a file.
+        /// </summary>
         private void Save()
         {
             fileManager.SavePlayer(player);
             fileManager.SaveEnemies(enemies);
+
+            // Enables "Game Saved" text notification
             hasSaved = true;
+        }
+
+        /// <summary>
+        /// Sets the game state to the Menu.
+        /// </summary>
+        private void MainMenu()
+        {
+            currentState = GameState.Menu;
+            buttons.Clear();
         }
     }
 }

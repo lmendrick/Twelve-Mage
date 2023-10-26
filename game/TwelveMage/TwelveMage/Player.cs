@@ -72,6 +72,9 @@ namespace TwelveMage
         Vector2 dir;
         Vector2 pos;
         float speed = 200f;
+
+        private int windowWidth;
+        private int windowHeight;
         #endregion
 
         #region PROPERTIES
@@ -90,6 +93,17 @@ namespace TwelveMage
             get { return state; }
             set { state = value; }
         }
+
+        public int WindowWidth
+        {
+            set { windowWidth = value; }
+        }
+
+        public int WindowHeight
+        {
+            set { windowHeight = value; }
+        }
+
         #endregion
 
         //removed texture b/c added it as a field in object
@@ -366,6 +380,15 @@ namespace TwelveMage
                 1.0f,                                   // - Scale (100% - no change)
                 flipSprite,                             // - Can be used to flip the image
                 0);                                     // - Layer depth (unused)
+        }
+
+        /// <summary>
+        /// Centers the player in the middle of the window
+        /// </summary>
+        public void Center()
+        {
+            pos.X = (windowWidth / 2) - (rec.Width / 2);
+            pos.Y = (windowHeight / 2) - (rec.Height / 2);
         }
         #endregion
     }
