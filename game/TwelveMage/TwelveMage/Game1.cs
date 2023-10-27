@@ -44,7 +44,9 @@ namespace TwelveMage
         private bool isPaused;
         private bool hasSaved = false;
 
-        private List<Button> buttons = new List<Button>();
+        private List<Button> mainMenuButtons = new List<Button>();
+        private List<Button> gameOverButtons = new List<Button>();
+        private List<Button> pauseMenuButtons = new List<Button>();
         int buttonWidth = 150;
         int buttonHeight = 75;
         int buttonCenterX;
@@ -53,14 +55,14 @@ namespace TwelveMage
 
         private int wave;
         private int waveIncrease;
+        private int score;
+        private int highScore;
         private Spawner spawner;
         private List<Spawner> spawners;
 
-        // Single enemy for testing
-        private Enemy enemy;
-
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
+        private Enemy defaultEnemy;
         #endregion
 
         public Game1()
@@ -85,6 +87,8 @@ namespace TwelveMage
 
             wave = 1;
             waveIncrease = 2;
+            score = 0;
+            highScore = 0;
             base.Initialize();
         }
 
@@ -136,9 +140,9 @@ namespace TwelveMage
             // Instantiate single test enemy (Lucas)
             // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
-            enemy = new Enemy(enemyRec, enemySprite, 100);
+            defaultEnemy = new Enemy(enemyRec, enemySprite, 100);
 
-            enemies = new List<Enemy> { enemy };
+            enemies = new List<Enemy> { defaultEnemy };
             spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100);
             spawners = new List<Spawner>();
 
@@ -189,6 +193,65 @@ namespace TwelveMage
             //        Color.Purple));                     // button color
             //buttons[0].OnButtonClick += this.NewGame;
 
+            // MAIN MENU BUTTONS
+
+            // New Game Button
+            mainMenuButtons.Add(new Button(
+            _graphics.GraphicsDevice,           // device to create a custom texture
+            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
+            "New Game",                        // button label
+            menuFont,                               // label font
+            Color.DarkBlue));                     // button color
+            mainMenuButtons[0].OnButtonClick += this.NewGame;
+
+            // Load Game Button
+            mainMenuButtons.Add(new Button(
+            _graphics.GraphicsDevice,           // device to create a custom texture
+            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
+            "Load Game",                        // button label
+            menuFont,                               // label font
+            Color.DarkBlue));                     // button color
+            mainMenuButtons[1].OnButtonClick += this.LoadGame;
+
+            // GAME OVER MENU BUTTONS
+
+            // New Game Button
+            gameOverButtons.Add(new Button(
+            _graphics.GraphicsDevice,           // device to create a custom texture
+            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
+            "New Game",                        // button label
+            menuFont,                               // label font
+            Color.DarkBlue));                     // button color
+            gameOverButtons[0].OnButtonClick += this.NewGame;
+
+            // Main Menu Button
+            gameOverButtons.Add(new Button(
+            _graphics.GraphicsDevice,           // device to create a custom texture
+            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
+            "Main Menu",                        // button label
+            menuFont,                               // label font
+            Color.DarkBlue));
+            gameOverButtons[1].OnButtonClick += this.MainMenu;
+
+            // PAUSE MENU BUTTONS
+
+            // Resume button
+            pauseMenuButtons.Add(new Button(
+            _graphics.GraphicsDevice,           // device to create a custom texture
+            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
+            "Resume",                        // button label
+            menuFont,                               // label font
+            Color.DarkBlue));                     // button color
+            pauseMenuButtons[0].OnButtonClick += this.Resume;
+
+            // Save button
+            pauseMenuButtons.Add(new Button(
+            _graphics.GraphicsDevice,           // device to create a custom texture
+            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
+            "Save",                        // button label
+            menuFont,                               // label font
+            Color.DarkBlue));
+            pauseMenuButtons[1].OnButtonClick += this.Save;
         }
 
         protected override void Update(GameTime gameTime)
@@ -208,8 +271,14 @@ namespace TwelveMage
             {
                 case GameState.Menu:
 
+                    foreach(Button button in mainMenuButtons.ToList())
+                    {
+                        button.Update();
+                    }
+
+                    // DEPRECATED
                     // File loading (Chloe)
-                    if (SingleKeyPress(Keys.L, currentKBState))
+                    /*if (SingleKeyPress(Keys.L, currentKBState))
                     {
                         player = fileManager.LoadPlayer(playerSpriteSheet);
                         player.Bullet = bulletSprite;
@@ -222,25 +291,7 @@ namespace TwelveMage
                     if (currentKBState.IsKeyDown(Keys.Enter))
                     {
                         currentState = GameState.Game;
-                    }
-
-                    // New Game Button
-                    buttons.Add(new Button(
-                    _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
-                    "New Game",                        // button label
-                    menuFont,                               // label font
-                    Color.DarkBlue));                     // button color
-                    buttons[0].OnButtonClick += this.NewGame;
-
-                    // Load Game Button
-                    buttons.Add(new Button(
-                    _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
-                    "Load Game",                        // button label
-                    menuFont,                               // label font
-                    Color.DarkBlue));                     // button color
-                    buttons[1].OnButtonClick += this.LoadGame;
+                    }*/
 
                     break;
                 case GameState.Game:
@@ -354,65 +405,39 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
-                    // Resume button
-                    buttons.Add(new Button(
-                    _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
-                    "Resume",                        // button label
-                    menuFont,                               // label font
-                    Color.DarkBlue));                     // button color
-                    buttons[0].OnButtonClick += this.Resume;
+                    foreach(Button button in pauseMenuButtons.ToList()) // Update all pause menu buttons
+                    {
+                        button.Update();
+                    }
 
-                    // Save button
-                    buttons.Add(new Button(
-                    _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
-                    "Save",                        // button label
-                    menuFont,                               // label font
-                    Color.DarkBlue));
-                    buttons[1].OnButtonClick += this.Save;
+                    // Save Player & Enemy data (Chloe)
+                    /*if (SingleKeyPress(Keys.S, currentKBState))
+                    {
+                        fileManager.SavePlayer(player);
+                        fileManager.SaveEnemies(enemies);
+                    }
 
-                    //// Save Player & Enemy data (Chloe)
-                    //if (SingleKeyPress(Keys.S, currentKBState))
-                    //{
-                    //    fileManager.SavePlayer(player);
-                    //    fileManager.SaveEnemies(enemies);
-                    //}
-
-                    //// Unpause game and return to game state (Lucas)
-                    //if (SingleKeyPress(Keys.P, currentKBState))
-                    //{
-                    //    isPaused = false;
-                    //    currentState = GameState.Game;
-                    //}
+                    // Unpause game and return to game state (Lucas)
+                    if (SingleKeyPress(Keys.P, currentKBState))
+                    {
+                        isPaused = false;
+                        currentState = GameState.Game;
+                    }*/
                     break;
 
                 case GameState.GameOver:
 
-                    // New Game Button
-                    buttons.Add(new Button(
-                    _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
-                    "New Game",                        // button label
-                    menuFont,                               // label font
-                    Color.DarkBlue));                     // button color
-                    buttons[0].OnButtonClick += this.NewGame;
-
-                    // Main Menu Button
-                    buttons.Add(new Button(
-                    _graphics.GraphicsDevice,           // device to create a custom texture
-                    new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
-                    "Main Menu",                        // button label
-                    menuFont,                               // label font
-                    Color.DarkBlue));
-                    buttons[1].OnButtonClick += this.MainMenu;
+                    foreach(Button button in gameOverButtons.ToList()) // Update all game over menu buttons
+                    {
+                        button.Update();
+                    }
 
                     // Return to main menu (Lucas)
                     // Note: Single key press is needed otherwise will start new game
-                    if (SingleKeyPress(Keys.Enter, currentKBState))
+                    /*if (SingleKeyPress(Keys.Enter, currentKBState))
                     {
                         currentState = GameState.Menu;
-                    }
+                    }*/
                     break;
 
                 default:
@@ -420,12 +445,12 @@ namespace TwelveMage
             }
 
 
-            // Checks each button in list for clicks
+            /*// Checks each button in list for clicks
             // NOTE: ".ToList()" is necessary to avoid error
-            foreach (Button button in buttons.ToList())
+            foreach (Button button in pauseMenuButtons.ToList())
             {
                 button.Update();
-            }
+            }*/
 
 
             prevKBState = currentKBState;
@@ -487,6 +512,11 @@ namespace TwelveMage
                         new Vector2((windowWidth / 2) - (menuFont.MeasureString("Survive as long as you can. If your health reaches 0, you lose.").X / 2),
                         ((windowHeight / 2) + 175)),
                         Color.Black);
+
+                    foreach(Button button in mainMenuButtons.ToList())
+                    {
+                        button.Draw(_spriteBatch);
+                    }
                     break;
 
                 case GameState.Game:
@@ -514,11 +544,14 @@ namespace TwelveMage
                     //gun.Draw(_spriteBatch);
 
                     //enenmy health display(AJ
-                    _spriteBatch.DrawString(
+                    if (enemies != null && enemies.Count != 0) // Only do this if enemies has an enemy
+                    {
+                        _spriteBatch.DrawString(
                         menuFont,
                         "Enemy Health: " + enemies[0].Health,
                         new Vector2(10, 10),
                         Color.Black);
+                    }
                     //player health display(AJ)
                     _spriteBatch.DrawString(
                         menuFont,
@@ -602,6 +635,12 @@ namespace TwelveMage
                     //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press S to save game").X / 2),
                     //    ((windowHeight / 2))),
                     //    Color.Black);
+
+                    foreach(Button button in pauseMenuButtons.ToList())
+                    {
+                        button.Draw(_spriteBatch);
+                    }
+
                     break;
 
                 case GameState.GameOver:
@@ -640,18 +679,14 @@ namespace TwelveMage
                         ((windowHeight - 50))),
                         Color.Black);
 
+                    foreach(Button button in gameOverButtons.ToList())
+                    {
+                        button.Draw(_spriteBatch);
+                    }
+
                     break;
 
             }
-
-
-            // Draws each button in the list
-            // NOTE: ".ToList()" is necessary to avoid error
-            foreach (Button button in buttons.ToList())
-            {
-                button.Draw(_spriteBatch);
-            }
-
 
             _spriteBatch.End();
             base.Draw(gameTime);
@@ -686,9 +721,12 @@ namespace TwelveMage
         private void NewGame()
         {
             currentState = GameState.Game;
+            wave = 1;
             player.Health = 100;
             player.Center();
-            buttons.Clear();
+            enemies.Clear();
+            enemies.Add(defaultEnemy);
+            //DeactivateButtons();
         }
 
         /// <summary>
@@ -698,10 +736,20 @@ namespace TwelveMage
         {
             player = fileManager.LoadPlayer(playerSpriteSheet);
             player.Bullet = bulletSprite;
+            enemies.Clear();
             enemies = fileManager.LoadEnemies(enemySprite);
+            int[] stats = fileManager.LoadStats();
+            score = stats[0];
+            if (stats[1] > highScore) highScore = stats[1];
+            wave = stats[2];
+
+            foreach(Spawner spawner in spawners)
+            {
+                spawner.Enemies = enemies;
+            }
 
             currentState = GameState.Game;
-            buttons.Clear();
+            //DeactivateButtons();
         }
 
         /// <summary>
@@ -714,7 +762,7 @@ namespace TwelveMage
 
             // Sets save status back to false, disabling "Game Saved" text
             hasSaved = false;
-            buttons.Clear();
+            //DeactivateButtons();
         }
 
         /// <summary>
@@ -724,6 +772,7 @@ namespace TwelveMage
         {
             fileManager.SavePlayer(player);
             fileManager.SaveEnemies(enemies);
+            fileManager.SaveStats(score, highScore, wave);
 
             // Enables "Game Saved" text notification
             hasSaved = true;
@@ -735,7 +784,29 @@ namespace TwelveMage
         private void MainMenu()
         {
             currentState = GameState.Menu;
-            buttons.Clear();
+            foreach(Button button in mainMenuButtons.ToList())
+            {
+                button.Active = true; // Activate all butons
+            }
+        }
+
+        /// <summary>
+        /// Deactivates every menu button.
+        /// </summary>
+        private void DeactivateButtons()
+        {
+            foreach(Button button in mainMenuButtons.ToList())
+            {
+                button.Active = false;
+            }
+            foreach(Button button in pauseMenuButtons.ToList())
+            {
+                button.Active = false;
+            }
+            foreach(Button button in gameOverButtons.ToList())
+            {
+                button.Active = false;
+            }
         }
     }
 }
