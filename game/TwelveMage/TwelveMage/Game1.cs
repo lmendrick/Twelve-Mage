@@ -409,6 +409,11 @@ namespace TwelveMage
                         isPaused = true;
                         currentState = GameState.Pause;
                     }
+                    //Anthony if health is 0 game over
+                    if (player.Health <= 0)
+                    {
+                        currentState = GameState.GameOver;
+                    }
 
                     // Press Q to go to Game Over state for testing (Lucas)
                     if (currentKBState.IsKeyDown(Keys.Q))
@@ -668,7 +673,7 @@ namespace TwelveMage
                     _spriteBatch.DrawString(
                         titleFont,
                         "Game Over",
-                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("Game Over").X / 2),
+                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("GAME OVER").X / 2),
                         75),
                         Color.DarkBlue);
 
