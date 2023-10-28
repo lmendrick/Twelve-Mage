@@ -29,6 +29,7 @@ namespace TwelveMage
         private Vector2 dir;
         private Vector2 pos;
         private GunState state;
+        
         private const int GunRectHeight = 45;     // The height the image
         private const int GunRectWidth = 25;        // The width of the image 
         private const int GunRectOffsetY = 1;

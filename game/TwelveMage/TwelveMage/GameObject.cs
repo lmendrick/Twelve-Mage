@@ -25,7 +25,7 @@ public abstract class GameObject
     public Vector2 Direction = new Vector2(4,4);
 
     
-    protected float LinearVelocity = 2f;
+    protected float LinearVelocity = .5f;
 
 
     protected float LifeSpan = 4f;

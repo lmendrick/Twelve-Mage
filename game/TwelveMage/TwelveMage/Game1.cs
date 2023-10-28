@@ -352,13 +352,27 @@ namespace TwelveMage
 
                         //if enemy collides with player health goes down
                         //have to tweak to tick multiple times for one player instance
+                       
 
                         foreach (Enemy enemy in enemies)
                         {
+                            //Anthony if player is invulnerbale count down timer
+                            if (player.Invulnerable > 0)
+                            {
+                                player.Invulnerable -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                            }
                             if (player.CheckCollision(enemy) && enemy.IsActive)
                             {
-                                player.Health -= gun.Health;
+                                //Anthony if player collides with enemy tick health down and add to invulnerbale timer
+                                if(player.Invulnerable <= 0)
+                                {
+                                    player.Health -= gun.Health;
+                                    player.Invulnerable = 4f;
+                                }
+                                    
+
                             }
+
                         }
                             
                         for(int i = enemies.Count - 1; i >= 0; i--)
@@ -524,6 +538,9 @@ namespace TwelveMage
                     // Player sprite/animations (Lucas)
                     player.Draw(_spriteBatch);
                     
+                    
+
+
                     // Enemy sprite (Lucas)
                     foreach(Enemy enemy in enemies)
                     {

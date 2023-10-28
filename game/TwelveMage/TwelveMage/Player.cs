@@ -32,10 +32,11 @@ namespace TwelveMage
     {
         #region FIELDS
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
-        //private int _health;
-        //private int _ammo; // Ammunition count (Not yet implemented)
+                                            //private int _health;
+                                            //private int _ammo; // Ammunition count (Not yet implemented)
+        Color myColor = Color.White;
 
-       
+        float invulnerable = 0f;
 
         Texture2D bullet;
 
@@ -54,6 +55,7 @@ namespace TwelveMage
         //two new kb states to check if space is clicked only once as to not spam hold
         private KeyboardState currentKB;
         private KeyboardState previousKB;
+        
 
         // Animation
         int frame;              // The current animation frame
@@ -78,6 +80,13 @@ namespace TwelveMage
         #endregion
 
         #region PROPERTIES
+
+        public float Invulnerable
+        {
+            get { return invulnerable; }
+            set { invulnerable = value; }
+        }
+
         public Vector2 PosVector 
         { 
             get { return pos; } 
@@ -219,6 +228,17 @@ namespace TwelveMage
                     state = PlayerState.FaceRight; // Facing right
                 }
             }
+            //Anthony if player is damaged set invulnerbale 
+            //then make color black after set color back to white
+            if(invulnerable > 0 )
+            {
+                myColor = Color.Black;
+            }
+            else
+            {
+                myColor = Color.White;
+            }
+
 
             // Update rectangle position
             rec.X = (int)(pos.X);
@@ -337,6 +357,9 @@ namespace TwelveMage
         /// </param>
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
+
+            
+
             spriteBatch.Draw(
                 texture,
                 pos,
@@ -345,12 +368,13 @@ namespace TwelveMage
                     WizardRectOffsetY,
                     WizardRectWidth,
                     WizardRectHeight),
-                Color.White,
+                myColor,
                 0,
                 Vector2.Zero,
                 1.0f,
                 flipSprite,
                 0);
+            
         }
 
         /// <summary>
@@ -374,7 +398,7 @@ namespace TwelveMage
                     WizardRectOffsetY,                  //	 where "inside" the texture
                     WizardRectWidth,                    //   to get pixels (We don't want to
                     WizardRectHeight),                  //   draw the whole thing)
-                Color.White,                            // - The color
+                myColor,                            // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
                 1.0f,                                   // - Scale (100% - no change)
