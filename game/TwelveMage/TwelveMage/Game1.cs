@@ -130,7 +130,7 @@ namespace TwelveMage
             fileManager = new FileManager();
 
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
-            gun = new Gun(gunRec, gunSprite, 10, player, GunState.FaceRight);
+            gun = new Gun(gunRec, gunSprite, 10, player);
            
 
             // Load enemy sprite (Lucas)
