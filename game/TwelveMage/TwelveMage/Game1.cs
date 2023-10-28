@@ -142,7 +142,7 @@ namespace TwelveMage
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
             defaultEnemy = new Enemy(enemyRec, enemySprite, 100);
 
-            enemies = new List<Enemy> { defaultEnemy };
+            enemies = new List<Enemy> { defaultEnemy.Clone() };
             spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100);
             spawners = new List<Spawner>();
 
@@ -742,7 +742,7 @@ namespace TwelveMage
             player.Health = 100;
             player.Center();
             enemies.Clear();
-            enemies.Add(defaultEnemy);
+            enemies.Add(defaultEnemy.Clone());
             //DeactivateButtons();
         }
 

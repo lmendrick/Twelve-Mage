@@ -18,6 +18,7 @@ namespace TwelveMage
  * might try to make it such that the player and enemy inherit health and max health in the future
  * Lucas: Added enemy movement
  * Chloe: Added public getproperties for health and position, to save the enemies to a file
+ * Added Clone() method
  */
 
     
@@ -209,6 +210,14 @@ namespace TwelveMage
                     //Since this method should be called before movement is calculated, simply setting the X or Y equal to a value should work
                 }
             }
+        }
+
+        /// <summary>
+        /// Returns a copy of this Enemy
+        /// </summary>
+        public Enemy Clone()
+        {
+            return new Enemy(rec, sprite, health);
         }
         #endregion
     }
