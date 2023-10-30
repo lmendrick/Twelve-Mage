@@ -19,9 +19,11 @@ namespace TwelveMage
  * Lucas: Added enemy movement
  * Chloe: Added public getproperties for health and position, to save the enemies to a file
  * Added Clone() method
+ * Added OnDeath event + delegate
  */
 
-    
+    public delegate void OnDeathDelegate();
+
     internal class Enemy : GameObject
     {
         private enum AdjustmentDirection
@@ -162,6 +164,7 @@ namespace TwelveMage
 
             if(health <= 0)
             {
+                if (OnDeath != null) OnDeath(); // Use OnDeath event
                 isActive = false;
             }
         }
@@ -219,6 +222,8 @@ namespace TwelveMage
         {
             return new Enemy(rec, sprite, health);
         }
+
+        public event OnDeathDelegate OnDeath; // OnDeath event, for scoring
         #endregion
     }
 }

@@ -15,6 +15,8 @@ namespace TwelveMage
     * This class manages file loading/saving
     * and assigning them textures based on their type
     * No known issues.
+    * Added stats save method (score, wave)
+    * Added persistent stats save method (highScore, highWave)
     */
     internal class FileManager
     {
@@ -25,6 +27,7 @@ namespace TwelveMage
         private const string PlayerFilename = "../../../PlayerData.txt";
         private const string EnemiesFilename = "../../../EnemyData.txt";
         private const string StatsFilename = "../../../StatsData.txt";
+        private const string PersistentStatsFilename = "../../../PersistentStatsData.txt";
         #endregion
 
         #region PROPERTIES
@@ -48,7 +51,7 @@ namespace TwelveMage
             }
             catch
             {
-                Console.WriteLine("Failed to write Player data to PlayerData.txt");
+
             }
             if (writer != null) writer.Close();
             return saved;
@@ -73,21 +76,21 @@ namespace TwelveMage
             }
             catch
             {
-                Console.WriteLine("Failed to write Enemy data to EnemiesData.txt");
+
             }
             if (writer != null) writer.Close();
             return saved;
         }
 
-        public bool SaveStats(int score, int highScore, int wave) // Saves global level data (score, high score, current wave)
+        public bool SaveStats(int score, int wave) // Saves level data (current score, current wave)
         {
             bool saved = false;
             try
             {
                 writer = new StreamWriter(StatsFilename);
                 // Stats file format:
-                // Line 1   int Score,int High Score,int Wave #
-                string line = score + "," + highScore + "," + wave;
+                // Line 1   int Score,int Wave #
+                string line = score + "," + wave;
                 writer.WriteLine(line);
                 saved = true;
             }
@@ -96,6 +99,26 @@ namespace TwelveMage
 
             }
             if(writer != null) writer.Close();
+            return saved;
+        }
+
+        public bool SavePersistentStats(int highScore, int highWave) // Saves global data (high score, highest wave)
+        {
+            bool saved = false;
+            try
+            {
+                writer = new StreamWriter(PersistentStatsFilename);
+                // PStats file format:
+                // Line 1   int High Score,int Highest Wave
+                string line = highScore + "," + highWave;
+                writer.WriteLine(line);
+                saved = true;
+            }
+            catch
+            {
+
+            }
+            if (writer != null) writer.Close();
             return saved;
         }
 
@@ -117,8 +140,7 @@ namespace TwelveMage
             }
             catch
             {
-                Console.WriteLine("Failed to read Player data from PlayerData.txt");
-                //Environment.Exit(1); // If the player can't be loaded, exit the game
+
             }
             if (reader != null) reader.Close();
             return player;
@@ -149,30 +171,36 @@ namespace TwelveMage
             }
             catch
             {
-                Console.WriteLine("Failed to read Enemy data from EnemiesData.txt");
-                //Environment.Exit(1); // If the enemies can't be loaded, exit the game
+
             }
             if(reader != null) reader.Close();
             return enemies;
         }
 
-        public int[] LoadStats()
+        public int[] LoadStats() // Returns an int[4] with various scores: level score, high score, level wave, highest wave
         {
-            int[] stats = new int[3];
+            int[] stats = new int[4];
             try
             {
                 reader = new StreamReader(StatsFilename);
                 // Stats file format:
-                // Line 1   int Score,int High Score,int Wave #
+                // Line 1   int Score,int Wave #
                 string[] currentLine = reader.ReadLine().Split(',');
                 int.TryParse(currentLine[0], out stats[0]);
-                int.TryParse(currentLine[1], out stats[1]);
-                int.TryParse(currentLine[2], out stats[2]);
+                int.TryParse(currentLine[1], out stats[2]);
+
+                if(reader != null) reader.Close();
+
+                reader = new StreamReader(PersistentStatsFilename);
+                // PStats file format:
+                // Line 1   int High Score,int Highest Wave
+                currentLine = reader.ReadLine().Split(',');
+                int.TryParse(currentLine[0], out stats[1]);
+                int.TryParse(currentLine[1], out stats[3]);
             }
             catch
             {
-                Console.WriteLine("Failed to read Enemy data from EnemiesData.txt");
-                //Environment.Exit(1); // If the stats can't be loaded, exit the game
+
             }
             if(reader != null) reader.Close();
             return stats;

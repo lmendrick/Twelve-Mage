@@ -293,8 +293,6 @@ namespace TwelveMage
             //sprites.Add(bullet);
         }
 
-
-
         /// <summary>
         /// Lucas:
         /// Updates the player animation
@@ -325,11 +323,17 @@ namespace TwelveMage
             }
         }
 
-
-
-
-
-
+        /// <summary>
+        /// Resets the player to default values
+        /// </summary>
+        public void Reset()
+        {
+            Center();
+            myColor = Color.White;
+            invulnerable = 0f;
+            state = PlayerState.FaceRight;
+            health = MAX_HEALTH;
+        }
 
         /// <summary>
         /// Lucas:

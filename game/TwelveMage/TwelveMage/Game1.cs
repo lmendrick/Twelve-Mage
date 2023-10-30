@@ -57,6 +57,7 @@ namespace TwelveMage
         private int waveIncrease;
         private int score;
         private int highScore;
+        private int highWave;
         private Spawner spawner;
         private List<Spawner> spawners;
 
@@ -88,7 +89,8 @@ namespace TwelveMage
             wave = 1;
             waveIncrease = 2;
             score = 0;
-            highScore = 0;
+            /*highScore = 0;
+            highWave = 0;*/
             base.Initialize();
         }
 
@@ -252,6 +254,11 @@ namespace TwelveMage
             menuFont,                               // label font
             Color.DarkBlue));
             pauseMenuButtons[1].OnButtonClick += this.Save;
+
+            // Load highest scores
+            int[] stats = fileManager.LoadStats();
+            highScore = stats[1];
+            highWave = stats[3];
         }
 
         protected override void Update(GameTime gameTime)
@@ -392,6 +399,7 @@ namespace TwelveMage
                             for(int i = 0; i < wave * waveIncrease; i++)
                             {
                                 spawners[rng.Next(0, 4)].SpawnEnemy();
+                                enemies[i].OnDeath += IncreaseScore;
                             }
                             wave++;
                         }
@@ -412,13 +420,13 @@ namespace TwelveMage
                     //Anthony if health is 0 game over
                     if (player.Health <= 0)
                     {
-                        currentState = GameState.GameOver;
+                        EndGame();
                     }
 
                     // Press Q to go to Game Over state for testing (Lucas)
                     if (currentKBState.IsKeyDown(Keys.Q))
                     {
-                        currentState = GameState.GameOver;
+                        EndGame();
                     }
                     break;
 
@@ -688,7 +696,7 @@ namespace TwelveMage
                     // Game score
                     _spriteBatch.DrawString(
                         menuFont,
-                        "Score: ",
+                        "Score: " + score,
                         new Vector2((windowWidth / 2) - (menuFont.MeasureString("Score: ").X / 2),
                         ((windowHeight  - 75))),
                         Color.Black);
@@ -696,7 +704,7 @@ namespace TwelveMage
                     // Highscore
                     _spriteBatch.DrawString(
                         menuFont,
-                        "Highscore: ",
+                        "Highscore: " + highScore,
                         new Vector2((windowWidth / 2) - (menuFont.MeasureString("Highscore: ").X / 2),
                         ((windowHeight - 50))),
                         Color.Black);
@@ -738,16 +746,20 @@ namespace TwelveMage
         }
 
         /// <summary>
-        /// When new game button is clicked, changes GameState to Game and clears buttons list
+        /// When new game button is clicked, changes GameState to Game, and does other startup tasks
         /// </summary>
         private void NewGame()
         {
             currentState = GameState.Game;
             wave = 1;
-            player.Health = 100;
-            player.Center();
+            score = 0;
+            int[] stats = fileManager.LoadStats();
+            if(stats[1] > highScore) highScore = stats[1];
+            if(stats[3] > highWave) highWave = stats[3];
+            player.Reset();
             enemies.Clear();
             enemies.Add(defaultEnemy.Clone());
+            enemies[0].OnDeath += IncreaseScore;
             //DeactivateButtons();
         }
 
@@ -762,12 +774,18 @@ namespace TwelveMage
             enemies = fileManager.LoadEnemies(enemySprite);
             int[] stats = fileManager.LoadStats();
             score = stats[0];
-            if (stats[1] > highScore) highScore = stats[1];
             wave = stats[2];
+            if(stats[1] > highScore) highScore = stats[2];
+            if(stats[3] > highWave) highWave = stats[3];
 
             foreach(Spawner spawner in spawners)
             {
                 spawner.Enemies = enemies;
+            }
+
+            foreach(Enemy enemy in enemies)
+            {
+                enemy.OnDeath += IncreaseScore;
             }
 
             currentState = GameState.Game;
@@ -792,12 +810,13 @@ namespace TwelveMage
         /// </summary>
         private void Save()
         {
-            fileManager.SavePlayer(player);
-            fileManager.SaveEnemies(enemies);
-            fileManager.SaveStats(score, highScore, wave);
-
-            // Enables "Game Saved" text notification
-            hasSaved = true;
+            if(score > highScore) highScore = score;
+            if(wave > highWave) highWave = wave;
+            if(fileManager.SavePlayer(player) &&
+            fileManager.SaveEnemies(enemies) &&
+            fileManager.SaveStats(score, wave) &&
+            fileManager.SavePersistentStats(highScore, highWave))
+            { hasSaved = true; } // Enables "Game Saved" text notification
         }
 
         /// <summary>
@@ -806,10 +825,10 @@ namespace TwelveMage
         private void MainMenu()
         {
             currentState = GameState.Menu;
-            foreach(Button button in mainMenuButtons.ToList())
+            /*foreach(Button button in mainMenuButtons.ToList())
             {
                 button.Active = true; // Activate all butons
-            }
+            }*/
         }
 
         /// <summary>
@@ -829,6 +848,25 @@ namespace TwelveMage
             {
                 button.Active = false;
             }
+        }
+
+        /// <summary>
+        /// Increases the player's score by 10; to be used with Enemy's OnDeath event (or other events in future?)
+        /// </summary>
+        private void IncreaseScore()
+        {
+            score += 10;
+        }
+
+        /// <summary>
+        /// (Chloe) Ends the game
+        /// </summary>
+        private void EndGame()
+        {
+            currentState = GameState.GameOver;
+            if(score > highScore) highScore = score;
+            if(wave > highWave) wave = highWave;
+            fileManager.SavePersistentStats(highScore, highWave);
         }
     }
 }
