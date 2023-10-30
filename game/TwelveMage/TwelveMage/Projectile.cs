@@ -28,7 +28,7 @@ namespace TwelveMage
         public Projectile(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
         {
             //standard velocity of 4
-            this.LinearVelocity = LinearVelocity * 1;
+            this.LinearVelocity = LinearVelocity * .05f;
             
         }
 

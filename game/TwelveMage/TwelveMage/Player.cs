@@ -77,6 +77,10 @@ namespace TwelveMage
 
         private int windowWidth;
         private int windowHeight;
+
+        // Mouse shooting
+        private MouseState mState;
+        private MouseState prevMState;
         #endregion
 
         #region PROPERTIES
@@ -145,6 +149,7 @@ namespace TwelveMage
         {
 
             currentKB = Keyboard.GetState();
+            mState = Mouse.GetState();
 
 
             #region WASD Processing
@@ -181,6 +186,12 @@ namespace TwelveMage
                 AddBullet(bullets);
                 //test
                 Debug.WriteLine("AHHHHHHHHH");
+            }
+
+            // Mouse shooting (Lucas)
+            if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed)
+            {
+                AddBullet(bullets);
             }
 
             // Normalize the direction vector if there is any movement
@@ -243,7 +254,9 @@ namespace TwelveMage
             // Update rectangle position
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
+
             previousKB = currentKB;
+            prevMState = mState;
             #endregion
         }
 
@@ -253,15 +266,21 @@ namespace TwelveMage
         private void AddBullet(List<GameObject> bullets)
         {
             Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health);
-            if(dir == Vector2.Zero)
-            {
-                project.Direction = Vector2.One;
-            }
-            else
-            {
-                project.Direction = dir;
-            }
+
+            // Commented out to replace with mouse shooting (Lucas)
+            //if(dir == Vector2.Zero)
+            //{
+            //    project.Direction = Vector2.One;
+            //}
+            //else
+            //{
+            //    project.Direction = dir;
+            //}
+
             
+            // Mouse shooting (Lucas)
+            // Set direction based on mouse cursor position minus player position
+            project.Direction = new Vector2(mState.X, mState.Y) - pos;
 
             bullets.Add(project);
 
