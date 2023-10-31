@@ -32,10 +32,11 @@ namespace TwelveMage
     {
         #region FIELDS
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
-        //private int _health;
-        //private int _ammo; // Ammunition count (Not yet implemented)
+                                            //private int _health;
+                                            //private int _ammo; // Ammunition count (Not yet implemented)
+        Color myColor = Color.White;
 
-       
+        float invulnerable = 0f;
 
         Texture2D bullet;
 
@@ -54,6 +55,7 @@ namespace TwelveMage
         //two new kb states to check if space is clicked only once as to not spam hold
         private KeyboardState currentKB;
         private KeyboardState previousKB;
+        
 
         // Animation
         int frame;              // The current animation frame
@@ -72,9 +74,23 @@ namespace TwelveMage
         Vector2 dir;
         Vector2 pos;
         float speed = 200f;
+
+        private int windowWidth;
+        private int windowHeight;
+
+        // Mouse shooting
+        private MouseState mState;
+        private MouseState prevMState;
         #endregion
 
         #region PROPERTIES
+
+        public float Invulnerable
+        {
+            get { return invulnerable; }
+            set { invulnerable = value; }
+        }
+
         public Vector2 PosVector 
         { 
             get { return pos; } 
@@ -90,6 +106,17 @@ namespace TwelveMage
             get { return state; }
             set { state = value; }
         }
+
+        public int WindowWidth
+        {
+            set { windowWidth = value; }
+        }
+
+        public int WindowHeight
+        {
+            set { windowHeight = value; }
+        }
+
         #endregion
 
         //removed texture b/c added it as a field in object
@@ -122,6 +149,7 @@ namespace TwelveMage
         {
 
             currentKB = Keyboard.GetState();
+            mState = Mouse.GetState();
 
 
             #region WASD Processing
@@ -158,6 +186,12 @@ namespace TwelveMage
                 AddBullet(bullets);
                 //test
                 Debug.WriteLine("AHHHHHHHHH");
+            }
+
+            // Mouse shooting (Lucas)
+            if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed)
+            {
+                AddBullet(bullets);
             }
 
             // Normalize the direction vector if there is any movement
@@ -205,11 +239,24 @@ namespace TwelveMage
                     state = PlayerState.FaceRight; // Facing right
                 }
             }
+            //Anthony if player is damaged set invulnerbale 
+            //then make color black after set color back to white
+            if(invulnerable > 0 )
+            {
+                myColor = Color.Black;
+            }
+            else
+            {
+                myColor = Color.White;
+            }
+
 
             // Update rectangle position
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
+
             previousKB = currentKB;
+            prevMState = mState;
             #endregion
         }
 
@@ -219,15 +266,21 @@ namespace TwelveMage
         private void AddBullet(List<GameObject> bullets)
         {
             Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health);
-            if(dir == Vector2.Zero)
-            {
-                project.Direction = Vector2.One;
-            }
-            else
-            {
-                project.Direction = dir;
-            }
+
+            // Commented out to replace with mouse shooting (Lucas)
+            //if(dir == Vector2.Zero)
+            //{
+            //    project.Direction = Vector2.One;
+            //}
+            //else
+            //{
+            //    project.Direction = dir;
+            //}
+
             
+            // Mouse shooting (Lucas)
+            // Set direction based on mouse cursor position minus player position
+            project.Direction = new Vector2(mState.X, mState.Y) - pos;
 
             bullets.Add(project);
 
@@ -239,8 +292,6 @@ namespace TwelveMage
             //bullet.Parent = this;
             //sprites.Add(bullet);
         }
-
-
 
         /// <summary>
         /// Lucas:
@@ -272,11 +323,17 @@ namespace TwelveMage
             }
         }
 
-
-
-
-
-
+        /// <summary>
+        /// Resets the player to default values
+        /// </summary>
+        public void Reset()
+        {
+            Center();
+            myColor = Color.White;
+            invulnerable = 0f;
+            state = PlayerState.FaceRight;
+            health = MAX_HEALTH;
+        }
 
         /// <summary>
         /// Lucas:
@@ -323,6 +380,9 @@ namespace TwelveMage
         /// </param>
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
+
+            
+
             spriteBatch.Draw(
                 texture,
                 pos,
@@ -331,12 +391,13 @@ namespace TwelveMage
                     WizardRectOffsetY,
                     WizardRectWidth,
                     WizardRectHeight),
-                Color.White,
+                myColor,
                 0,
                 Vector2.Zero,
                 1.0f,
                 flipSprite,
                 0);
+            
         }
 
         /// <summary>
@@ -360,12 +421,21 @@ namespace TwelveMage
                     WizardRectOffsetY,                  //	 where "inside" the texture
                     WizardRectWidth,                    //   to get pixels (We don't want to
                     WizardRectHeight),                  //   draw the whole thing)
-                Color.White,                            // - The color
+                myColor,                            // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
                 1.0f,                                   // - Scale (100% - no change)
                 flipSprite,                             // - Can be used to flip the image
                 0);                                     // - Layer depth (unused)
+        }
+
+        /// <summary>
+        /// Centers the player in the middle of the window
+        /// </summary>
+        public void Center()
+        {
+            pos.X = (windowWidth / 2) - (rec.Width / 2);
+            pos.Y = (windowHeight / 2) - (rec.Height / 2);
         }
         #endregion
     }

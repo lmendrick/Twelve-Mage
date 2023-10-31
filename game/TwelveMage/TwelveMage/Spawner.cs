@@ -31,6 +31,12 @@ namespace TwelveMage
         //Random
         private Random rng;
 
+        // Property to re-reference enemies if it becomes a new List
+        public List<Enemy> Enemies
+        {
+            set { enemies = value; }
+        }
+
         /// <summary>
         /// Create a new spawner
         /// </summary>

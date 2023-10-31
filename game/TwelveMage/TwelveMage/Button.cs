@@ -5,6 +5,9 @@
  * and assigning events to them if they are clicked.
  * Adapted from PE - Events and Delegates
  * No known issues.
+ * 
+ * Chloe Hall
+ * Added a field to activate/deactivate buttons
  */
 
 using System;
@@ -31,7 +34,13 @@ namespace TwelveMage
         private Vector2 textLoc;
         private Texture2D buttonImg;
         private Color textColor;
+        private bool active; // Button will only draw/work when active
 
+        public bool Active // Allow anything to check if a button is active, and turn it on/off
+        {
+            get { return active; }
+            set { active = value; }
+        }
 
         // Event for the button being clicked, tied to the OnButtonClick method
         public event OnButtonClickDelegate OnButtonClick;
@@ -68,6 +77,8 @@ namespace TwelveMage
             int[] colorData = new int[buttonImg.Width * buttonImg.Height]; // an array to hold all the pixels of the texture
             Array.Fill<int>(colorData, (int)color.PackedValue); // fill the array with all the same color
             buttonImg.SetData<Int32>(colorData, 0, colorData.Length); // update the texture's data
+
+            active = true; // Every button starts active
         }
 
         /// <summary>
@@ -78,7 +89,7 @@ namespace TwelveMage
             // Check/capture the mouse state regardless of whether this button
             // if active so that it's up to date next time!
             MouseState mState = Mouse.GetState();
-            if (mState.LeftButton == ButtonState.Released &&
+            if (active && mState.LeftButton == ButtonState.Released &&
                 prevMState.LeftButton == ButtonState.Pressed &&
                 position.Contains(mState.Position))
             {
@@ -100,11 +111,14 @@ namespace TwelveMage
         /// assumes that Begin() has already been called and End() will be called later.</param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            // Draw the button itself
-            spriteBatch.Draw(buttonImg, position, Color.White);
+            if (active)
+            {
+                // Draw the button itself
+                spriteBatch.Draw(buttonImg, position, Color.White);
 
-            // Draw button text over the button
-            spriteBatch.DrawString(font, text, textLoc, textColor);
+                // Draw button text over the button
+                spriteBatch.DrawString(font, text, textLoc, textColor);
+            }
         }
 
     }

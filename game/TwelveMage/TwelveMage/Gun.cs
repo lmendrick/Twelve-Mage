@@ -28,18 +28,19 @@ namespace TwelveMage
         // Move gun with player
         private Vector2 dir;
         private Vector2 pos;
-        private GunState state;
+        //private GunState state;
+        
         private const int GunRectHeight = 45;     // The height the image
         private const int GunRectWidth = 25;        // The width of the image 
         private const int GunRectOffsetY = 1;
         
         //gun face
-        public GunState State
+       /*public GunState State
         {
             get { return state; } 
             set { state = value; }
         }
-
+       */
         //properties
         public Vector2 PosVector
         {
@@ -55,7 +56,7 @@ namespace TwelveMage
 
 
         //constructors
-        public Gun(Rectangle rec, Texture2D texture, int health, Player player, GunState gunState) : base(rec, texture, health)
+        public Gun(Rectangle rec, Texture2D texture, int health, Player player) : base(rec, texture, health)
         {
 
             this.rec = rec;
@@ -63,7 +64,7 @@ namespace TwelveMage
             this.health = health;
             this.pos = player.PosVector;
             //default positioning
-            this.state = gunState;
+            //this.state = gunState;
 
 
         }
@@ -72,6 +73,7 @@ namespace TwelveMage
 
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
+            /*
            KeyboardState current = Keyboard.GetState();
             if(current.IsKeyDown(Keys.D))
             {
@@ -84,10 +86,12 @@ namespace TwelveMage
 
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
+            */
         }
 
         public override void Draw(SpriteBatch spriteBatch)
         {
+            /*
             switch (state)
             {
                 case GunState.FaceRight:
@@ -98,6 +102,7 @@ namespace TwelveMage
                     DrawFace(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
             } // Necessary for inheriting from GameObject
+            */
         }
 
         private void DrawFace(SpriteEffects flipSprite, SpriteBatch spriteBatch)

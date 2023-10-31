@@ -15,6 +15,8 @@ namespace TwelveMage
     * This class manages file loading/saving
     * and assigning them textures based on their type
     * No known issues.
+    * Added stats save method (score, wave)
+    * Added persistent stats save method (highScore, highWave)
     */
     internal class FileManager
     {
@@ -24,6 +26,8 @@ namespace TwelveMage
 
         private const string PlayerFilename = "../../../PlayerData.txt";
         private const string EnemiesFilename = "../../../EnemyData.txt";
+        private const string StatsFilename = "../../../StatsData.txt";
+        private const string PersistentStatsFilename = "../../../PersistentStatsData.txt";
         #endregion
 
         #region PROPERTIES
@@ -33,8 +37,9 @@ namespace TwelveMage
         #endregion
 
         #region METHODS
-        public void SavePlayer(Player player) // Saves the player data
+        public bool SavePlayer(Player player) // Saves the player data
         {
+            bool saved = false;
             try // Make sure everything works correctly with a try/catch
             {
                 writer = new StreamWriter(PlayerFilename);
@@ -42,16 +47,19 @@ namespace TwelveMage
                 // Line 1   int pos.X,int pos.Y,int health,string state
                 string line = (int)player.PosVector.X + "," + (int)player.PosVector.Y + "," + player.Health + "," + player.State;
                 writer.WriteLine(line);
+                saved = true;
             }
             catch
             {
-                Console.WriteLine("Failed to write Player data to PlayerData.txt");
+
             }
             if (writer != null) writer.Close();
+            return saved;
         }
 
-        public void SaveEnemies(List<Enemy> enemies) // Saves all the enemy data
+        public bool SaveEnemies(List<Enemy> enemies) // Saves all the enemy data
         {
+            bool saved = false;
             try // Make sure everything works correctly with a try/catch
             {
                 writer = new StreamWriter(EnemiesFilename);
@@ -64,12 +72,54 @@ namespace TwelveMage
                     string line = (int)enemy.Position.X + "," + (int)enemy.Position.Y + "," + enemy.Health;
                     writer.WriteLine(line);
                 }
+                saved = true;
             }
             catch
             {
-                Console.WriteLine("Failed to write Enemy data to EnemiesData.txt");
+
             }
             if (writer != null) writer.Close();
+            return saved;
+        }
+
+        public bool SaveStats(int score, int wave) // Saves level data (current score, current wave)
+        {
+            bool saved = false;
+            try
+            {
+                writer = new StreamWriter(StatsFilename);
+                // Stats file format:
+                // Line 1   int Score,int Wave #
+                string line = score + "," + wave;
+                writer.WriteLine(line);
+                saved = true;
+            }
+            catch
+            {
+
+            }
+            if(writer != null) writer.Close();
+            return saved;
+        }
+
+        public bool SavePersistentStats(int highScore, int highWave) // Saves global data (high score, highest wave)
+        {
+            bool saved = false;
+            try
+            {
+                writer = new StreamWriter(PersistentStatsFilename);
+                // PStats file format:
+                // Line 1   int High Score,int Highest Wave
+                string line = highScore + "," + highWave;
+                writer.WriteLine(line);
+                saved = true;
+            }
+            catch
+            {
+
+            }
+            if (writer != null) writer.Close();
+            return saved;
         }
 
         public Player LoadPlayer(Texture2D spritesheet)
@@ -90,8 +140,7 @@ namespace TwelveMage
             }
             catch
             {
-                Console.WriteLine("Failed to read Player data from PlayerData.txt");
-                //Environment.Exit(1); // If the player can't be loaded, exit the game
+
             }
             if (reader != null) reader.Close();
             return player;
@@ -122,11 +171,39 @@ namespace TwelveMage
             }
             catch
             {
-                Console.WriteLine("Failed to read Enemy data from EnemiesData.txt");
-                //Environment.Exit(1); // If the enemies can't be loaded, exit the game
+
             }
             if(reader != null) reader.Close();
             return enemies;
+        }
+
+        public int[] LoadStats() // Returns an int[4] with various scores: level score, high score, level wave, highest wave
+        {
+            int[] stats = new int[4];
+            try
+            {
+                reader = new StreamReader(StatsFilename);
+                // Stats file format:
+                // Line 1   int Score,int Wave #
+                string[] currentLine = reader.ReadLine().Split(',');
+                int.TryParse(currentLine[0], out stats[0]);
+                int.TryParse(currentLine[1], out stats[2]);
+
+                if(reader != null) reader.Close();
+
+                reader = new StreamReader(PersistentStatsFilename);
+                // PStats file format:
+                // Line 1   int High Score,int Highest Wave
+                currentLine = reader.ReadLine().Split(',');
+                int.TryParse(currentLine[0], out stats[1]);
+                int.TryParse(currentLine[1], out stats[3]);
+            }
+            catch
+            {
+
+            }
+            if(reader != null) reader.Close();
+            return stats;
         }
         #endregion
     }

@@ -25,7 +25,7 @@ public abstract class GameObject
     public Vector2 Direction = new Vector2(4,4);
 
     
-    protected float LinearVelocity = 2f;
+    protected float LinearVelocity = .5f;
 
 
     protected float LifeSpan = 4f;
@@ -61,7 +61,7 @@ public abstract class GameObject
             //but if its active check if they instersect and if they do return true
             if (rec.Intersects(check.Rec))
             {
-                isActive = false;
+                //isActive = false;  // Was causing damage to only occur once
                 return true;
             }
             else { return false; }
