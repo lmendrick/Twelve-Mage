@@ -179,36 +179,43 @@ namespace TwelveMage
         }
 
 
-        public void AvoidIntersections(List<Enemy> enemies)
+        public void ResolveIntersection(List<Enemy> enemies)
         {
-            //Determine if an intersection is detected
-            //If one is, determine the direction to go in
-            //Go in that direction until no intersection is detected
-            //Should only determine direction once
-            Enemy intersected;
-            Rectangle intersection;
+            /*
+             * First determine if the enemy is intersecting with any other enemies
+             * Since the solution is the same regardless of which enemy is being intersected, we can break out of searching for intersections once one has been found
+             * 
+             * Once an intersection has been detected, find the perpendicular Vector to the dir field
+             * Then determine what direction is appropriate for the adjustment and apply it to pos
+             * This will allow us to move the enemy horizontally, spreading the enemies out to avoid intersection
+             */
 
+            //Loop through enemies list looking intersections
+            //If detected, set a bool to true and break out of loop
+            //Loop should only occur if intersection wasn't already detected
             if (!intersectionDetected)
             {
                 foreach (Enemy enemy in enemies)
                 {
                     if (this.CheckCollision(enemy))
                     {
-                        intersected = enemy;
-                        
                         intersectionDetected = true;
                         break;
                     }
                 }
 
-                if(intersectionDetected)
-                {
-                    //Determine the shortest direction to resolve the collision
-                    //Do this by checking the difference in position
-                    //Once a direction is chosen, adjust dir X or Y as appropriate. 
-                    //Since this method should be called before movement is calculated, simply setting the X or Y equal to a value should work
-                }
+                intersectionDetected = false;
             }
+            
+
+
+            //Once intersection is detected, calculate the perpendicular vector of dir
+            //Check to see which direction should be used
+            //For this use the position of the intersected enemy
+
+            //Gonna require using a dot product xd
+
+
         }
         #endregion
     }
