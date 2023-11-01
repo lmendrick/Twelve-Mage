@@ -81,6 +81,11 @@ namespace TwelveMage
         // Mouse shooting
         private MouseState mState;
         private MouseState prevMState;
+
+        //Spell stuff
+        private Spell spell;
+        private double blinkTimer;
+        private bool blinked;
         #endregion
 
         #region PROPERTIES
@@ -93,12 +98,14 @@ namespace TwelveMage
 
         public Vector2 PosVector 
         { 
-            get { return pos; } 
+            get { return pos; }
+            set {  pos = value; }
         }
 
         public Vector2 DirVector
         {
             get { return dir; }
+            set {  dir = value; }
         }
 
         public PlayerState State
@@ -117,6 +124,11 @@ namespace TwelveMage
             set { windowHeight = value; }
         }
 
+        public double BlinkTimer
+        {
+            get { return blinkTimer; }
+        }
+
         #endregion
 
         //removed texture b/c added it as a field in object
@@ -126,6 +138,9 @@ namespace TwelveMage
             this.rec = rec;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
+            spell = new Spell(this);
+            blinkTimer = 6.0f;
+            blinked = false;
 
             // Default sprite direction
             state = PlayerState.FaceRight;
@@ -153,6 +168,29 @@ namespace TwelveMage
 
 
             #region WASD Processing
+
+            //Spell input
+            if(currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space) && !blinked)
+            {
+                spell.Blink(DirVector);
+                blinked = true;
+            }
+
+            //Can only blink once every 6 seconds
+            if (blinked)
+            {
+                blinkTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(blinkTimer <= 0)
+                {
+                    blinkTimer = 6.0;
+                    blinked = false;
+                }
+            }
+
+
+
+
             // Process W and S keys for vertical movement
             if (currentKB.IsKeyDown(Keys.W))
             {
@@ -181,12 +219,15 @@ namespace TwelveMage
                 dir.X = 0; // No horizontal movement
             }
             //if space bar shoot bullet
+            /*
+             * Commented out since mouse shooting has been implemented
             if (currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
             {
                 AddBullet(bullets);
                 //test
                 Debug.WriteLine("AHHHHHHHHH");
             }
+            */
 
             // Mouse shooting (Lucas)
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed)

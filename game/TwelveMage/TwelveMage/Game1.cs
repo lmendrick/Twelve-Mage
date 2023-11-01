@@ -588,11 +588,18 @@ namespace TwelveMage
                         "Player Health: " + player.Health,
                         new Vector2(10, 50),
                         Color.Black);
+                    //Blink timer display (Ben)
+                    string timerString = String.Format("{0:0.00}", player.BlinkTimer);
+                    _spriteBatch.DrawString(
+                        menuFont,
+                        "Blink: " + timerString,
+                        new Vector2(10, 90),
+                        Color.Black);
                     //Wave counter display
                     _spriteBatch.DrawString(
                         menuFont,
                         "Wave: " + wave,
-                        new Vector2(10, 90),
+                        new Vector2(10, 130),
                         Color.Black);
 
                     // Pause button (P) (Lucas)
