@@ -39,6 +39,7 @@ namespace TwelveMage
         //private int health;
         private const int MAX_Health = 200;
         private int damage;
+        private List<Enemy> enemies;
 
         // Enemy Movement
         private Texture2D sprite;
@@ -48,6 +49,33 @@ namespace TwelveMage
         private Vector2 playerPos;
         private bool intersectionDetected;
         private AdjustmentDirection direction;
+
+        private int index;
+        private Random rng;
+
+        /// <summary>
+        /// Used for determining collision avoidance priority
+        /// 
+        /// If it is true, this enemy will not move to avoid collisions and will instead allow them to move
+        /// True = Don't avoid
+        /// False = Avoid
+        /// </summary>
+        private bool priority;
+
+        /// <summary>
+        /// Used for determining which direction to take perpendicularly to the players direction
+        /// 
+        /// True = Clockwise
+        /// False = Counter Clockwise
+        /// </summary>
+        private bool clockwiseOrCounterClockwise;
+
+        /// <summary>
+        /// Determines whether or not all collisions have been resolved
+        /// </summary>
+        private bool collisionsResolved;
+
+        private Vector2 perpendicularVec;
 
         //Damage feedback
         private Color color = Color.White;
@@ -80,13 +108,20 @@ namespace TwelveMage
 
         #region CONSTRUCTORS
 
-        public Enemy(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
+        public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies) : base(rec, texture, health)
         {
             this.rec = rec;
             this.sprite = texture;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
+            this.enemies = enemies;
+
+            rng = new Random();
+
             intersectionDetected = false;
+            collisionsResolved = true;
+            priority = false;
+            perpendicularVec = Vector2.Zero;
             timer = 1f;
         }
         #endregion
@@ -102,9 +137,14 @@ namespace TwelveMage
         /// </param>
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
+            index = enemies.IndexOf(this);
+
             // Set enemy direction based on current player position]
             dir = playerPos - this.pos;
             dir.Normalize();
+
+            //Collision avoidance logic
+            AvoidCollisions(enemies, gameTime);
 
             // Update enemy position to move towards player at set speed
             pos += dir * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
@@ -223,11 +263,151 @@ namespace TwelveMage
         }
 
         /// <summary>
+        /// Checks list of enemies for any collisions.
+        /// 
+        /// If any are detected, determine whether or not this enemy should have priority
+        /// 
+        /// If it doesn't have priority, "flip a coin" to determine which direction to go perpendicular to the dir Vector2
+        /// This should remain the same direction until no collisions are detected
+        /// 
+        /// 
+        /// </summary>
+        /// <param name="enemies"></param>
+        public void AvoidCollisions(List<Enemy> enemies, GameTime gameTime)
+        {
+
+            //Check list
+            foreach(Enemy enemy in enemies)
+            {
+                if (this.CheckCollision(enemy))
+                {
+                    intersectionDetected = true;
+                    collisionsResolved = false;
+                    DeterminePriority(enemies);
+                    break;
+                }
+
+            }
+
+            if (collisionsResolved)
+            {
+                perpendicularVec = Vector2.Zero;
+            }
+
+            //If an intersection was found determine which direction to move to avoid it, 
+            if (intersectionDetected && !priority)
+            {
+                if (!collisionsResolved)
+                {
+                    if (rng.Next(0, 2) == 0)
+                    {
+                        clockwiseOrCounterClockwise = true;
+                    }
+                    else
+                    {
+                        clockwiseOrCounterClockwise = false;
+                    }
+                }
+
+                
+                if (clockwiseOrCounterClockwise)
+                {
+                    perpendicularVec = new Vector2(dir.Y, -dir.X);
+                }
+                else
+                {
+                    perpendicularVec = new Vector2(-dir.Y, dir.X);
+                }
+
+                pos += perpendicularVec * (float)gameTime.ElapsedGameTime.TotalSeconds * speed * 2;
+            }
+
+            if (!IsCollidingWithAny(enemies))
+            {
+                collisionsResolved = true;
+                intersectionDetected = false;
+            }
+
+            
+            /*
+            foreach(Enemy enemy in enemies)
+            {
+                if (this.CheckCollision(enemy))
+                {
+                    intersectionDetected = true;
+                    collisionsResolved = false;
+                    
+                    break;
+                }
+                intersectionDetected = false;
+                collisionsResolved = true;
+            }
+
+            if(collisionsResolved)
+            {
+                perpendicularVec = Vector2.Zero;
+                priority = true;
+            }
+            */
+
+
+            //pos += perpendicularVec * (float)gameTime.ElapsedGameTime.TotalSeconds * speed * 2;
+        }
+
+        /// <summary>
+        /// Determines the priority of the enemy
+        /// 
+        /// If the enemy is the first in the list, it gets priority
+        /// 
+        /// If the enemy is not intersecting with any enemies lower than it in the list, it gets priority
+        /// </summary>
+        /// <param name="enemies"></param>
+        public void DeterminePriority(List<Enemy> enemies)
+        {
+            if(index == 0)
+            {
+                priority = true;
+                return;
+            }
+            else
+            {
+                //Checks every index lower than it's own index
+                //If a collision is detected, set priority to false and break out of the loop
+                //If no collision is detected, priority will be true once it exits the loop
+                for(int i = index - 1; i >= 0; i--)
+                {
+                    if (this.CheckCollision(enemies[i]))
+                    {
+                        priority = false;
+                        break;
+                    }
+
+                    priority = true;
+                }
+            }
+        }
+
+        public bool IsCollidingWithAny(List<Enemy> enemies)
+        {
+            foreach(Enemy enemy in enemies)
+            {
+                if (this.CheckCollision(enemy))
+                {
+                    return true;
+                }
+            }
+
+            return false;
+        }
+
+        
+
+        /// <summary>
         /// Returns a copy of this Enemy
         /// </summary>
         public Enemy Clone()
         {
-            return new Enemy(rec, sprite, health);
+            return new Enemy(rec, sprite, health, enemies);
         }
 
         public event OnDeathDelegate OnDeath; // OnDeath event, for scoring

@@ -142,9 +142,11 @@ namespace TwelveMage
             // Instantiate single test enemy (Lucas)
             // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
-            defaultEnemy = new Enemy(enemyRec, enemySprite, 100);
+            
 
-            enemies = new List<Enemy> { defaultEnemy.Clone() };
+            enemies = new List<Enemy>();
+            defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies);
+            enemies.Add(defaultEnemy);
             spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100);
             spawners = new List<Spawner>();
 

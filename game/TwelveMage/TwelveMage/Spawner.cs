@@ -82,7 +82,8 @@ namespace TwelveMage
                     30,
                     30),
                 enemyTexture,
-                enemyHealth));
+                enemyHealth,
+                enemies));
 
 
 
