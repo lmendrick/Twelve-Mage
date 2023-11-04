@@ -159,14 +159,27 @@ namespace TwelveMage
             if(hit)
             {
                 timer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                color = Color.Red;
+                //color = Color.Red;
             }
 
             if(timer <= 0)
             {
                 hit = false;
                 timer = 1f;
-                color = Color.White;
+               // color = Color.White;
+            }
+
+            if (health < 80 && health >= 60)
+            {
+                color = Color.Yellow;
+            }
+            else if (health < 60 && health >= 40)
+            {
+                color = Color.Orange;
+            }
+            else if (health < 40)
+            {
+                color = Color.Red;
             }
         } 
 
