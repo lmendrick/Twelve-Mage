@@ -86,6 +86,10 @@ namespace TwelveMage
         private Spell spell;
         private double blinkTimer;
         private bool blinked;
+        private bool isFrozen;
+        private double freezeTimer;
+        private double freezeCD;
+        private bool canFreeze;
         #endregion
 
         #region PROPERTIES
@@ -129,6 +133,16 @@ namespace TwelveMage
             get { return blinkTimer; }
         }
 
+        public bool IsFrozen
+        {
+            get { return isFrozen; }
+        }
+
+        public double FreezeCD
+        {
+            get { return freezeCD; }
+        }
+
         #endregion
 
         //removed texture b/c added it as a field in object
@@ -141,6 +155,11 @@ namespace TwelveMage
             spell = new Spell(this);
             blinkTimer = 6.0f;
             blinked = false;
+
+            isFrozen = false;
+            freezeTimer = 5;
+            freezeCD = 20;
+            canFreeze = true;
 
             // Default sprite direction
             state = PlayerState.FaceRight;
@@ -185,6 +204,38 @@ namespace TwelveMage
                 {
                     blinkTimer = 6.0;
                     blinked = false;
+                }
+            }
+
+            // Time Freeze Spell Input (X Key for now)
+            // (Lucas)
+            if (currentKB.IsKeyDown(Keys.X) && previousKB.IsKeyUp(Keys.X) && !isFrozen && canFreeze)
+            {
+                isFrozen = true;
+                canFreeze = false;
+                freezeCD = 20;
+            }
+
+            // Handles how long enemies are frozen (5s)
+            if (isFrozen)
+            {
+                freezeTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (freezeTimer <= 0)
+                { 
+                    isFrozen = false;
+                    freezeTimer = 5;
+                }
+            }
+
+            // Counts down freeze CD (20s)
+            if (!canFreeze)
+            {
+                freezeCD -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (freezeCD <= 0)
+                {
+                    canFreeze = true;
+                    freezeCD = 20;
                 }
             }
 

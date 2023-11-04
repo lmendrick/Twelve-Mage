@@ -13,6 +13,7 @@ internal class Spell
 	public Spell(Player player)
 	{
 		this.player = player;
+		
 	}
 
 	public void Fireball()
@@ -27,7 +28,7 @@ internal class Spell
 
 	public void TimeFreeze()
 	{
-
+		// Handled in Player class 
 	}
 
 	/// <summary>

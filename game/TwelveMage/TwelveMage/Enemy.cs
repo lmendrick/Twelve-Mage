@@ -81,6 +81,8 @@ namespace TwelveMage
         private Color color = Color.White;
         private double timer;
         private bool hit;
+
+        private bool isFrozen;
         #endregion
 
         #region PROPERTIES
@@ -103,6 +105,12 @@ namespace TwelveMage
         {
             get { return isActive; }
             set { isActive = value; }
+        }
+
+        public bool IsFrozen
+        {
+            get { return isFrozen; }
+            set {  isFrozen = value; }
         }
         #endregion
 
@@ -139,6 +147,10 @@ namespace TwelveMage
         {
             index = enemies.IndexOf(this);
 
+            // TimeFreeze Spell
+            TimeFreeze();
+
+
             // Set enemy direction based on current player position]
             dir = playerPos - this.pos;
             dir.Normalize();
@@ -152,6 +164,20 @@ namespace TwelveMage
             // Update rectangle position
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
+
+            //// Set enemy direction based on current player position]
+            //dir = playerPos - this.pos;
+            //dir.Normalize();
+
+            ////Collision avoidance logic
+            //AvoidCollisions(enemies, gameTime);
+
+            //// Update enemy position to move towards player at set speed
+            //pos += dir * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+
+            //// Update rectangle position
+            //rec.X = (int)(pos.X);
+            //rec.Y = (int)(pos.Y);
 
             CheckHits(bullets);
 
@@ -169,15 +195,16 @@ namespace TwelveMage
                // color = Color.White;
             }
 
-            if (health < 80 && health >= 60)
+            // Change enemy color based on health (Lucas)
+            if (health < 75 && health >= 50)
             {
                 color = Color.Yellow;
             }
-            else if (health < 60 && health >= 40)
+            else if (health < 50 && health >= 25)
             {
                 color = Color.Orange;
             }
-            else if (health < 40)
+            else if (health < 25)
             {
                 color = Color.Red;
             }
@@ -424,6 +451,21 @@ namespace TwelveMage
         }
 
         public event OnDeathDelegate OnDeath; // OnDeath event, for scoring
+
+        /// <summary>
+        /// Enemies stop moving during TimeFreeze. See Player class for code.
+        /// </summary>
+        public void TimeFreeze()
+        {
+            if (isFrozen)
+            {
+                speed = 0;
+            }
+            else
+            {
+                speed = 100;
+            }
+        }
         #endregion
     }
 }
