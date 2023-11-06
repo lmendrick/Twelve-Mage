@@ -41,6 +41,8 @@ namespace TwelveMage
         private int damage;
         private List<Enemy> enemies;
 
+        private Player player;
+
         // Enemy Movement
         private Texture2D sprite;
         private Vector2 dir;
@@ -75,7 +77,9 @@ namespace TwelveMage
         /// </summary>
         private bool collisionsResolved;
 
-        private Vector2 perpendicularVec;
+
+        private Vector2 adjustment;
+        private double adjustmentTimer;
 
         //Damage feedback
         private Color color = Color.White;
@@ -108,20 +112,21 @@ namespace TwelveMage
 
         #region CONSTRUCTORS
 
-        public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies) : base(rec, texture, health)
+        public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player) : base(rec, texture, health)
         {
             this.rec = rec;
             this.sprite = texture;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
             this.enemies = enemies;
+            this.player = player;
 
             rng = new Random();
 
             intersectionDetected = false;
             collisionsResolved = true;
             priority = false;
-            perpendicularVec = Vector2.Zero;
+            adjustmentTimer = 1.0f;
             timer = 1f;
         }
         #endregion
@@ -144,7 +149,9 @@ namespace TwelveMage
             dir.Normalize();
 
             //Collision avoidance logic
-            AvoidCollisions(enemies, gameTime);
+            adjustment = GetAdjustmentVector(enemies, gameTime);
+            pos += adjustment * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            
 
             // Update enemy position to move towards player at set speed
             pos += dir * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
@@ -280,15 +287,17 @@ namespace TwelveMage
         /// 
         /// If any are detected, determine whether or not this enemy should have priority
         /// 
-        /// If it doesn't have priority, "flip a coin" to determine which direction to go perpendicular to the dir Vector2
-        /// This should remain the same direction until no collisions are detected
+        /// If it doesn't have priority, and the adjustmentTimer hasn't run out,
+        /// decrement the timer, and determine which perpendicular directional vector to use
         /// 
+        /// Otherwise, return the 0 vector
         /// 
         /// </summary>
         /// <param name="enemies"></param>
-        public void AvoidCollisions(List<Enemy> enemies, GameTime gameTime)
+        public Vector2 GetAdjustmentVector(List<Enemy> enemies, GameTime gameTime)
         {
-
+            Enemy intersected = null;
+            
             //Check list
             foreach(Enemy enemy in enemies)
             {
@@ -296,75 +305,46 @@ namespace TwelveMage
                 {
                     intersectionDetected = true;
                     collisionsResolved = false;
+                    intersected = enemy;
                     DeterminePriority(enemies);
                     break;
                 }
-
+                intersectionDetected = false;
             }
 
-            if (collisionsResolved)
+            //Determine Perpendicular Vectors
+            if (intersectionDetected && !priority && adjustmentTimer >= 0) 
             {
-                perpendicularVec = Vector2.Zero;
-            }
+                adjustmentTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+                Vector2 playerDirection = GetPlayerDirection(playerPos);
 
-            //If an intersection was found determine which direction to move to avoid it, 
-            if (intersectionDetected && !priority)
-            {
-                if (!collisionsResolved)
-                {
-                    if (rng.Next(0, 2) == 0)
-                    {
-                        clockwiseOrCounterClockwise = true;
-                    }
-                    else
-                    {
-                        clockwiseOrCounterClockwise = false;
-                    }
-                }
+                Vector2 intersectedDirection = intersected.Position - this.pos;
 
-                
-                if (clockwiseOrCounterClockwise)
+                Vector2 CCWVector = new Vector2(-playerDirection.Y, playerDirection.X);
+                CCWVector.Normalize();
+                Vector2 CWVector = new Vector2(playerDirection.Y, -playerDirection.X);
+                CWVector.Normalize();
+
+                if (SignsAreEqual(CWVector, intersectedDirection))
                 {
-                    perpendicularVec = new Vector2(dir.Y, -dir.X);
+                    return CCWVector;
                 }
                 else
                 {
-                    perpendicularVec = new Vector2(-dir.Y, dir.X);
+                    return CWVector;
                 }
 
-                pos += perpendicularVec * (float)gameTime.ElapsedGameTime.TotalSeconds * speed * 2;
             }
-
-            if (!IsCollidingWithAny(enemies))
+            else
             {
-                collisionsResolved = true;
-                intersectionDetected = false;
+                adjustmentTimer = 1.0f;
+                return Vector2.Zero;
             }
 
             
-            /*
-            foreach(Enemy enemy in enemies)
-            {
-                if (this.CheckCollision(enemy))
-                {
-                    intersectionDetected = true;
-                    collisionsResolved = false;
-                    
-                    break;
-                }
-                intersectionDetected = false;
-                collisionsResolved = true;
-            }
 
-            if(collisionsResolved)
-            {
-                perpendicularVec = Vector2.Zero;
-                priority = true;
-            }
-            */
-
-
-            //pos += perpendicularVec * (float)gameTime.ElapsedGameTime.TotalSeconds * speed * 2;
+            
+            
         }
 
         /// <summary>
@@ -400,6 +380,11 @@ namespace TwelveMage
             }
         }
 
+        /// <summary>
+        /// Loops through enemies list and checks for collisions
+        /// </summary>
+        /// <param name="enemies"></param>
+        /// <returns></returns>
         public bool IsCollidingWithAny(List<Enemy> enemies)
         {
             foreach(Enemy enemy in enemies)
@@ -413,6 +398,41 @@ namespace TwelveMage
             return false;
         }
 
+        /// <summary>
+        /// Returns the player directions
+        /// </summary>
+        /// <param name="playerPos">The players position</param>
+        /// <returns></returns>
+        public Vector2 GetPlayerDirection(Vector2 playerPos)
+        {
+            return playerPos - this.pos;
+        }
+
+        /// <summary>
+        /// Returns whether or not the signs of the X and Y
+        /// components of two vectors are of identical signs
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public bool SignsAreEqual(Vector2 a, Vector2 b)
+        {
+            if (a.Equals(b))
+            {
+                return true;
+            }
+
+            if(a.X == b.X && a.Y == b.Y)
+            {
+                return true;
+            }
+
+            bool XSignsEqual = (a.X >= 0 && b.X >= 0) || (a.X <  0 && b.X < 0);
+            bool YSignsEqual = (a.Y >= 0 && b.Y >= 0) || (a.Y < 0 && b.Y < 0);
+
+            return XSignsEqual && YSignsEqual;
+        }
+
         
 
         /// <summary>
@@ -420,7 +440,7 @@ namespace TwelveMage
         /// </summary>
         public Enemy Clone()
         {
-            return new Enemy(rec, sprite, health, enemies);
+            return new Enemy(rec, sprite, health, enemies, player);
         }
 
         public event OnDeathDelegate OnDeath; // OnDeath event, for scoring

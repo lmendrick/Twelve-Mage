@@ -28,6 +28,7 @@ namespace TwelveMage
         private const string EnemiesFilename = "../../../EnemyData.txt";
         private const string StatsFilename = "../../../StatsData.txt";
         private const string PersistentStatsFilename = "../../../PersistentStatsData.txt";
+        private Player player;
         #endregion
 
         #region PROPERTIES
@@ -124,7 +125,7 @@ namespace TwelveMage
 
         public Player LoadPlayer(Texture2D spritesheet)
         {
-            Player player = null;
+            player = null;
             try // Make sure everything works correctly with a try/catch
             {
                 reader = new StreamReader(PlayerFilename);
@@ -165,7 +166,7 @@ namespace TwelveMage
                     int.TryParse(line[2].Trim(), out int health);
                     Rectangle pos = new Rectangle(X, Y, 30, 30); // Enemy height & width are 30 & 30
 
-                    enemies.Add(new Enemy(pos, spritesheet, health, enemies));
+                    enemies.Add(new Enemy(pos, spritesheet, health, enemies, player));
                     currentLine = reader.ReadLine();
                 }
             }

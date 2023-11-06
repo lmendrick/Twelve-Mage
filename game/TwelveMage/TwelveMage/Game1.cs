@@ -145,9 +145,9 @@ namespace TwelveMage
             
 
             enemies = new List<Enemy>();
-            defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies);
+            defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player);
             enemies.Add(defaultEnemy);
-            spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100);
+            spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100, player);
             spawners = new List<Spawner>();
 
 
@@ -162,7 +162,8 @@ namespace TwelveMage
                 0,
                 enemies,
                 enemySprite,
-                100));
+                100,
+                player));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth / 2, windowHeight + 40),
@@ -170,7 +171,8 @@ namespace TwelveMage
                 0,
                 enemies,
                 enemySprite,
-                100));
+                100, 
+                player));
 
             spawners.Add(new Spawner(
                 new Vector2(-40, windowHeight / 2),
@@ -178,7 +180,8 @@ namespace TwelveMage
                 windowHeight / 2,
                 enemies,
                 enemySprite,
-                100));
+                100,
+                player));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth + 40, windowHeight / 2),
@@ -186,7 +189,8 @@ namespace TwelveMage
                 windowHeight / 2,
                 enemies,
                 enemySprite,
-                100));
+                100,
+                player));
 
             // Create a few 100x200 buttons down the left side
             //buttons.Add(new Button(

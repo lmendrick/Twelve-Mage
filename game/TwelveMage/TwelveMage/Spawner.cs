@@ -28,6 +28,8 @@ namespace TwelveMage
         private Texture2D enemyTexture;
         private int enemyHealth;
 
+        private Player player;
+
         //Random
         private Random rng;
 
@@ -43,7 +45,7 @@ namespace TwelveMage
         /// <param name="position">Where the spawner is centered</param>
         /// <param name="xRadius">The X spawn radius</param>
         /// <param name="yRadius">The Y spawn radius</param>
-        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth)
+        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth, Player player)
         {
             this.position = position;
             this.xRadius = xRadius;
@@ -51,6 +53,7 @@ namespace TwelveMage
             this.enemies = enemies;
             this.enemyTexture = enemyTexture;
             this.enemyHealth = enemyHealth;
+            this.player = player;
             rng = new Random();
 
             upperXRange = (int)position.X + xRadius;
@@ -83,7 +86,8 @@ namespace TwelveMage
                     30),
                 enemyTexture,
                 enemyHealth,
-                enemies));
+                enemies,
+                player));
 
 
 
