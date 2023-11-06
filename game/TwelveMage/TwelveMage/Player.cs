@@ -34,7 +34,7 @@ namespace TwelveMage
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
                                             //private int _health;
                                             //private int _ammo; // Ammunition count (Not yet implemented)
-        Color myColor = Color.White;
+        Color color = Color.White;
 
         float invulnerable = 0f;
 
@@ -335,11 +335,11 @@ namespace TwelveMage
             //then make color black after set color back to white
             if(invulnerable > 0 )
             {
-                myColor = Color.Black;
+                color = Color.Black;
             }
             else
             {
-                myColor = Color.White;
+                color = Color.White;
             }
 
 
@@ -421,7 +421,7 @@ namespace TwelveMage
         public void Reset()
         {
             Center();
-            myColor = Color.White;
+            color = Color.White;
             invulnerable = 0f;
             state = PlayerState.FaceRight;
             health = MAX_HEALTH;
@@ -483,7 +483,7 @@ namespace TwelveMage
                     WizardRectOffsetY,
                     WizardRectWidth,
                     WizardRectHeight),
-                myColor,
+                color,
                 0,
                 Vector2.Zero,
                 1.0f,
@@ -513,7 +513,7 @@ namespace TwelveMage
                     WizardRectOffsetY,                  //	 where "inside" the texture
                     WizardRectWidth,                    //   to get pixels (We don't want to
                     WizardRectHeight),                  //   draw the whole thing)
-                myColor,                            // - The color
+                color,                            // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
                 1.0f,                                   // - Scale (100% - no change)

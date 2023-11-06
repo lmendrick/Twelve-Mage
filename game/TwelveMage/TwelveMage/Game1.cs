@@ -139,7 +139,7 @@ namespace TwelveMage
            
 
             // Load enemy sprite (Lucas)
-            enemySprite = this.Content.Load<Texture2D>("enemy");
+            enemySprite = this.Content.Load<Texture2D>("ZombieWalkSheet");
             
 
             // Instantiate single test enemy (Lucas)
@@ -277,7 +277,7 @@ namespace TwelveMage
 
             // Update the player sprite animation every frame (Lucas)
             player.UpdateAnimation(gameTime);
-
+            
             // TODO: Add your update logic here
             //Anthony Maldonado
             //switches made for the game states 
@@ -337,6 +337,9 @@ namespace TwelveMage
                             enemy.Update(gameTime, bullets);
                             enemy.PlayerPos = player.PosVector;
                             enemy.IsFrozen = player.IsFrozen;
+
+                            enemy.UpdateAnimation(gameTime);
+
                         }
                         
 

@@ -104,11 +104,12 @@ namespace TwelveMage
         }
 
         /// <summary>
-        /// Override the GameObject Draw() to draw the button and then
+        /// Draw the button and then
         /// overlay it with text.
         /// </summary>
-        /// <param name="spriteBatch">The spriteBatch on which to draw this button. The button 
-        /// assumes that Begin() has already been called and End() will be called later.</param>
+        /// <param name="spriteBatch">
+        /// The spriteBatch on which to draw this button. 
+        /// </param>
         public void Draw(SpriteBatch spriteBatch)
         {
             if (active)
