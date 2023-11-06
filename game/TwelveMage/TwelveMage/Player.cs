@@ -34,7 +34,7 @@ namespace TwelveMage
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
                                             //private int _health;
                                             //private int _ammo; // Ammunition count (Not yet implemented)
-        Color myColor = Color.White;
+        Color color = Color.White;
 
         float invulnerable = 0f;
 
@@ -86,6 +86,10 @@ namespace TwelveMage
         private Spell spell;
         private double blinkTimer;
         private bool blinked;
+        private bool isFrozen;
+        private double freezeTimer;
+        private double freezeCD;
+        private bool canFreeze;
         #endregion
 
         #region PROPERTIES
@@ -129,6 +133,16 @@ namespace TwelveMage
             get { return blinkTimer; }
         }
 
+        public bool IsFrozen
+        {
+            get { return isFrozen; }
+        }
+
+        public double FreezeCD
+        {
+            get { return freezeCD; }
+        }
+
         #endregion
 
         //removed texture b/c added it as a field in object
@@ -141,6 +155,11 @@ namespace TwelveMage
             spell = new Spell(this);
             blinkTimer = 6.0f;
             blinked = false;
+
+            isFrozen = false;
+            freezeTimer = 5;
+            freezeCD = 20;
+            canFreeze = true;
 
             // Default sprite direction
             state = PlayerState.FaceRight;
@@ -185,6 +204,38 @@ namespace TwelveMage
                 {
                     blinkTimer = 6.0;
                     blinked = false;
+                }
+            }
+
+            // Time Freeze Spell Input (X Key for now)
+            // (Lucas)
+            if (currentKB.IsKeyDown(Keys.X) && previousKB.IsKeyUp(Keys.X) && !isFrozen && canFreeze)
+            {
+                isFrozen = true;
+                canFreeze = false;
+                freezeCD = 20;
+            }
+
+            // Handles how long enemies are frozen (5s)
+            if (isFrozen)
+            {
+                freezeTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if (freezeTimer <= 0)
+                { 
+                    isFrozen = false;
+                    freezeTimer = 5;
+                }
+            }
+
+            // Counts down freeze CD (20s)
+            if (!canFreeze)
+            {
+                freezeCD -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                if (freezeCD <= 0)
+                {
+                    canFreeze = true;
+                    freezeCD = 20;
                 }
             }
 
@@ -284,11 +335,11 @@ namespace TwelveMage
             //then make color black after set color back to white
             if(invulnerable > 0 )
             {
-                myColor = Color.Black;
+                color = Color.Black;
             }
             else
             {
-                myColor = Color.White;
+                color = Color.White;
             }
 
 
@@ -370,7 +421,7 @@ namespace TwelveMage
         public void Reset()
         {
             Center();
-            myColor = Color.White;
+            color = Color.White;
             invulnerable = 0f;
             state = PlayerState.FaceRight;
             health = MAX_HEALTH;
@@ -432,7 +483,7 @@ namespace TwelveMage
                     WizardRectOffsetY,
                     WizardRectWidth,
                     WizardRectHeight),
-                myColor,
+                color,
                 0,
                 Vector2.Zero,
                 1.0f,
@@ -462,7 +513,7 @@ namespace TwelveMage
                     WizardRectOffsetY,                  //	 where "inside" the texture
                     WizardRectWidth,                    //   to get pixels (We don't want to
                     WizardRectHeight),                  //   draw the whole thing)
-                myColor,                            // - The color
+                color,                            // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
                 1.0f,                                   // - Scale (100% - no change)

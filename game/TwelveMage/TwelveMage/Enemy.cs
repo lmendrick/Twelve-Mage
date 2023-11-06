@@ -22,6 +22,14 @@ namespace TwelveMage
  * Added OnDeath event + delegate
  */
 
+    enum EnemyState
+    {
+        FaceLeft,
+        FaceRight,
+        WalkLeft,
+        WalkRight
+    }
+
     public delegate void OnDeathDelegate();
 
     internal class Enemy : GameObject
@@ -51,6 +59,21 @@ namespace TwelveMage
         private Vector2 playerPos;
         private bool intersectionDetected;
         private AdjustmentDirection direction;
+
+        // Animation
+        int frame;              // The current animation frame
+        double timeCounter;     // The amount of time that has passed
+        double fps;             // The speed of the animation
+        double timePerFrame;    // The amount of time (in fractional seconds) per frame
+
+        // Constants for "source" rectangle (inside the image)
+        const int WalkFrameCount = 7;       // The number of frames in the animation
+        const int EnemyRectOffsetY = 67;   // How far down in the image are the frames?
+        const int EnemyRectOffsetX = 4;
+        const int EnemyRectHeight = 30;     // The height of a single frame
+        const int EnemyRectWidth = 32;      // The width of a single frame
+
+        private EnemyState state;
 
         private int index;
         private Random rng;
@@ -85,6 +108,8 @@ namespace TwelveMage
         private Color color = Color.White;
         private double timer;
         private bool hit;
+
+        private bool isFrozen;
         #endregion
 
         #region PROPERTIES
@@ -108,6 +133,12 @@ namespace TwelveMage
             get { return isActive; }
             set { isActive = value; }
         }
+
+        public bool IsFrozen
+        {
+            get { return isFrozen; }
+            set {  isFrozen = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -128,6 +159,13 @@ namespace TwelveMage
             priority = false;
             adjustmentTimer = 1.0f;
             timer = 1f;
+
+            // Default sprite direction
+            state = EnemyState.FaceRight;
+
+            // Initialize
+            fps = 10.0;                     // Will cycle through 10 walk frames per second
+            timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
         }
         #endregion
 
@@ -143,6 +181,10 @@ namespace TwelveMage
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
             index = enemies.IndexOf(this);
+
+            // TimeFreeze Spell
+            TimeFreeze();
+
 
             // Set enemy direction based on current player position]
             dir = playerPos - this.pos;
@@ -160,6 +202,47 @@ namespace TwelveMage
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
 
+            // Don't update animation state if freeze spell is active
+            if (!isFrozen)
+            {
+                // Set the enemy's animation state based on movement direction
+                if (dir.X < 0)
+                {
+                    state = EnemyState.WalkLeft; // Walking left
+                }
+                if (dir.X > 0)
+                {
+                    state = EnemyState.WalkRight; // Walking right
+                }
+
+                // Handle vertical movement state
+                if (dir.Y != 0)
+                {
+                    if (state == EnemyState.WalkLeft || state == EnemyState.FaceLeft)
+                    {
+                        state = EnemyState.WalkLeft; // Walking left
+                    }
+                    if (state == EnemyState.WalkRight || state == EnemyState.FaceRight)
+                    {
+                        state = EnemyState.WalkRight; // Walking right
+                    }
+                }
+
+                // Set the player's state to facing left or right when not moving
+                if (dir.X == 0 && dir.Y == 0)
+                {
+                    if (state == EnemyState.WalkLeft)
+                    {
+                        state = EnemyState.FaceLeft; // Facing left
+                    }
+                    else if (state == EnemyState.WalkRight)
+                    {
+                        state = EnemyState.FaceRight; // Facing right
+                    }
+                }
+            }
+
+
             CheckHits(bullets);
 
             //Not sure why it isn't drawing the enemy red when they are hit
@@ -176,15 +259,16 @@ namespace TwelveMage
                // color = Color.White;
             }
 
-            if (health < 80 && health >= 60)
-            {
-                color = Color.Yellow;
-            }
-            else if (health < 60 && health >= 40)
+            // Change enemy color based on health (Lucas)
+            if (health < 75 && health >= 50)
             {
                 color = Color.Orange;
             }
-            else if (health < 40)
+            else if (health < 50 && health >= 25)
+            {
+                color = Color.IndianRed;
+            }
+            else if (health < 25)
             {
                 color = Color.Red;
             }
@@ -192,19 +276,94 @@ namespace TwelveMage
 
         /// <summary>
         /// Lucas:
-        /// Draw the enemies at their updated positions (will eventually be animated)
+        /// Draw the enemies based on their current state
         /// </summary>
         /// <param name="spriteBatch">
         /// SpriteBatch passed in from main
         /// </param>
         public override void Draw(SpriteBatch spriteBatch)
         {
-            if (this.isActive)
+
+            #region State switch
+            switch (state)
             {
-                spriteBatch.Draw(sprite, pos, color);
+                case EnemyState.FaceRight:
+                    DrawStanding(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case EnemyState.FaceLeft:
+                    DrawStanding(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
+
+                case EnemyState.WalkRight:
+                    DrawWalking(SpriteEffects.None, spriteBatch);
+                    break;
+
+                case EnemyState.WalkLeft:
+                    DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
+                    break;
             }
+            #endregion
         }
 
+
+        /// <summary>
+        /// Lucas:
+        /// Draws the player character idle animation.
+        /// Adapted from Mario Walking PE.
+        /// </summary>
+        /// <param name="flipSprite">
+        /// Allows the sprite to be flipped horizontally when facing directions
+        /// </param>
+        /// <param name="spriteBatch">
+        /// The SpriteBatch passed in from main
+        /// </param>
+        private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                texture,
+                pos,
+                new Rectangle(
+                    0,
+                    EnemyRectOffsetY,
+                    EnemyRectWidth,
+                    EnemyRectHeight),
+                    color,
+                0,
+                Vector2.Zero,
+                1.0f,
+                flipSprite,
+                0);
+        }
+
+        /// <summary>
+        /// Lucas:
+        /// Draws the player character walking animation, based on current frame.
+        /// Adapted from Mario Walking PE.
+        /// </summary>
+        /// <param name="flipSprite">
+        /// Allows the sprite to be flipped horizontally when facing directions
+        /// </param>
+        /// <param name="spriteBatch">
+        /// The SpriteBatch passed in from main
+        /// </param>
+        private void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                texture,                            // - The texture to draw
+                pos,                                    // - The location to draw on the screen
+                new Rectangle(                          // - The "source" rectangle
+                    frame * EnemyRectWidth,            // - This rectangle specifies
+                    EnemyRectOffsetY,                  //	 where "inside" the texture
+                    EnemyRectWidth,                    //   to get pixels (We don't want to
+                    EnemyRectHeight),                  //   draw the whole thing)
+                    color,                            // - The color
+                0,                                      // - Rotation (none currently)
+                Vector2.Zero,                           // - Origin inside the image (top left)
+                1.0f,                                   // - Scale (100% - no change)
+                flipSprite,                             // - Can be used to flip the image
+                0);                                     // - Layer depth (unused)
+        }
 
         /// <summary>
         /// Check the list of bullets to see if any have hit this enemy
@@ -444,6 +603,51 @@ namespace TwelveMage
         }
 
         public event OnDeathDelegate OnDeath; // OnDeath event, for scoring
+
+        /// <summary>
+        /// Enemies stop moving during TimeFreeze. See Player class for code.
+        /// </summary>
+        public void TimeFreeze()
+        {
+            if (isFrozen)
+            {
+                speed = 0;
+            }
+            else
+            {
+                speed = 100;
+            }
+        }
+
+        /// <summary>
+        /// Lucas:
+        /// Updates the enemy animation
+        /// Adapted from Mario Walking PE
+        /// </summary>
+        /// <param name="gameTime">
+        /// GameTime passed in from main
+        /// </param>
+        public void UpdateAnimation(GameTime gameTime)
+        {
+            // Don't update animations if freeze spell is active
+            if (!isFrozen)
+            {
+                // How much time has passed?  
+                timeCounter += gameTime.ElapsedGameTime.TotalSeconds;
+
+                // If enough time has passed:
+                if (timeCounter >= timePerFrame)
+                {
+                    frame += 1;                     // Adjust the frame to the next image
+
+                    if (frame > WalkFrameCount)     // Check the bounds - have we reached the end of walk cycle?
+                        frame = 1;                  // Back to 1 (since 0 is the "standing" frame)
+
+                    timeCounter -= timePerFrame;    // Remove the time we "used" - don't reset to 0
+                                                    // This keeps the time passed 
+                }
+            }
+        }
         #endregion
     }
 }

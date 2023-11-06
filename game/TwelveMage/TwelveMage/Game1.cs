@@ -64,6 +64,8 @@ namespace TwelveMage
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
         private Enemy defaultEnemy;
+
+
         #endregion
 
         public Game1()
@@ -91,6 +93,7 @@ namespace TwelveMage
             score = 0;
             /*highScore = 0;
             highWave = 0;*/
+
             base.Initialize();
         }
 
@@ -136,7 +139,7 @@ namespace TwelveMage
            
 
             // Load enemy sprite (Lucas)
-            enemySprite = this.Content.Load<Texture2D>("enemy");
+            enemySprite = this.Content.Load<Texture2D>("ZombieWalkSheet");
             
 
             // Instantiate single test enemy (Lucas)
@@ -265,6 +268,8 @@ namespace TwelveMage
             int[] stats = fileManager.LoadStats();
             highScore = stats[1];
             highWave = stats[3];
+
+
         }
 
         protected override void Update(GameTime gameTime)
@@ -276,7 +281,7 @@ namespace TwelveMage
 
             // Update the player sprite animation every frame (Lucas)
             player.UpdateAnimation(gameTime);
-
+            
             // TODO: Add your update logic here
             //Anthony Maldonado
             //switches made for the game states 
@@ -330,10 +335,15 @@ namespace TwelveMage
 
                         // Enemy movement (Lucas)
                         // Pass current player position to enemies (Lucas)
+                        // Set enemy TimeFreeze status according to if player used ability
                         foreach(Enemy enemy in enemies)
                         {
                             enemy.Update(gameTime, bullets);
                             enemy.PlayerPos = player.PosVector;
+                            enemy.IsFrozen = player.IsFrozen;
+
+                            enemy.UpdateAnimation(gameTime);
+
                         }
                         
 
@@ -409,7 +419,6 @@ namespace TwelveMage
                             }
                             wave++;
                         }
-                        
 
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);
@@ -601,11 +610,18 @@ namespace TwelveMage
                         "Blink: " + timerString,
                         new Vector2(10, 90),
                         Color.Black);
+                    // Freeze cooldown display (Lucas)
+                    string freezeString = String.Format("{0:0.00}", player.FreezeCD);
+                    _spriteBatch.DrawString(
+                        menuFont,
+                        "Time Freeze: " + freezeString,
+                        new Vector2(10, 130),
+                        Color.Black);
                     //Wave counter display
                     _spriteBatch.DrawString(
                         menuFont,
                         "Wave: " + wave,
-                        new Vector2(10, 130),
+                        new Vector2(10, 170),
                         Color.Black);
 
                     // Pause button (P) (Lucas)
