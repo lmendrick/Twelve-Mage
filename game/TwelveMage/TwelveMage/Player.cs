@@ -81,6 +81,8 @@ namespace TwelveMage
         // Mouse shooting
         private MouseState mState;
         private MouseState prevMState;
+        private float shootingTimer;
+        private bool hasShot;
 
         //Spell stuff
         private Spell spell;
@@ -155,6 +157,8 @@ namespace TwelveMage
             spell = new Spell(this);
             blinkTimer = 6.0f;
             blinked = false;
+            shootingTimer = 0.25f;
+            hasShot = false;
 
             isFrozen = false;
             freezeTimer = 5;
@@ -281,11 +285,24 @@ namespace TwelveMage
             */
 
             // Mouse shooting (Lucas)
-            if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed)
+            if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed && !hasShot)
             {
                 //AddBullet(bullets);
                 ShotgunFire(bullets, 5);
+                hasShot = true;
             }
+
+            if(hasShot)
+            {
+                shootingTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+                if(shootingTimer <= 0)
+                {
+                    shootingTimer = 0.25f;
+                    hasShot = false;
+                }
+            }
+
 
             // Normalize the direction vector if there is any movement
             if (dir.X != 0 || dir.Y != 0)
