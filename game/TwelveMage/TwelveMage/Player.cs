@@ -283,7 +283,8 @@ namespace TwelveMage
             // Mouse shooting (Lucas)
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed)
             {
-                AddBullet(bullets);
+                //AddBullet(bullets);
+                ShotgunFire(bullets, 8);
             }
 
             // Normalize the direction vector if there is any movement
@@ -383,6 +384,90 @@ namespace TwelveMage
             //bullet.LifeSpan = 2f;
             //bullet.Parent = this;
             //sprites.Add(bullet);
+        }
+
+
+        /// <summary>
+        /// Gets the mousePos and direction, and than gets a number of different nearby vectors.
+        /// These vectors will be used to generate a shotgun blast.
+        /// 
+        /// - Ben
+        /// </summary>
+        /// <param name="bullets"></param>
+        private void ShotgunFire(List<GameObject> bullets, int numShots)
+        {
+            //When called, get mouse direction
+            Vector2 mouseDir = new Vector2(mState.X, mState.Y) - pos;
+            mouseDir.Normalize();
+
+            //Changes shot speed
+            //Don't turn too low(less than 50) or it breaks
+            mouseDir *= 20;
+
+
+            List<GameObject> shots = new List<GameObject>();
+            List<Vector2> shotDirections = GenerateVectors(mouseDir ,numShots);
+            
+            for(int i = 0; i < numShots; i++)
+            {
+                shots.Add(new Projectile(
+                    new Rectangle(rec.X, rec.Y, 15, 15),
+                    bullet,
+                    health));
+                shots[i].Direction = shotDirections[i];
+            }
+
+            foreach(Projectile shot in shots)
+            {
+                bullets.Add(shot);
+            }
+
+            
+        }
+
+
+        /// <summary>
+        /// Takes in a Vector2 and generates a list containing a number of nearby vectors.
+        /// Use's a fraction of the length of the vector as the radius, in order to ensure no vectors are created going the wrong way
+        /// 
+        /// - Ben
+        /// </summary>
+        /// <param name="startingVec">The origin Vector2</param>
+        /// <param name="numVecs">How many vectors to generate</param>
+        /// <returns>A List containing all the generated vectors</returns>
+        private List<Vector2> GenerateVectors(Vector2 startingVec, int numVecs)
+        {
+            Random rng = new Random();
+            float radius = startingVec.Length() / 5;
+            List<Vector2> vectors = new List<Vector2>();
+
+            for(int i = 0; i < numVecs; i++)
+            {
+                float xRadius = (float)rng.NextDouble() * radius;
+                xRadius *= RandomizeSign();
+                float yRadius = (float)rng.NextDouble() * radius;
+                yRadius *= RandomizeSign();
+                Vector2 newDir = new Vector2(startingVec.X + xRadius, startingVec.Y + yRadius);
+                vectors.Add(newDir);
+            }
+
+            return vectors;
+        }
+
+        /// <summary>
+        /// Takes in a float and randomizes it's sign, multplying by either 1 or -1
+        /// </summary>
+        private int RandomizeSign()
+        {
+            Random rng = new Random();
+            int signChange;
+
+            do
+            {
+                signChange = rng.Next(-1, 2);
+            }while(signChange == 0);
+
+            return signChange;
         }
 
         /// <summary>
