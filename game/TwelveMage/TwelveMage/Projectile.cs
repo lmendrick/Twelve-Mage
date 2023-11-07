@@ -20,17 +20,20 @@ namespace TwelveMage
         //fields
 
         private float timer;
+        private float range;
+        private float displacement;
 
 
         //methods
 
 
 
-        public Projectile(Rectangle position, Texture2D texture, int health) : base(position, texture, health)
+        public Projectile(Rectangle position, Texture2D texture, int health, float range) : base(position, texture, health)
         {
             //standard velocity of 4
             this.LinearVelocity = LinearVelocity * .05f;
-            
+            this.range = range;
+            displacement = 0;
         }
 
 
@@ -46,8 +49,14 @@ namespace TwelveMage
             }
             //base position of direction and velocity of bullet
             Position += Direction * LinearVelocity;
+            displacement += (Direction * LinearVelocity).Length();
             rec.X = (int)Position.X + rec.X;
             rec.Y = (int)Position.Y + rec.Y;
+
+            if(displacement > range)
+            {
+                IsRemoved = true;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) 

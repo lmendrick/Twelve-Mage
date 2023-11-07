@@ -284,7 +284,7 @@ namespace TwelveMage
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed)
             {
                 //AddBullet(bullets);
-                ShotgunFire(bullets, 8);
+                ShotgunFire(bullets, 5);
             }
 
             // Normalize the direction vector if there is any movement
@@ -358,7 +358,7 @@ namespace TwelveMage
 
         private void AddBullet(List<GameObject> bullets)
         {
-            Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health);
+            Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health, 800);
 
             // Commented out to replace with mouse shooting (Lucas)
             //if(dir == Vector2.Zero)
@@ -396,13 +396,14 @@ namespace TwelveMage
         /// <param name="bullets"></param>
         private void ShotgunFire(List<GameObject> bullets, int numShots)
         {
+            Random rng = new Random();
             //When called, get mouse direction
             Vector2 mouseDir = new Vector2(mState.X, mState.Y) - pos;
             mouseDir.Normalize();
 
             //Changes shot speed
             //Don't turn too low(less than 50) or it breaks
-            mouseDir *= 20;
+            mouseDir *= 100;
 
 
             List<GameObject> shots = new List<GameObject>();
@@ -413,7 +414,8 @@ namespace TwelveMage
                 shots.Add(new Projectile(
                     new Rectangle(rec.X, rec.Y, 15, 15),
                     bullet,
-                    health));
+                    health,
+                    rng.Next(25, 40)));
                 shots[i].Direction = shotDirections[i];
             }
 
