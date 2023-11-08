@@ -26,13 +26,14 @@ namespace TwelveMage
         private Texture2D playerSpriteSheet;
         private Texture2D enemySprite;
         private Texture2D bulletSprite;
+        private Texture2D fireballSprite;
         private Texture2D healthBar;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
 
         private List<GameObject> bullets;
-
+        private List<GameObject> fireBalls;
         private int gunWidth = 45;
         private int gunHeight = 25;
 

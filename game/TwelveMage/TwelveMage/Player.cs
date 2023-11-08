@@ -92,6 +92,7 @@ namespace TwelveMage
         private double freezeTimer;
         private double freezeCD;
         private bool canFreeze;
+        
         #endregion
 
         #region PROPERTIES
@@ -210,6 +211,14 @@ namespace TwelveMage
                     blinked = false;
                 }
             }
+            //can only use fireball 3 times
+            //key will be f 
+            if(currentKB.IsKeyDown(Keys.F) &&  previousKB.IsKeyUp(Keys.F) )
+            {
+
+            }
+
+
 
             // Time Freeze Spell Input (X Key for now)
             // (Lucas)
