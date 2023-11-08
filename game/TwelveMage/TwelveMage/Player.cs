@@ -190,7 +190,7 @@ namespace TwelveMage
             mState = Mouse.GetState();
 
 
-            #region WASD Processing
+            #region Input Processing
 
             //Spell input
             if(currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space) && !blinked)
@@ -529,6 +529,11 @@ namespace TwelveMage
             invulnerable = 0f;
             state = PlayerState.FaceRight;
             health = MAX_HEALTH;
+            blinked = false;
+            blinkTimer = 0;
+            isFrozen = false;
+            freezeTimer = 5;
+            freezeCD = 0;
         }
 
         /// <summary>
