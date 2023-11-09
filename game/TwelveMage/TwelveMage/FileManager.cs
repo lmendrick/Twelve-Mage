@@ -28,6 +28,7 @@ namespace TwelveMage
         private const string EnemiesFilename = "../../../EnemyData.txt";
         private const string StatsFilename = "../../../StatsData.txt";
         private const string PersistentStatsFilename = "../../../PersistentStatsData.txt";
+        private const string Level1Filename = "../../../Level1Data.txt";
         private Player player;
         #endregion
 
@@ -205,6 +206,48 @@ namespace TwelveMage
             }
             if(reader != null) reader.Close();
             return stats;
+        }
+
+        /// <summary>
+        /// Loads a string[,] with each tile's type
+        /// </summary>
+        public String[,] LoadLevel()
+        {
+            String[,] tileTypes = null;
+            try // Make sure everything works correctly with a try/catch
+            {
+                reader = new StreamReader(Level1Filename);
+                // Level file format:
+                // Line 1   int width, int height (total number of tiles on each side)
+                // Line 2   X,X,X,...X w times (char representing tile type)
+                // Line 3   X,X,X,...X
+                // ...
+                // Line h   X,X,X,...X
+
+                // Get width & height
+                string[] currentLine = reader.ReadLine().Split(",");
+                int.TryParse(currentLine[0], out int width);
+                int.TryParse(currentLine[1], out int height);
+
+                // Initialize tileTypes
+                tileTypes = new String[width, height];
+
+                // Load each tile type
+                for(int i = 0; i < height; i++)
+                {
+                    currentLine = reader.ReadLine().Split(",");
+                    for(int j = 0; j < width; j++)
+                    {
+                        tileTypes[j,i] = currentLine[j];
+                    }
+                }
+            }
+            catch
+            {
+
+            }
+            if (reader != null) reader.Close();
+            return tileTypes;
         }
         #endregion
     }

@@ -1,0 +1,16 @@
+25,15
+G,F,G,G,G,F,G,G,G,P,P,G,F,F,G,F,F,G,G,G,G,G,G,G,G
+F,F,F,F,G,G,G,G,G,P,P,G,G,G,G,F,G,F,G,G,G,G,G,G,G
+F,G,G,G,G,G,G,F,G,P,P,G,G,G,F,G,G,G,G,G,G,G,G,G,G
+G,G,G,G,G,F,G,F,G,P,P,G,G,G,G,G,F,G,G,F,F,G,G,G,G
+P,P,P,P,G,P,P,P,P,P,P,P,P,P,P,P,G,P,P,P,G,G,F,G,G
+P,P,P,P,P,P,P,P,P,P,P,P,P,P,P,G,G,P,P,P,P,P,G,G,G
+G,G,G,G,G,G,P,P,G,G,G,F,F,G,G,G,G,F,G,G,P,P,P,P,G
+G,F,G,G,G,P,P,G,G,G,F,F,G,G,F,F,G,G,G,G,F,G,P,P,P
+G,G,G,G,P,P,G,G,F,G,G,G,F,G,G,G,G,G,G,G,G,G,F,G,P
+G,G,G,P,P,G,G,F,G,F,G,G,G,G,G,G,G,F,G,G,G,G,G,G,G
+G,G,P,P,G,G,G,G,F,G,G,G,G,G,G,G,G,G,F,G,G,F,G,G,G
+G,P,P,G,G,G,G,G,G,G,G,G,G,G,F,F,F,G,G,G,G,G,G,G,G
+P,P,G,G,G,F,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G
+P,G,G,G,F,G,G,G,G,G,G,G,G,G,G,G,F,G,G,G,G,G,G,G,G
+G,G,G,G,G,F,G,G,F,F,G,G,G,G,G,G,G,G,G,G,G,G,G,G,G

@@ -62,7 +62,11 @@ namespace TwelveMage
         private Spawner spawner;
         private List<Spawner> spawners;
 
-
+        // BackgroundManager stuff
+        private BackgroundManager backgroundManager;
+        private Texture2D flowersTileset;
+        private Texture2D grassTileset;
+        private Texture2D paversTileset;
 
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
@@ -109,6 +113,8 @@ namespace TwelveMage
 
             // TODO: use this.Content to load your game content here
 
+            rng = new Random();
+
             // Load in fonts (Lucas)
             titleFont = this.Content.Load<SpriteFont>("TitleFont");
             menuFont = this.Content.Load<SpriteFont>("MenuFont");
@@ -120,8 +126,6 @@ namespace TwelveMage
 
             //Load in gun image
             Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
-
-            rng = new Random();
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
@@ -139,6 +143,14 @@ namespace TwelveMage
 
             // Create a FileManager (Chloe)
             fileManager = new FileManager();
+
+            // Do BackgroundManager initialization
+            flowersTileset = this.Content.Load<Texture2D>("FlowersTileset");
+            grassTileset = this.Content.Load<Texture2D>("GrassTileset");
+            paversTileset = this.Content.Load<Texture2D>("PaversTileset");
+
+            backgroundManager = new BackgroundManager(grassTileset, flowersTileset, paversTileset, rng, _spriteBatch);
+            backgroundManager.LoadLevel(fileManager);
 
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
             gun = new Gun(gunRec, gunSprite, 10, player);
@@ -531,6 +543,9 @@ namespace TwelveMage
             _spriteBatch.Begin();
             //switch to ensure what happens in each state
             //will add more after discussion and more work
+
+            backgroundManager.Draw(windowWidth, windowHeight);
+
             switch (currentState)
 
             {
