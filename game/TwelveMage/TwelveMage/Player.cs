@@ -92,6 +92,9 @@ namespace TwelveMage
         private double freezeTimer;
         private double freezeCD;
         private bool canFreeze;
+        private double hasteTimer;
+        private bool isHastened;
+        
         
         #endregion
 
@@ -134,6 +137,10 @@ namespace TwelveMage
         public double BlinkTimer
         {
             get { return blinkTimer; }
+        }
+        public double HasteTimer
+        {
+            get { return hasteTimer; }
         }
 
         public bool IsFrozen
@@ -218,7 +225,14 @@ namespace TwelveMage
 
             }
 
-
+            //Haste spell(H key for now)
+            //allows for increased speed for 5 seconds
+            //can only haste every 10 seconds
+            if(currentKB.IsKeyDown(Keys.H) && previousKB.IsKeyUp(Keys.H) )
+            {
+               isHastened = true;
+               hasteTimer = 10;
+            }
 
             // Time Freeze Spell Input (X Key for now)
             // (Lucas)
@@ -252,8 +266,23 @@ namespace TwelveMage
                 }
             }
 
+            if(isHastened)
+            {
+                hasteTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                speed = 350f;
+                
+                if(hasteTimer <= 0)
+                {
+                    isHastened = false;
+                    hasteTimer = 10;
+                    speed = 200f;
+                    
 
+                }
+            }
 
+            
+            
 
             // Process W and S keys for vertical movement
             if (currentKB.IsKeyDown(Keys.W))
@@ -363,6 +392,15 @@ namespace TwelveMage
             if(invulnerable > 0 )
             {
                 color = Color.Black;
+            }
+            else
+            {
+                color = Color.White;
+            }
+            //if hastened color is orange
+            if(hasteTimer > 0)
+            {
+                color = Color.Orange;
             }
             else
             {

@@ -618,11 +618,16 @@ namespace TwelveMage
                         "Time Freeze: " + freezeString,
                         new Vector2(10, 130),
                         Color.Black);
+                    string hasteString = string.Format("{0:0.00}", player.HasteTimer);
+                    _spriteBatch.DrawString(menuFont,
+                        "Haster CoolDown: " + hasteString,
+                        new Vector2(10, 170), 
+                        Color.Black);
                     //Wave counter display
                     _spriteBatch.DrawString(
                         menuFont,
                         "Wave: " + wave,
-                        new Vector2(10, 170),
+                        new Vector2(10, 210),
                         Color.Black);
 
                     // Pause button (P) (Lucas)
