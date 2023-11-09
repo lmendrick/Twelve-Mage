@@ -116,6 +116,17 @@ namespace TwelveMage
         public Vector2 Position // Property to set the current player position
         {
             get { return pos; }
+            set { pos = value; }
+        }
+        public int X // Property to set X coord
+        {
+            get { return (int)pos.X; }
+            set { pos.X = value; }
+        }
+        public int Y // Property to set Y coord
+        {
+            get { return (int)pos.Y; }
+            set { pos.Y = value; }
         }
         public Vector2 PlayerPos // Property to set this enemy's position
         {
@@ -399,46 +410,6 @@ namespace TwelveMage
             {
                 player.Health -= damage;
             }
-        }
-
-
-        public void ResolveIntersection(List<Enemy> enemies)
-        {
-            /*
-             * First determine if the enemy is intersecting with any other enemies
-             * Since the solution is the same regardless of which enemy is being intersected, we can break out of searching for intersections once one has been found
-             * 
-             * Once an intersection has been detected, find the perpendicular Vector to the dir field
-             * Then determine what direction is appropriate for the adjustment and apply it to pos
-             * This will allow us to move the enemy horizontally, spreading the enemies out to avoid intersection
-             */
-
-            //Loop through enemies list looking intersections
-            //If detected, set a bool to true and break out of loop
-            //Loop should only occur if intersection wasn't already detected
-            if (!intersectionDetected)
-            {
-                foreach (Enemy enemy in enemies)
-                {
-                    if (this.CheckCollision(enemy))
-                    {
-                        intersectionDetected = true;
-                        break;
-                    }
-                }
-
-                intersectionDetected = false;
-            }
-            
-
-
-            //Once intersection is detected, calculate the perpendicular vector of dir
-            //Check to see which direction should be used
-            //For this use the position of the intersected enemy
-
-            //Gonna require using a dot product xd
-
-
         }
 
         /// <summary>

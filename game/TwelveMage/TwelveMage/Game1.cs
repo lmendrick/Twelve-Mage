@@ -61,6 +61,8 @@ namespace TwelveMage
         private Spawner spawner;
         private List<Spawner> spawners;
 
+
+
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
         private Enemy defaultEnemy;
@@ -87,6 +89,9 @@ namespace TwelveMage
             // Reference values to center buttons in window
             buttonCenterX = (windowWidth / 2) - (buttonWidth / 2);
             buttonCenterY = (windowHeight / 2) - (buttonHeight / 2);
+
+            
+            
 
             wave = 1;
             waveIncrease = 2;
@@ -150,7 +155,15 @@ namespace TwelveMage
             enemies = new List<Enemy>();
             defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player);
             enemies.Add(defaultEnemy);
-            spawner = new Spawner(new Vector2(50, 50), 0, 0, enemies, enemySprite, 100, player);
+            spawner = new Spawner(
+                new Vector2(100, 100),
+                100,
+                100,
+                enemies,
+                enemySprite,
+                100,
+                player,
+                new Rectangle(100, 100, 50, 50));
             spawners = new List<Spawner>();
 
 
@@ -166,7 +179,8 @@ namespace TwelveMage
                 enemies,
                 enemySprite,
                 100,
-                player));
+                player,
+                Rectangle.Empty));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth / 2, windowHeight + 40),
@@ -175,7 +189,8 @@ namespace TwelveMage
                 enemies,
                 enemySprite,
                 100, 
-                player));
+                player,
+                Rectangle.Empty));
 
             spawners.Add(new Spawner(
                 new Vector2(-40, windowHeight / 2),
@@ -184,7 +199,8 @@ namespace TwelveMage
                 enemies,
                 enemySprite,
                 100,
-                player));
+                player,
+                Rectangle.Empty));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth + 40, windowHeight / 2),
@@ -193,7 +209,8 @@ namespace TwelveMage
                 enemies,
                 enemySprite,
                 100,
-                player));
+                player,
+                Rectangle.Empty));
 
             // Create a few 100x200 buttons down the left side
             //buttons.Add(new Button(
@@ -204,6 +221,7 @@ namespace TwelveMage
             //        Color.Purple));                     // button color
             //buttons[0].OnButtonClick += this.NewGame;
 
+            #region Menu Buttons
             // MAIN MENU BUTTONS
 
             // New Game Button
@@ -263,6 +281,7 @@ namespace TwelveMage
             menuFont,                               // label font
             Color.DarkBlue));
             pauseMenuButtons[1].OnButtonClick += this.Save;
+            #endregion
 
             // Load highest scores
             int[] stats = fileManager.LoadStats();
@@ -323,9 +342,9 @@ namespace TwelveMage
 
                         if(SingleKeyPress(Keys.U, currentKBState))
                         {
-                            //spawner.SpawnEnemy();
+                            spawner.SpawnEnemy();
 
-                            spawners[rng.Next(0,4)].SpawnEnemy();
+                            //spawners[rng.Next(0,4)].SpawnEnemy();
                         }
 
                         if(SingleKeyPress(Keys.C, currentKBState))
@@ -406,6 +425,7 @@ namespace TwelveMage
                             }
                         }
 
+                        
                         if(enemies.Count == 0)
                         {
                             //enemies.Add(new Enemy(new Rectangle(250, 250, rng.Next(windowWidth), rng.Next(windowHeight)), enemySprite, 100));
@@ -419,6 +439,7 @@ namespace TwelveMage
                             }
                             wave++;
                         }
+                        
 
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);

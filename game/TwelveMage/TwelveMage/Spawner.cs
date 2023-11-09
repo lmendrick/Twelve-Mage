@@ -22,6 +22,8 @@ namespace TwelveMage
         private int lowerXRange;
         private int lowerYRange;
 
+        private Rectangle noSpawningArea;
+
         //Enemies list
         private List<Enemy> enemies;
 
@@ -39,13 +41,20 @@ namespace TwelveMage
             set { enemies = value; }
         }
 
+        public Rectangle NoSpawningArea
+        {
+            get { return noSpawningArea; }
+
+        }
+
         /// <summary>
         /// Create a new spawner
         /// </summary>
         /// <param name="position">Where the spawner is centered</param>
         /// <param name="xRadius">The X spawn radius</param>
         /// <param name="yRadius">The Y spawn radius</param>
-        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth, Player player)
+        /// <param name="noSpawningArea">The rectangle to use as reference when constructing the noSpawnArea. The X/Y coords don't matter, only the width/height</param>
+        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth, Player player, Rectangle noSpawningArea)
         {
             this.position = position;
             this.xRadius = xRadius;
@@ -55,6 +64,8 @@ namespace TwelveMage
             this.enemyHealth = enemyHealth;
             this.player = player;
             rng = new Random();
+            this.noSpawningArea = new Rectangle((int)position.X - (noSpawningArea.Width / 2), (int)position.Y - (noSpawningArea.Height / 2), noSpawningArea.Width, noSpawningArea.Height);
+
 
             upperXRange = (int)position.X + xRadius;
             upperYRange = (int)position.Y + YRadius;
@@ -76,9 +87,13 @@ namespace TwelveMage
         /// </summary>
         public int YRadius { get { return yRadius; } }
 
-        public void SpawnEnemy()
+        /// <summary>
+        /// Spawns a new enemy within the spawn area;
+        /// </summary>
+        /// <returns>The spawned enemy</returns>
+        public Enemy SpawnEnemy()
         {
-            enemies.Add(new Enemy(
+            Enemy spawned = new Enemy(
                 new Rectangle(
                     rng.Next(lowerXRange, upperXRange + 1),
                     rng.Next(lowerYRange, upperYRange + 1),
@@ -87,9 +102,21 @@ namespace TwelveMage
                 enemyTexture,
                 enemyHealth,
                 enemies,
-                player));
+                player);
 
+            if(spawned.Rec.Intersects(NoSpawningArea))
+            {
+                do
+                {
+                    spawned.X = rng.Next(lowerXRange, upperXRange + 1);
+                    spawned.Y = rng.Next(lowerYRange, upperYRange + 1);
+                }while(spawned.Rec.Intersects(NoSpawningArea));
 
+            }
+
+            enemies.Add(spawned);
+
+            return spawned;
 
         }
     }
