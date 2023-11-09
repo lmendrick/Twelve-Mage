@@ -157,14 +157,14 @@ namespace TwelveMage
             defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player);
             enemies.Add(defaultEnemy);
             spawner = new Spawner(
-                new Vector2(100, 100),
+                new Vector2(player.Rec.X, player.Rec.Y),
                 100,
                 100,
                 enemies,
                 enemySprite,
                 100,
                 player,
-                new Rectangle(100, 100, 50, 50));
+                new Rectangle(100, 100, 100, 100));
             spawners = new List<Spawner>();
 
 
@@ -440,6 +440,7 @@ namespace TwelveMage
                             }
                             wave++;
                         }
+                        
                         
 
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)

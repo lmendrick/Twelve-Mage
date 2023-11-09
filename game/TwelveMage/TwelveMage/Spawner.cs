@@ -104,6 +104,7 @@ namespace TwelveMage
                 enemies,
                 player);
 
+            /*
             if(spawned.Rec.Intersects(NoSpawningArea))
             {
                 do
@@ -113,6 +114,25 @@ namespace TwelveMage
                 }while(spawned.Rec.Intersects(NoSpawningArea));
 
             }
+            */
+            float xDistanceFromPlayer = player.Rec.X - spawned.X;
+            float yDistanceFromPlayer = player.Rec.Y - spawned.Y;
+
+            if(Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50)
+            {
+                do
+                {
+                    //spawned.X = rng.Next((int)(lowerXRange * 1.5), (int)((upperXRange + 1) * 1.5));
+                    //spawned.Y = rng.Next((int)(lowerYRange * 1.5), (int)((upperYRange + 1) * 1.5));
+                    spawned.X += rng.Next(-50, 51);
+                    spawned.Y += rng.Next(-50, 51);
+                    xDistanceFromPlayer = player.Rec.X - spawned.X;
+                    yDistanceFromPlayer = player.Rec.Y - spawned.Y;
+                } while (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50);
+            }
+
+            
+            
 
             enemies.Add(spawned);
 
