@@ -274,7 +274,7 @@ namespace TwelveMage
                 if(hasteTimer <= 0)
                 {
                     isHastened = false;
-                    hasteTimer = 10;
+                    hasteTimer = 0;
                     speed = 200f;
                     
 
