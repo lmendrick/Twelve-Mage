@@ -26,13 +26,14 @@ namespace TwelveMage
         private Texture2D playerSpriteSheet;
         private Texture2D enemySprite;
         private Texture2D bulletSprite;
+        private Texture2D fireballSprite;
         private Texture2D healthBar;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
 
         private List<GameObject> bullets;
-
+        private List<GameObject> fireBalls;
         private int gunWidth = 45;
         private int gunHeight = 25;
 
@@ -638,11 +639,16 @@ namespace TwelveMage
                         "Time Freeze: " + freezeString,
                         new Vector2(10, 130),
                         Color.Black);
+                    string hasteString = string.Format("{0:0.00}", player.HasteTimer);
+                    _spriteBatch.DrawString(menuFont,
+                        "Haster CoolDown: " + hasteString,
+                        new Vector2(10, 170), 
+                        Color.Black);
                     //Wave counter display
                     _spriteBatch.DrawString(
                         menuFont,
                         "Wave: " + wave,
-                        new Vector2(10, 170),
+                        new Vector2(10, 210),
                         Color.Black);
 
                     // Pause button (P) (Lucas)

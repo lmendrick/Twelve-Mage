@@ -92,6 +92,10 @@ namespace TwelveMage
         private double freezeTimer;
         private double freezeCD;
         private bool canFreeze;
+        private double hasteTimer;
+        private bool isHastened;
+        
+        
         #endregion
 
         #region PROPERTIES
@@ -133,6 +137,10 @@ namespace TwelveMage
         public double BlinkTimer
         {
             get { return blinkTimer; }
+        }
+        public double HasteTimer
+        {
+            get { return hasteTimer; }
         }
 
         public bool IsFrozen
@@ -190,7 +198,7 @@ namespace TwelveMage
             mState = Mouse.GetState();
 
 
-            #region WASD Processing
+            #region Input Processing
 
             //Spell input
             if(currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space) && !blinked)
@@ -209,6 +217,21 @@ namespace TwelveMage
                     blinkTimer = 6.0;
                     blinked = false;
                 }
+            }
+            //can only use fireball 3 times
+            //key will be f 
+            if(currentKB.IsKeyDown(Keys.F) &&  previousKB.IsKeyUp(Keys.F) )
+            {
+
+            }
+
+            //Haste spell(H key for now)
+            //allows for increased speed for 5 seconds
+            //can only haste every 10 seconds
+            if(currentKB.IsKeyDown(Keys.H) && previousKB.IsKeyUp(Keys.H) )
+            {
+               isHastened = true;
+               hasteTimer = 10;
             }
 
             // Time Freeze Spell Input (X Key for now)
@@ -243,8 +266,23 @@ namespace TwelveMage
                 }
             }
 
+            if(isHastened)
+            {
+                hasteTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+                speed = 350f;
+                
+                if(hasteTimer <= 0)
+                {
+                    isHastened = false;
+                    hasteTimer = 0;
+                    speed = 200f;
+                    
 
+                }
+            }
 
+            
+            
 
             // Process W and S keys for vertical movement
             if (currentKB.IsKeyDown(Keys.W))
@@ -354,6 +392,15 @@ namespace TwelveMage
             if(invulnerable > 0 )
             {
                 color = Color.Black;
+            }
+            else
+            {
+                color = Color.White;
+            }
+            //if hastened color is orange
+            if(hasteTimer > 0)
+            {
+                color = Color.Orange;
             }
             else
             {
@@ -529,6 +576,11 @@ namespace TwelveMage
             invulnerable = 0f;
             state = PlayerState.FaceRight;
             health = MAX_HEALTH;
+            blinked = false;
+            blinkTimer = 0;
+            isFrozen = false;
+            freezeTimer = 5;
+            freezeCD = 0;
         }
 
         /// <summary>

@@ -1,1 +1,1 @@
-311,248,100,FaceLeft
+351,296,90,FaceRight
