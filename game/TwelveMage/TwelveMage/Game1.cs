@@ -128,7 +128,7 @@ namespace TwelveMage
             Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
 
             // Instantiate player (Lucas)
-            Rectangle playerRec = new Rectangle(30, 30, playerWidth, playerHeight);
+            Rectangle playerRec = new Rectangle(windowWidth / 2, windowHeight / 2, playerWidth, playerHeight);
             player = new Player(playerRec, playerSpriteSheet, 100);
             //set bullet sprite to bullet property for use
             player.Bullet = bulletSprite;
@@ -169,14 +169,14 @@ namespace TwelveMage
             defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player);
             enemies.Add(defaultEnemy);
             spawner = new Spawner(
-                new Vector2(player.Rec.X, player.Rec.Y),
+                player.PosVector,
                 100,
                 100,
                 enemies,
                 enemySprite,
                 100,
                 player,
-                new Rectangle(100, 100, 100, 100));
+                new Rectangle(0, 0, 20, 20));
             spawners = new List<Spawner>();
 
 
@@ -353,6 +353,8 @@ namespace TwelveMage
                         // Player movement (Lucas)
                         player.Update(gameTime, bullets);
 
+                        spawner.Position = player.PosVector;
+
                         if(SingleKeyPress(Keys.U, currentKBState))
                         {
                             spawner.SpawnEnemy();
@@ -439,6 +441,7 @@ namespace TwelveMage
                         }
 
                         
+                        
                         if(enemies.Count == 0)
                         {
                             //enemies.Add(new Enemy(new Rectangle(250, 250, rng.Next(windowWidth), rng.Next(windowHeight)), enemySprite, 100));
@@ -452,6 +455,7 @@ namespace TwelveMage
                             }
                             wave++;
                         }
+                        
                         
                         
 
