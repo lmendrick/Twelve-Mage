@@ -829,6 +829,7 @@ namespace TwelveMage
             if(stats[3] > highWave) highWave = stats[3];
             player.Reset(); // Reset the player
             enemies.Clear(); // Clear enemies
+            healthPickups.Clear(); // Clears HealthPickups
             enemies.Add(defaultEnemy.Clone()); // Add the default enemy
             enemies[0].OnDeath += IncreaseScore; // Add the score increase method to the enemy's OnDeath event
             enemies[0].HasHealthpack = true; // Give the enemy a healthpack
@@ -845,6 +846,8 @@ namespace TwelveMage
             player.Bullet = bulletSprite;
             enemies.Clear();
             enemies = fileManager.LoadEnemies(enemySprite);
+            healthPickups.Clear();
+            healthPickups = fileManager.LoadHealthPickups(healthPickupSprite, player);
             int[] stats = fileManager.LoadStats();
             score = stats[0];
             wave = stats[2];
@@ -889,10 +892,11 @@ namespace TwelveMage
         {
             if(score > highScore) highScore = score;
             if(wave > highWave) highWave = wave;
-            if(fileManager.SavePlayer(player) &&
+            if (fileManager.SavePlayer(player) &&
             fileManager.SaveEnemies(enemies) &&
             fileManager.SaveStats(score, wave) &&
-            fileManager.SavePersistentStats(highScore, highWave))
+            fileManager.SavePersistentStats(highScore, highWave) &&
+            fileManager.SaveHealthPickups(healthPickups))
             { hasSaved = true; } // Enables "Game Saved" text notification
         }
 
