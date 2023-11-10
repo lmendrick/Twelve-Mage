@@ -30,14 +30,8 @@ namespace TwelveMage
 
         // Tilesets to grab textures from, and associated data
         private Texture2D _grassTileset;
-        private int grassTilesetWidth;
-        private int grassTilesetHeight;
         private Texture2D _flowerTileset;
-        private int flowerTilesetWidth;
-        private int flowerTilesetHeight;
         private Texture2D _paverTileset;
-        private int paverTilesetWidth;
-        private int paverTilesetHeight;
 
         private Random _myRand;
         private StreamReader reader;
@@ -88,8 +82,8 @@ namespace TwelveMage
                                 // Pick a random texture from the flower tileset
                                 // Generate texture source coordinates by finding the number of tileWidth x tileHeight regions in the texture,
                                 // Then picking one at random
-                                int randomH = _myRand.Next(0, (int)(flowerTilesetHeight / tileHeight));
-                                int randomW = _myRand.Next(0, (int)(flowerTilesetWidth / tileWidth));
+                                int randomH = _myRand.Next(0, (int)(_flowerTileset.Height / tileHeight));
+                                int randomW = _myRand.Next(0, (int)(_flowerTileset.Width / tileWidth));
                                 Rectangle sourceRec = new Rectangle(randomW * tileWidth, randomH * tileHeight, tileWidth, tileHeight);
 
                                 // Generate the location of each tile
@@ -107,8 +101,8 @@ namespace TwelveMage
                                 // Pick a random texture from the pavers tileset
                                 // Generate texture source coordinates by finding the number of tileWidth x tileHeight regions in the texture,
                                 // Then picking one at random
-                                randomH = _myRand.Next(0, (int)(paverTilesetHeight / tileHeight));
-                                randomW = _myRand.Next(0, (int)(paverTilesetWidth / tileWidth));
+                                randomH = _myRand.Next(0, (int)(_paverTileset.Height / tileHeight));
+                                randomW = _myRand.Next(0, (int)(_paverTileset.Width / tileWidth));
                                 sourceRec = new Rectangle(randomW * tileWidth, randomH * tileHeight, tileWidth, tileHeight);
 
                                 // Generate the location of each tile
@@ -127,8 +121,8 @@ namespace TwelveMage
                                 // Pick a random texture from the grass tileset
                                 // Generate texture source coordinates by finding the number of tileWidth x tileHeight regions in the texture,
                                 // Then picking one at random
-                                randomH = _myRand.Next(0, (int)(grassTilesetHeight / tileHeight));
-                                randomW = _myRand.Next(0, (int)(grassTilesetWidth / tileWidth));
+                                randomH = _myRand.Next(0, (int)(_grassTileset.Height / tileHeight));
+                                randomW = _myRand.Next(0, (int)(_grassTileset.Width / tileWidth));
                                 sourceRec = new Rectangle(randomW * tileWidth, randomH * tileHeight, tileWidth, tileHeight);
 
                                 // Generate the location of each tile
