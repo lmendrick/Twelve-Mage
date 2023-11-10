@@ -44,10 +44,10 @@ namespace TwelveMage
 
 
         #region FIELDS
-        //private int health;
         private const int MAX_Health = 200;
         private int damage;
         private List<Enemy> enemies;
+        private bool hasHealthpack;
 
         private Player player;
 
@@ -149,6 +149,12 @@ namespace TwelveMage
         {
             get { return isFrozen; }
             set {  isFrozen = value; }
+        }
+
+        public bool HasHealthpack
+        {
+            get { return hasHealthpack; }
+            set { hasHealthpack = value; }
         }
         #endregion
 

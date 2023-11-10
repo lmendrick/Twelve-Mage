@@ -225,18 +225,18 @@ namespace TwelveMage
 
             }
 
-            //Haste spell(H key for now)
+            //Haste spell(E key)
             //allows for increased speed for 5 seconds
             //can only haste every 10 seconds
-            if(currentKB.IsKeyDown(Keys.H) && previousKB.IsKeyUp(Keys.H) )
+            if(currentKB.IsKeyDown(Keys.E) && previousKB.IsKeyUp(Keys.E) )
             {
                isHastened = true;
                hasteTimer = 10;
             }
 
-            // Time Freeze Spell Input (X Key for now)
+            // Time Freeze Spell Input (R key)
             // (Lucas)
-            if (currentKB.IsKeyDown(Keys.X) && previousKB.IsKeyUp(Keys.X) && !isFrozen && canFreeze)
+            if (currentKB.IsKeyDown(Keys.R) && previousKB.IsKeyUp(Keys.R) && !isFrozen && canFreeze)
             {
                 isFrozen = true;
                 canFreeze = false;
@@ -311,16 +311,6 @@ namespace TwelveMage
             {
                 dir.X = 0; // No horizontal movement
             }
-            //if space bar shoot bullet
-            /*
-             * Commented out since mouse shooting has been implemented
-            if (currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
-            {
-                AddBullet(bullets);
-                //test
-                Debug.WriteLine("AHHHHHHHHH");
-            }
-            */
 
             // Mouse shooting (Lucas)
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed && !hasShot)

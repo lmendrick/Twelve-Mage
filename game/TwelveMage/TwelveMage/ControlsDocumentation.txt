@@ -1,0 +1,37 @@
+~~~~~Twelve-Mage Controls~~~~~
+***UPDATE ME WHEN YOU ADD NEW CONTROLS!!!***
+
+~~Always active~~
+Escape: Quit the program immediately
+
+~~Menu~~
+Buttons:
+	"New Game": Starts a new game from Wave 1
+	"Load Game": Loads the game saved in PlayerData.txt, EnemyData.txt, etc.
+
+~~In-Game~~
+WASD: Player character movement
+Left-click: Shoot in the direction of the mouse cursor
+
+R: Freeze (Freezes all enemies in place for a few seconds)
+E: Haste (Gain a movement speed boost for a few seconds)
+F: Fireball (Shoot a big, heavily-damaging fireball in the direction you're walking) // Not implemented
+Space: Blink (Teleport a short distance in the direction you're moving)
+
+P: Pause the game
+
+(Debug only! Don't forget to remove these later!)
+U: Spawn a single enemy
+C: Clear all enemies & go to the next wave
+Q: Go to the "Game Over" screen
+
+~~Pause Menu~~
+Buttons:
+	"Resume": Unpause the game
+	"Save": Saves the game to PlayerData.txt, EnemyData.txt, etc.
+
+~~Game Over Screen~~
+Buttons:
+	"New Game": See "New Game" in Menu
+	"Main Menu": Goes to the "Menu" screen
+	

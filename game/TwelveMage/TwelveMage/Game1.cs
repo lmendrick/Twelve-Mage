@@ -333,23 +333,6 @@ namespace TwelveMage
                         button.Update();
                     }
 
-                    // DEPRECATED
-                    // File loading (Chloe)
-                    /*if (SingleKeyPress(Keys.L, currentKBState))
-                    {
-                        player = fileManager.LoadPlayer(playerSpriteSheet);
-                        player.Bullet = bulletSprite;
-                        enemies = fileManager.LoadEnemies(enemySprite);
-                        //enemy = enemies[0]; // Temporary
-
-                        currentState = GameState.Game;
-                    }
-
-                    if (currentKBState.IsKeyDown(Keys.Enter))
-                    {
-                        currentState = GameState.Game;
-                    }*/
-
                     break;
                 case GameState.Game:
 
@@ -452,12 +435,11 @@ namespace TwelveMage
 
                         }
                             
-                        for(int i = enemies.Count - 1; i >= 0; i--)
+                        for(int i = enemies.Count - 1; i >= 0; i--) // Remove every inactive enemy
                         {
                             if (!enemies[i].IsActive)
                             {
-                                int pickupChance = rng.Next(1, 11);
-                                if (pickupChance <= 2)
+                                if (enemies[i].HasHealthpack) // If the now-dead enemy has a healthpack, spawn it
                                 {
                                     healthPickups.Add(new HealthPickup(
                                         new Rectangle(enemies[i].X, enemies[i].Y, 16, 16),
@@ -474,21 +456,16 @@ namespace TwelveMage
                         
                         if(enemies.Count == 0)
                         {
-                            //enemies.Add(new Enemy(new Rectangle(250, 250, rng.Next(windowWidth), rng.Next(windowHeight)), enemySprite, 100));
-
-                            
-
                             for(int i = 0; i < wave * waveIncrease; i++)
                             {
                                 spawners[rng.Next(0, 4)].SpawnEnemy();
                                 enemies[i].OnDeath += IncreaseScore;
                             }
+                            enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack
+
                             wave++;
                         }
                         
-                        
-                        
-
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);
                         //gun.PosVector = player.PosVector;
@@ -520,20 +497,6 @@ namespace TwelveMage
                     {
                         button.Update();
                     }
-
-                    // Save Player & Enemy data (Chloe)
-                    /*if (SingleKeyPress(Keys.S, currentKBState))
-                    {
-                        fileManager.SavePlayer(player);
-                        fileManager.SaveEnemies(enemies);
-                    }
-
-                    // Unpause game and return to game state (Lucas)
-                    if (SingleKeyPress(Keys.P, currentKBState))
-                    {
-                        isPaused = false;
-                        currentState = GameState.Game;
-                    }*/
                     break;
 
                 case GameState.GameOver:
@@ -542,13 +505,6 @@ namespace TwelveMage
                     {
                         button.Update();
                     }
-
-                    // Return to main menu (Lucas)
-                    // Note: Single key press is needed otherwise will start new game
-                    /*if (SingleKeyPress(Keys.Enter, currentKBState))
-                    {
-                        currentState = GameState.Menu;
-                    }*/
                     break;
 
                 default:
@@ -865,16 +821,18 @@ namespace TwelveMage
         /// </summary>
         private void NewGame()
         {
-            currentState = GameState.Game;
-            wave = 1;
-            score = 0;
-            int[] stats = fileManager.LoadStats();
-            if(stats[1] > highScore) highScore = stats[1];
+            currentState = GameState.Game; // Set GameState
+            wave = 1; // Set to wave 1
+            score = 0; // Reset score
+            int[] stats = fileManager.LoadStats(); // Load stats
+            if(stats[1] > highScore) highScore = stats[1]; // Load the saved highscores
             if(stats[3] > highWave) highWave = stats[3];
-            player.Reset();
-            enemies.Clear();
-            enemies.Add(defaultEnemy.Clone());
-            enemies[0].OnDeath += IncreaseScore;
+            player.Reset(); // Reset the player
+            enemies.Clear(); // Clear enemies
+            enemies.Add(defaultEnemy.Clone()); // Add the default enemy
+            enemies[0].OnDeath += IncreaseScore; // Add the score increase method to the enemy's OnDeath event
+            enemies[0].HasHealthpack = true; // Give the enemy a healthpack
+
             //DeactivateButtons();
         }
 
@@ -898,11 +856,15 @@ namespace TwelveMage
                 spawner.Enemies = enemies;
             }
 
-            foreach(Enemy enemy in enemies)
+            if (enemies != null)
             {
-                enemy.OnDeath += IncreaseScore;
+                foreach (Enemy enemy in enemies)
+                {
+                    enemy.OnDeath += IncreaseScore;
+                }
+                
+                enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack
             }
-
             currentState = GameState.Game;
             //DeactivateButtons();
         }
