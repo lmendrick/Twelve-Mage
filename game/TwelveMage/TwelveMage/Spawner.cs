@@ -35,6 +35,9 @@ namespace TwelveMage
         //Random
         private Random rng;
 
+        private int windowWidth;
+        private int windowHeight;
+
         // Property to re-reference enemies if it becomes a new List
         public List<Enemy> Enemies
         {
@@ -54,7 +57,7 @@ namespace TwelveMage
         /// <param name="xRadius">The X spawn radius</param>
         /// <param name="yRadius">The Y spawn radius</param>
         /// <param name="noSpawningArea">The rectangle to use as reference when constructing the noSpawnArea. The X/Y coords don't matter, only the width/height</param>
-        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth, Player player, Rectangle noSpawningArea)
+        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight)
         {
             this.position = position;
             this.xRadius = xRadius;
@@ -63,6 +66,8 @@ namespace TwelveMage
             this.enemyTexture = enemyTexture;
             this.enemyHealth = enemyHealth;
             this.player = player;
+            this.windowHeight = windowHeight;
+            this.windowWidth = windowWidth;
             rng = new Random();
             this.noSpawningArea = new Rectangle((int)position.X - (noSpawningArea.Width / 2), (int)position.Y - (noSpawningArea.Height / 2), noSpawningArea.Width, noSpawningArea.Height);
 
@@ -90,6 +95,67 @@ namespace TwelveMage
         /// Get the Y radius
         /// </summary>
         public int YRadius { get { return yRadius; } }
+
+
+        public Summoner SpawnSummoner()
+        {
+            upperXRange = (int)position.X + xRadius;
+            upperYRange = (int)position.Y + YRadius;
+            lowerXRange = (int)position.X - xRadius;
+            lowerYRange = (int)position.Y - YRadius;
+
+            noSpawningArea.X = (int)position.X - (noSpawningArea.Width / 2);
+            noSpawningArea.Y = (int)position.Y - (noSpawningArea.Height / 2);
+
+            Summoner spawned = new Summoner(
+                new Rectangle(
+                    rng.Next(lowerXRange, upperXRange + 1),
+                    rng.Next(lowerYRange, upperYRange + 1),
+                    30,
+                    30),
+                enemyTexture,
+                enemyHealth,
+                enemies,
+                player,
+                10,
+                windowWidth,
+                windowHeight);
+
+            /*
+            if(spawned.Rec.Intersects(NoSpawningArea))
+            {
+                do
+                {
+                    spawned.X = rng.Next(lowerXRange, upperXRange + 1);
+                    spawned.Y = rng.Next(lowerYRange, upperYRange + 1);
+                }while(spawned.Rec.Intersects(NoSpawningArea));
+
+            }
+            */
+            float xDistanceFromPlayer = player.PosVector.X - spawned.X;
+            float yDistanceFromPlayer = player.PosVector.Y - spawned.Y;
+
+
+            if (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50)
+            {
+                do
+                {
+                    //spawned.X = rng.Next((int)(lowerXRange * 1.25), (int)((upperXRange + 1) * 1.25));
+                    //spawned.Y = rng.Next((int)(lowerYRange * 1.25), (int)((upperYRange + 1) * 1.25));
+                    spawned.X += rng.Next(-50, 51);
+                    spawned.Y += rng.Next(-50, 51);
+                    xDistanceFromPlayer = player.Rec.X - spawned.X;
+                    yDistanceFromPlayer = player.Rec.Y - spawned.Y;
+                } while (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50);
+            }
+
+
+
+
+            enemies.Add(spawned);
+
+            return spawned;
+        }
 
         /// <summary>
         /// Spawns a new enemy within the spawn area;
@@ -137,8 +203,8 @@ namespace TwelveMage
                 {
                     //spawned.X = rng.Next((int)(lowerXRange * 1.25), (int)((upperXRange + 1) * 1.25));
                     //spawned.Y = rng.Next((int)(lowerYRange * 1.25), (int)((upperYRange + 1) * 1.25));
-                    spawned.X += rng.Next(-30, 31);
-                    spawned.Y += rng.Next(-30, 31);
+                    spawned.X += rng.Next(-50, 51);
+                    spawned.Y += rng.Next(-50, 51);
                     xDistanceFromPlayer = player.Rec.X - spawned.X;
                     yDistanceFromPlayer = player.Rec.Y - spawned.Y;
                 } while (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50);

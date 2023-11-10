@@ -24,6 +24,7 @@ P: Pause the game
 U: Spawn a single enemy
 C: Clear all enemies & go to the next wave
 Q: Go to the "Game Over" screen
+X: Activate/deactivate enemy Update()
 
 ~~Pause Menu~~
 Buttons:

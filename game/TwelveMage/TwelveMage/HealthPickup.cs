@@ -11,6 +11,9 @@ namespace TwelveMage
     internal class HealthPickup : GameObject
     {
         private Player player;
+        private int lifespan;
+        private int age;
+        private Random rng;
 
 
 
@@ -18,7 +21,10 @@ namespace TwelveMage
             : base(rec, texture, health)
         {
             this.player = player;
+            rng = new Random();
             isActive = true;
+            lifespan = rng.Next(3, 6);
+            age = 0;
         }
         
 
@@ -28,11 +34,23 @@ namespace TwelveMage
             set { isActive = value; }
         }
 
+        public int Age
+        {
+            get { return age; }
+            set { age = value; }
+
+        }
+
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
             if (this.CheckCollision(player) && player.Health < 100)
             {
                 player.Health += health;
+                isActive = false;
+            }
+
+            if(age >= lifespan)
+            {
                 isActive = false;
             }
         }
