@@ -28,6 +28,7 @@ namespace TwelveMage
         private Texture2D bulletSprite;
         private Texture2D fireballSprite;
         private Texture2D healthBar;
+        private Texture2D healthPickupSprite;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
@@ -71,6 +72,9 @@ namespace TwelveMage
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
         private Enemy defaultEnemy;
+
+
+        private List<HealthPickup> healthPickups;
 
 
         #endregion
@@ -141,6 +145,8 @@ namespace TwelveMage
             // Load Health Bar Assets
             healthBar = this.Content.Load<Texture2D>("HB_1");
 
+            healthPickupSprite = this.Content.Load<Texture2D>("medkit");
+
             // Create a FileManager (Chloe)
             fileManager = new FileManager();
 
@@ -163,7 +169,8 @@ namespace TwelveMage
             // Instantiate single test enemy (Lucas)
             // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
-            
+
+            healthPickups = new List<HealthPickup>();
 
             enemies = new List<Enemy>();
             defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player);
@@ -355,14 +362,14 @@ namespace TwelveMage
 
                         spawner.Position = player.PosVector;
 
-                        if(SingleKeyPress(Keys.U, currentKBState))
+                        if (SingleKeyPress(Keys.U, currentKBState))
                         {
                             spawner.SpawnEnemy();
 
                             //spawners[rng.Next(0,4)].SpawnEnemy();
                         }
 
-                        if(SingleKeyPress(Keys.C, currentKBState))
+                        if (SingleKeyPress(Keys.C, currentKBState))
                         {
                             enemies.Clear();
                         }
@@ -370,7 +377,7 @@ namespace TwelveMage
                         // Enemy movement (Lucas)
                         // Pass current player position to enemies (Lucas)
                         // Set enemy TimeFreeze status according to if player used ability
-                        foreach(Enemy enemy in enemies)
+                        foreach (Enemy enemy in enemies)
                         {
                             enemy.Update(gameTime, bullets);
                             enemy.PlayerPos = player.PosVector;
@@ -378,6 +385,19 @@ namespace TwelveMage
 
                             enemy.UpdateAnimation(gameTime);
 
+                        }
+
+                        foreach (HealthPickup healthPickup in healthPickups)
+                        {
+                            healthPickup.Update(gameTime, bullets);
+                        }
+
+                        for(int i = healthPickups.Count - 1; i >= 0; i--)
+                        {
+                            if (!healthPickups[i].IsActive)
+                            {
+                                healthPickups.RemoveAt(i);
+                            }
                         }
                         
 
@@ -436,6 +456,16 @@ namespace TwelveMage
                         {
                             if (!enemies[i].IsActive)
                             {
+                                int pickupChance = rng.Next(1, 11);
+                                if (pickupChance <= 2)
+                                {
+                                    healthPickups.Add(new HealthPickup(
+                                        new Rectangle(enemies[i].X, enemies[i].Y, 16, 16),
+                                        healthPickupSprite,
+                                        10,
+                                        player));
+                                }
+
                                 enemies.RemoveAt(i);
                             }
                         }
@@ -605,6 +635,13 @@ namespace TwelveMage
 
                 case GameState.Game:
 
+                    // Health pickup drawing
+                    foreach(HealthPickup healthPickup in healthPickups)
+                    {
+                        healthPickup.Draw(_spriteBatch);
+                    }
+
+
                     // Player sprite/animations (Lucas)
                     player.Draw(_spriteBatch);
                     
@@ -616,6 +653,8 @@ namespace TwelveMage
                     {
                         enemy.Draw(_spriteBatch);
                     }
+
+                    
 
                     //draw bullets as long as its a projectile(AJ)
                     foreach (GameObject project in bullets)
