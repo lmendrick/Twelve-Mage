@@ -15,26 +15,30 @@ namespace TwelveMage
     * such as grass, stones, flowers, etc.
     * No known issues.
     */
-    internal abstract class Tile
+    internal class Tile
     {
         #region FIELDS
-        protected Texture2D texture; // Tile sprite
-        protected Vector2 loc; // Tile location
-        protected const int TextureScale = 32; // Scale of the tile's texture, in pixels/side
+        private Texture2D texture; // Tile sprite
+        private Vector2 loc; // Tile location
+        private const int TextureScale = 32; // Scale of the tile's texture, in pixels/side
+        private Rectangle sourceRec;
+        private string type;
         #endregion
 
         #region PROPERTIES
-        protected Vector2 Loc
+        public Vector2 Loc
         { 
             get { return loc; }
         }
         #endregion
 
         #region CONSTRUCTORS
-        protected Tile(Texture2D texture, Vector2 loc) // Default constructor; requres a texture and a location to function
+        public Tile(string type, Texture2D texture, Vector2 loc, Rectangle sourceRec) // Default constructor; requres a texture and a location to function
         {
+            this.type = type;
             this.texture = texture;
             this.loc = loc;
+            this.sourceRec = sourceRec;
         }
         #endregion
 
@@ -43,7 +47,7 @@ namespace TwelveMage
         {
             // Cast the tile's float location to a square (Rectangle) with TextureScale length sides
             Rectangle drawLocation = new Rectangle((int)loc.X, (int)loc.Y, TextureScale, TextureScale);
-            _spriteBatch.Draw(texture, drawLocation, Color.White); // Draw this tile
+            _spriteBatch.Draw(texture, drawLocation, sourceRec, Color.White); // Draw this tile
         }
 
         public void Draw(SpriteBatch _spriteBatch, Vector2 offset) // Draws this tile with a Vector2 offset (for later)
