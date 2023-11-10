@@ -812,7 +812,7 @@ namespace TwelveMage
                     _spriteBatch.DrawString(
                         menuFont,
                         "Score: " + score,
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Score: ").X / 2),
+                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Score: " + score).X / 2),
                         ((windowHeight  - 75))),
                         Color.Black);
 
@@ -820,7 +820,7 @@ namespace TwelveMage
                     _spriteBatch.DrawString(
                         menuFont,
                         "Highscore: " + highScore,
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Highscore: ").X / 2),
+                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Highscore: " + highScore).X / 2),
                         ((windowHeight - 50))),
                         Color.Black);
 
