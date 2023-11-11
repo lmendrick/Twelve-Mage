@@ -30,6 +30,18 @@ namespace TwelveMage
         private Texture2D healthBar;
         private Texture2D healthPickupSprite;
 
+        // Spell UI Sprites
+        private Texture2D blinkSpellIcon;
+        private Texture2D fireballSpellIcon;
+        private Texture2D freezeSpellIcon;
+        private Texture2D hasteSpellIcon;
+        private Texture2D spellSlotOverlay;
+
+        private Rectangle blinkRec;
+        private Rectangle fireballRec;
+        private Rectangle freezeRec;
+        private Rectangle hasteRec;
+
         private int playerWidth = 34;
         private int playerHeight = 30;
 
@@ -122,6 +134,19 @@ namespace TwelveMage
             // Load in fonts (Lucas)
             titleFont = this.Content.Load<SpriteFont>("TitleFont");
             menuFont = this.Content.Load<SpriteFont>("MenuFont");
+
+            // Load Spell Slots (Chloe)
+            blinkSpellIcon = this.Content.Load<Texture2D>("BlinkSpellSlot");
+            fireballSpellIcon = this.Content.Load<Texture2D>("FireballSpellSlot");
+            freezeSpellIcon = this.Content.Load<Texture2D>("FreezeSpellSlot");
+            hasteSpellIcon = this.Content.Load<Texture2D>("HasteSpellSlot");
+            spellSlotOverlay = this.Content.Load<Texture2D>("SpellSlotOverlay");
+
+            // Rectangles for spell icon graphics
+            blinkRec = new Rectangle(20, windowHeight - 100, 50, 80);
+            fireballRec = new Rectangle(90, windowHeight - 100, 50, 80);
+            freezeRec = new Rectangle(160, windowHeight - 100, 50, 80);
+            hasteRec = new Rectangle(230, windowHeight - 100, 50, 80);
 
             // Load in player character sprite sheet (Lucas)
             playerSpriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
@@ -367,7 +392,6 @@ namespace TwelveMage
                             enemy.IsFrozen = player.IsFrozen;
 
                             enemy.UpdateAnimation(gameTime);
-
                         }
 
                         foreach (HealthPickup healthPickup in healthPickups)
@@ -625,7 +649,7 @@ namespace TwelveMage
                     //gun sprite
                     //gun.Draw(_spriteBatch);
 
-                    //enenmy health display(AJ
+                    /*//enenmy health display(AJ
                     if (enemies != null && enemies.Count != 0) // Only do this if enemies has an enemy
                     {
                         _spriteBatch.DrawString(
@@ -648,7 +672,7 @@ namespace TwelveMage
                         new Vector2(10, 90),
                         Color.Black);
                     // Freeze cooldown display (Lucas)
-                    string freezeString = String.Format("{0:0.00}", player.FreezeCD);
+                    string freezeString = String.Format("{0:0.00}", player.FreezeTimer);
                     _spriteBatch.DrawString(
                         menuFont,
                         "Time Freeze: " + freezeString,
@@ -658,12 +682,13 @@ namespace TwelveMage
                     _spriteBatch.DrawString(menuFont,
                         "Haster CoolDown: " + hasteString,
                         new Vector2(10, 170), 
-                        Color.Black);
+                        Color.Black);*/
+
                     //Wave counter display
                     _spriteBatch.DrawString(
                         menuFont,
-                        "Wave: " + wave,
-                        new Vector2(10, 210),
+                        "Wave: " + wave + " Score: " + score,
+                        new Vector2(10, 10),
                         Color.Black);
 
                     // Pause button (P) (Lucas)
@@ -696,6 +721,9 @@ namespace TwelveMage
                         new Vector2(1f * player.Health/100, 0.5f),  // Scale 
                         SpriteEffects.None,                         // Effects
                         0);                                         // Layer depth
+
+                    // Draw Spells
+                    DrawSpellSlots();
                     break;
 
                 case GameState.Pause:
@@ -948,6 +976,41 @@ namespace TwelveMage
             if(score > highScore) highScore = score;
             if(wave > highWave) wave = highWave;
             fileManager.SavePersistentStats(highScore, highWave);
+        }
+
+        /// <summary>
+        /// Draws all spell slots, and their timer overlays
+        /// </summary>
+        private void DrawSpellSlots()
+        {
+            // Draw base icons
+            // If the spells are on cooldown, draw the base icons in gray
+            if(player.BlinkTimer > 0) _spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.Gray * 0.7f);
+            else _spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.White * 0.7f);
+            if(player.FireballTimer > 0) _spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.Gray * 0.7f);
+            else _spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.White * 0.7f);
+            if(player.FreezeTimer > 0) _spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.Gray * 0.7f);
+            else _spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.White * 0.7f);
+            if(player.HasteTimer > 0) _spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.Gray * 0.7f);
+            else _spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.White * 0.7f);
+
+            // Rectangles for cooldown overlays
+            Rectangle blinkOverlay = blinkRec;
+            Rectangle fireballOverlay = fireballRec;
+            Rectangle freezeOverlay = freezeRec;
+            Rectangle hasteOverlay = hasteRec;
+
+            // Calculate cooldown overlay size ratios
+            // Overlay height : base icon height = spell timer : spell cooldown
+            blinkOverlay.Height = (int)(blinkOverlay.Height * (player.BlinkTimer / player.BlinkCooldownDuration));
+            fireballOverlay.Height = (int)(fireballOverlay.Height * (player.FireballTimer / player.FireballCooldownDuration));
+            freezeOverlay.Height = (int)(freezeOverlay.Height * (player.FreezeTimer / player.FreezeCooldownDuration));
+            hasteOverlay.Height = (int)(hasteOverlay.Height * (player.HasteTimer / player.HasteCooldownDuration));
+
+            _spriteBatch.Draw(spellSlotOverlay, blinkOverlay, Color.White * 0.5f);
+            _spriteBatch.Draw(spellSlotOverlay, fireballOverlay, Color.White * 0.5f);
+            _spriteBatch.Draw(spellSlotOverlay, freezeOverlay, Color.White * 0.5f);
+            _spriteBatch.Draw(spellSlotOverlay, hasteOverlay, Color.White * 0.5f);
         }
     }
 }

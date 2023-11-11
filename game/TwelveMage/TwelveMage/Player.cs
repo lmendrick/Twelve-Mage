@@ -15,6 +15,7 @@ using System.Collections.Generic;
  * No known issues
  * Anthony: Removed uneeded fields and enum, added projectile capability to player 
  * Lucas: Added Player Movement, States, and Animations
+ * Chloe: Completely reworked spell functionality
  */
 
 namespace TwelveMage
@@ -32,31 +33,18 @@ namespace TwelveMage
     {
         #region FIELDS
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
-                                            //private int _health;
-                                            //private int _ammo; // Ammunition count (Not yet implemented)
+        //private int _ammo; // Ammunition count (Not yet implemented)
         Color color = Color.White;
 
         float invulnerable = 0f;
 
         Texture2D bullet;
 
-        // PROPERTIES
-        //public int Health { get { return _health; } }
-        //bullet property to get bullet texture
-        public Texture2D Bullet
-        {
-            get { return bullet; }
-            set { bullet = value; }
-        }
-
-        
-
         PlayerState state;
         //two new kb states to check if space is clicked only once as to not spam hold
         private KeyboardState currentKB;
         private KeyboardState previousKB;
         
-
         // Animation
         int frame;              // The current animation frame
         double timeCounter;     // The amount of time that has passed
@@ -84,22 +72,45 @@ namespace TwelveMage
         private float shootingTimer;
         private bool hasShot;
 
-        //Spell stuff
+        // Spell stuff
         private Spell spell;
-        private double blinkTimer;
-        private bool blinked;
-        private bool isFrozen;
-        private double freezeTimer;
-        private double freezeCD;
+
+        // Bools to track if spells are possible
+        private bool canBlink;
+        private bool canFireball;
         private bool canFreeze;
-        private double hasteTimer;
-        private bool isHastened;
-        
-        
+        private bool canHaste;
+
+        // Values for spell effect duration
+        private double freezeEffectDuration = 5.0;
+        private double hasteEffectDuration = 5.0;
+
+        // Values for spell cooldown duration
+        private double blinkCooldownDuration = 6.0;
+        private double freezeCooldownDuration = 20.0;
+        private double hasteCooldownDuration = 10.0;
+        private double fireballCooldownDuration = 10.0;
+
+        // Values for current spell timers
+        private double blinkTimer = 0;
+        private double fireballTimer = 0;
+        private double freezeTimer = 0;
+        private double hasteTimer = 0;
+
+        // Note: When a spell is used, its CooldownDuration will be added to its timer.
+        //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
+        //       For any spell with a lasting effect, it will be in effect when its Timer is >= CooldownDuration - EffectDuration
+        //       ex: Freeze is in effect when freezeTimer >= (20.0 - 5.0)
+        //       All of this is handled each frame in the UpdateSpells() method.
+
         #endregion
 
         #region PROPERTIES
-
+        public Texture2D Bullet //bullet property to get bullet texture
+        {
+            get { return bullet; }
+            set { bullet = value; }
+        }
         public float Invulnerable
         {
             get { return invulnerable; }
@@ -134,25 +145,54 @@ namespace TwelveMage
             set { windowHeight = value; }
         }
 
+        public double BlinkCooldownDuration
+        {
+            get { return blinkCooldownDuration; }
+        }
         public double BlinkTimer
         {
-            get { return blinkTimer; }
+            get { return blinkTimer;}
+        }
+        public double FireballCooldownDuration
+        {
+            get { return fireballCooldownDuration; }
+        }
+        public double FireballTimer
+        {
+            get { return fireballTimer; }
+        }
+        public double FreezeCooldownDuration
+        {
+            get { return freezeCooldownDuration; }
+        }
+        public bool IsFrozen // Returns true if FreezeTimer is within the freeze effect's  duration
+        {
+            get
+            {
+                if (freezeTimer >= freezeCooldownDuration - freezeEffectDuration) return true;
+                else return false;
+            }
+        }
+        public bool IsHastened // Returns true if HasteTimer is within the haste effect's duration
+        {
+            get
+            {
+                if (hasteTimer >= hasteCooldownDuration - hasteEffectDuration) return true;
+                else return false;
+            }
+        }
+        public double FreezeTimer
+        {
+            get { return freezeTimer; }
+        }
+        public double HasteCooldownDuration
+        {
+            get { return hasteCooldownDuration; }
         }
         public double HasteTimer
         {
             get { return hasteTimer; }
         }
-
-        public bool IsFrozen
-        {
-            get { return isFrozen; }
-        }
-
-        public double FreezeCD
-        {
-            get { return freezeCD; }
-        }
-
         #endregion
 
         //removed texture b/c added it as a field in object
@@ -163,15 +203,13 @@ namespace TwelveMage
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
             spell = new Spell(this);
-            blinkTimer = 6.0f;
-            blinked = false;
+            blinkTimer = 0;
+            fireballTimer = 0;
+            freezeTimer = 0;
+            hasteTimer = 0;
+            
             shootingTimer = 0.25f;
             hasShot = false;
-
-            isFrozen = false;
-            freezeTimer = 5;
-            freezeCD = 20;
-            canFreeze = true;
 
             // Default sprite direction
             state = PlayerState.FaceRight;
@@ -199,91 +237,6 @@ namespace TwelveMage
 
 
             #region Input Processing
-
-            //Spell input
-            if(currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space) && !blinked)
-            {
-                spell.Blink(DirVector);
-                blinked = true;
-            }
-
-            //Can only blink once every 6 seconds
-            if (blinked)
-            {
-                blinkTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if(blinkTimer <= 0)
-                {
-                    blinkTimer = 6.0;
-                    blinked = false;
-                }
-            }
-            //can only use fireball 3 times
-            //key will be f 
-            if(currentKB.IsKeyDown(Keys.F) &&  previousKB.IsKeyUp(Keys.F) )
-            {
-
-            }
-
-            //Haste spell(E key)
-            //allows for increased speed for 5 seconds
-            //can only haste every 10 seconds
-            if(currentKB.IsKeyDown(Keys.E) && previousKB.IsKeyUp(Keys.E) )
-            {
-               isHastened = true;
-               hasteTimer = 10;
-            }
-
-            // Time Freeze Spell Input (R key)
-            // (Lucas)
-            if (currentKB.IsKeyDown(Keys.R) && previousKB.IsKeyUp(Keys.R) && !isFrozen && canFreeze)
-            {
-                isFrozen = true;
-                canFreeze = false;
-                freezeCD = 20;
-            }
-
-            // Handles how long enemies are frozen (5s)
-            if (isFrozen)
-            {
-                freezeTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-
-                if (freezeTimer <= 0)
-                { 
-                    isFrozen = false;
-                    freezeTimer = 5;
-                }
-            }
-
-            // Counts down freeze CD (20s)
-            if (!canFreeze)
-            {
-                freezeCD -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                if (freezeCD <= 0)
-                {
-                    canFreeze = true;
-                    freezeCD = 20;
-                }
-            }
-
-            if(isHastened)
-            {
-                hasteTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                speed = 350f;
-                
-                if(hasteTimer <= 0)
-                {
-                    isHastened = false;
-                    hasteTimer = 0;
-                    speed = 200f;
-                    
-
-                }
-            }
-
-            
-            
-
             // Process W and S keys for vertical movement
             if (currentKB.IsKeyDown(Keys.W))
             {
@@ -312,6 +265,18 @@ namespace TwelveMage
                 dir.X = 0; // No horizontal movement
             }
 
+            // Normalize the direction vector if there is any movement
+            if (dir.X != 0 || dir.Y != 0)
+            {
+                dir.Normalize();
+            }
+
+            // Update the player's position based on direction, time elapsed, and speed
+            pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+
+            UpdateSpells(gameTime, spell);
+
             // Mouse shooting (Lucas)
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed && !hasShot)
             {
@@ -330,17 +295,6 @@ namespace TwelveMage
                     hasShot = false;
                 }
             }
-
-
-            // Normalize the direction vector if there is any movement
-            if (dir.X != 0 || dir.Y != 0)
-            {
-                dir.Normalize();
-            }
-
-            // Update the player's position based on direction, time elapsed, and speed
-            pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
-            pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
             // Set the player's animation state based on movement direction
             if (dir.X < 0)
@@ -388,7 +342,7 @@ namespace TwelveMage
                 color = Color.White;
             }
             //if hastened color is orange
-            if(hasteTimer > 0)
+            if(IsHastened)
             {
                 color = Color.Orange;
             }
@@ -566,11 +520,11 @@ namespace TwelveMage
             invulnerable = 0f;
             state = PlayerState.FaceRight;
             health = MAX_HEALTH;
-            blinked = false;
+
             blinkTimer = 0;
-            isFrozen = false;
-            freezeTimer = 5;
-            freezeCD = 0;
+            fireballTimer = 0;
+            freezeTimer = 0;
+            hasteTimer = 0;
         }
 
         /// <summary>
@@ -676,5 +630,65 @@ namespace TwelveMage
             pos.Y = (windowHeight / 2) - (rec.Height / 2);
         }
         #endregion
+
+        private void UpdateSpells(GameTime gameTime, Spell spell)
+        {
+            // Check which spells can be used this frame
+            canBlink = (blinkTimer <= 0 && !(dir.X == 0 && dir.Y == 0));
+            canFireball = (fireballTimer <= 0);
+            canFreeze = (freezeTimer <= 0);
+            canHaste = (hasteTimer <= 0);
+
+            // Handle spell input
+            if (canBlink && currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
+            {
+                spell.Blink(dir);
+                blinkTimer = blinkCooldownDuration;
+            }
+            if (canFireball && currentKB.IsKeyDown(Keys.F) && previousKB.IsKeyUp(Keys.F))
+            {
+                spell.Fireball();
+                fireballTimer = fireballCooldownDuration;
+            }
+            if (canFreeze && currentKB.IsKeyDown(Keys.R) && previousKB.IsKeyUp(Keys.R))
+            {
+                freezeTimer = freezeCooldownDuration;
+            }
+            if (canHaste && currentKB.IsKeyDown(Keys.E) &&  previousKB.IsKeyUp(Keys.E))
+            {
+                hasteTimer = hasteCooldownDuration;
+            }
+
+            // Handle spell effects
+            if (IsHastened)
+            {
+                speed = 350f;
+            }
+            else speed = 200f;
+
+            // Handle spell timers
+            if(blinkTimer > 0)
+            {
+                blinkTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if(fireballTimer > 0)
+            {
+                fireballTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if(freezeTimer > 0)
+            {
+                freezeTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+            if(hasteTimer > 0)
+            {
+                hasteTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+            // Clamp spell timers so they're always >= 0
+            if(blinkTimer < 0.0) blinkTimer = 0;
+            if(fireballTimer < 0.0) fireballTimer = 0;
+            if(freezeTimer < 0.0) freezeTimer = 0;
+            if (hasteTimer < 0.0) hasteTimer = 0;
+        }
     }
 }

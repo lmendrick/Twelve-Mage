@@ -16,8 +16,8 @@ internal class Spell
 		
 	}
 
-	public void Fireball()
-	{
+	public void Fireball() //can only use fireball 3 times
+    {
 
 	}
 
@@ -40,7 +40,5 @@ internal class Spell
 		Vector2 blinkDistance = new Vector2(direction.X * 100, direction.Y * 100);
 
 		player.PosVector += blinkDistance;
-		
-
 	}
 }
