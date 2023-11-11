@@ -29,6 +29,7 @@ namespace TwelveMage
         private Texture2D fireballSprite;
         private Texture2D healthBar;
         private Texture2D healthPickupSprite;
+        private Texture2D summonerSprite;
 
         // Spell UI Sprites
         private Texture2D blinkSpellIcon;
@@ -84,6 +85,7 @@ namespace TwelveMage
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
         private Enemy defaultEnemy;
+        private bool enemiesActive;
 
 
         private List<HealthPickup> healthPickups;
@@ -189,6 +191,8 @@ namespace TwelveMage
 
             // Load enemy sprite (Lucas)
             enemySprite = this.Content.Load<Texture2D>("ZombieWalkSheet");
+            summonerSprite = this.Content.Load<Texture2D>("enemy");
+            enemiesActive = true;
             
 
             // Instantiate single test enemy (Lucas)
@@ -208,7 +212,9 @@ namespace TwelveMage
                 enemySprite,
                 100,
                 player,
-                new Rectangle(0, 0, 20, 20));
+                new Rectangle(0, 0, 20, 20),
+                windowWidth,
+                windowHeight);
             spawners = new List<Spawner>();
 
 
@@ -225,7 +231,9 @@ namespace TwelveMage
                 enemySprite,
                 100,
                 player,
-                Rectangle.Empty));
+                Rectangle.Empty,
+                windowWidth,
+                windowHeight));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth / 2, windowHeight + 40),
@@ -235,7 +243,9 @@ namespace TwelveMage
                 enemySprite,
                 100, 
                 player,
-                Rectangle.Empty));
+                Rectangle.Empty,
+                windowWidth,
+                windowHeight));
 
             spawners.Add(new Spawner(
                 new Vector2(-40, windowHeight / 2),
@@ -245,7 +255,9 @@ namespace TwelveMage
                 enemySprite,
                 100,
                 player,
-                Rectangle.Empty));
+                Rectangle.Empty,
+                windowWidth,
+                windowHeight));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth + 40, windowHeight / 2),
@@ -255,7 +267,9 @@ namespace TwelveMage
                 enemySprite,
                 100,
                 player,
-                Rectangle.Empty));
+                Rectangle.Empty,
+                windowWidth,
+                windowHeight));
 
             // Create a few 100x200 buttons down the left side
             //buttons.Add(new Button(
@@ -370,11 +384,18 @@ namespace TwelveMage
 
                         spawner.Position = player.PosVector;
 
+                        //Spawn an enemy
                         if (SingleKeyPress(Keys.U, currentKBState))
                         {
-                            spawner.SpawnEnemy();
+                            spawner.SpawnSummoner();
 
                             //spawners[rng.Next(0,4)].SpawnEnemy();
+                        }
+
+                        //Activate/Deactivate enemy Update()
+                        if(SingleKeyPress(Keys.X, currentKBState))
+                        {
+                            enemiesActive = !enemiesActive;
                         }
 
                         if (SingleKeyPress(Keys.C, currentKBState))
@@ -387,11 +408,16 @@ namespace TwelveMage
                         // Set enemy TimeFreeze status according to if player used ability
                         foreach (Enemy enemy in enemies)
                         {
-                            enemy.Update(gameTime, bullets);
+                            if (enemiesActive)
+                            {
+                                enemy.Update(gameTime, bullets);
+                                enemy.UpdateAnimation(gameTime);
+                            }
                             enemy.PlayerPos = player.PosVector;
                             enemy.IsFrozen = player.IsFrozen;
 
-                            enemy.UpdateAnimation(gameTime);
+                            
+
                         }
 
                         foreach (HealthPickup healthPickup in healthPickups)
@@ -477,7 +503,7 @@ namespace TwelveMage
                         }
 
                         
-                        
+                        /*
                         if(enemies.Count == 0)
                         {
                             for(int i = 0; i < wave * waveIncrease; i++)
@@ -485,10 +511,17 @@ namespace TwelveMage
                                 spawners[rng.Next(0, 4)].SpawnEnemy();
                                 enemies[i].OnDeath += IncreaseScore;
                             }
-                            enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack
+                            enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give two random enemies a healthpack
+                            enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Might select the same enemy, but that's ok
+
+                            foreach (HealthPickup healthPickup in healthPickups)
+                            {
+                                healthPickup.Age++;
+                            }
 
                             wave++;
                         }
+                        */
                         
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);
