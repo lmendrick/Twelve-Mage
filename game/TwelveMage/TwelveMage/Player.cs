@@ -36,8 +36,6 @@ namespace TwelveMage
         //private int _ammo; // Ammunition count (Not yet implemented)
         Color color = Color.White;
 
-        float invulnerable = 0f;
-
         Texture2D bullet;
 
         PlayerState state;
@@ -103,6 +101,9 @@ namespace TwelveMage
         private double freezeTimer = 0;
         private double hasteTimer = 0;
 
+        // Invulnerability works similarly to spell effects
+        double invulnerableTimer = 0;
+
         // Note: When a spell is used, its CooldownDuration will be added to its timer.
         //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
         //       For any spell with a lasting effect, it will be in effect when its Timer is >= CooldownDuration - EffectDuration
@@ -112,15 +113,31 @@ namespace TwelveMage
         #endregion
 
         #region PROPERTIES
+        public int Health
+        {
+            get { return health; }
+            set
+            {
+                if (value < health && !IsInvulnerable) // Only change health if the player isn't invulnerable
+                {
+                    invulnerableTimer = 4; // If health decreases, make the add invulnerability
+                    health = value;
+                }
+                if (value > health)
+                {
+                    health = value;
+                }
+            }
+        }
         public Texture2D Bullet //bullet property to get bullet texture
         {
             get { return bullet; }
             set { bullet = value; }
         }
-        public float Invulnerable
+        
+        public double Invulneravle
         {
-            get { return invulnerable; }
-            set { invulnerable = value; }
+            get { return invulnerableTimer; }
         }
 
         public Vector2 PosVector 
@@ -216,6 +233,10 @@ namespace TwelveMage
                 if (hasteTimer >= hasteCooldown - hasteEffect) return true;
                 else return false;
             }
+        }
+        public bool IsInvulnerable
+        {
+            get { return (invulnerableTimer > 0); }
         }
         #endregion
 
@@ -357,7 +378,7 @@ namespace TwelveMage
             }
             //Anthony if player is damaged set invulnerbale 
             //then make color black after set color back to white
-            if(invulnerable > 0 )
+            if(invulnerableTimer > 0 )
             {
                 color = Color.Black;
             }
@@ -541,7 +562,6 @@ namespace TwelveMage
         {
             Center();
             color = Color.White;
-            invulnerable = 0f;
             state = PlayerState.FaceRight;
             health = MAX_HEALTH;
 
@@ -549,6 +569,7 @@ namespace TwelveMage
             fireballTimer = 0;
             freezeTimer = 0;
             hasteTimer = 0;
+            invulnerableTimer = 0;
         }
 
         /// <summary>
@@ -706,12 +727,17 @@ namespace TwelveMage
             {
                 hasteTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             }
+            if (invulnerableTimer > 0) // And invulnerability
+            {
+                invulnerableTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+            }
 
             // Clamp spell timers so they're always >= 0
             if (blinkTimer < 0.0) blinkTimer = 0;
             if (fireballTimer < 0.0) fireballTimer = 0;
             if (freezeTimer < 0.0) freezeTimer = 0;
             if (hasteTimer < 0.0) hasteTimer = 0;
+            if (invulnerableTimer < 0.0) invulnerableTimer = 0;
         }
 
         /// <summary>

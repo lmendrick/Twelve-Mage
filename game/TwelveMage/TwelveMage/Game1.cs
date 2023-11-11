@@ -479,23 +479,11 @@ namespace TwelveMage
 
                         foreach (Enemy enemy in enemies)
                         {
-                            //Anthony if player is invulnerbale count down timer
-                            if (player.Invulnerable > 0)
-                            {
-                                player.Invulnerable -= (float)gameTime.ElapsedGameTime.TotalSeconds;
-                            }
                             if (player.CheckCollision(enemy) && enemy.IsActive)
                             {
                                 //Anthony if player collides with enemy tick health down and add to invulnerbale timer
-                                if(player.Invulnerable <= 0)
-                                {
-                                    player.Health -= gun.Health;
-                                    player.Invulnerable = 4f;
-                                }
-                                    
-
+                                player.Health -= gun.Health;
                             }
-
                         }
                             
                         for(int i = enemies.Count - 1; i >= 0; i--) // Remove every inactive enemy
@@ -516,7 +504,7 @@ namespace TwelveMage
                         }
 
                         
-                        /*
+                        
                         if(enemies.Count == 0)
                         {
                             for(int i = 0; i < wave * waveIncrease; i++)
@@ -534,7 +522,7 @@ namespace TwelveMage
 
                             wave++;
                         }
-                        */
+                        
                         
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);
@@ -1010,7 +998,7 @@ namespace TwelveMage
         /// <summary>
         /// Increases the player's score by 10; to be used with Enemy's OnDeath event (or other events in future?)
         /// </summary>
-        private void IncreaseScore()
+        public void IncreaseScore()
         {
             score += 10;
         }
