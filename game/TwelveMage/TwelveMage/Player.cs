@@ -82,14 +82,14 @@ namespace TwelveMage
         private bool canHaste;
 
         // Values for spell effect duration
-        private double freezeEffectDuration = 5.0;
-        private double hasteEffectDuration = 5.0;
+        private double freezeEffect = 5.0;
+        private double hasteEffect = 5.0;
 
         // Values for spell cooldown duration
-        private double blinkCooldownDuration = 6.0;
-        private double freezeCooldownDuration = 20.0;
-        private double hasteCooldownDuration = 10.0;
-        private double fireballCooldownDuration = 10.0;
+        private double blinkCooldown = 6.0;
+        private double freezeCooldown = 20.0;
+        private double hasteCooldown = 10.0;
+        private double fireballCooldown = 10.0;
 
         // Values for current spell timers
         private double blinkTimer = 0;
@@ -145,31 +145,61 @@ namespace TwelveMage
             set { windowHeight = value; }
         }
 
-        public double BlinkCooldownDuration
+        public double BlinkCooldown
         {
-            get { return blinkCooldownDuration; }
+            get { return blinkCooldown; }
+            set { blinkCooldown = value; }
         }
         public double BlinkTimer
         {
-            get { return blinkTimer;}
+            get { return blinkTimer; }
+            set { blinkTimer = value; }
         }
-        public double FireballCooldownDuration
+        public double FireballCooldown
         {
-            get { return fireballCooldownDuration; }
+            get { return fireballCooldown; }
+            set { fireballCooldown = value; }
         }
         public double FireballTimer
         {
             get { return fireballTimer; }
+            set { fireballTimer = value; }
         }
-        public double FreezeCooldownDuration
+        public double FreezeCooldown
         {
-            get { return freezeCooldownDuration; }
+            get { return freezeCooldown; }
+            set { freezeCooldown = value; }
+        }
+        public double FreezeTimer
+        {
+            get { return freezeTimer; }
+            set { freezeTimer = value; }
+        }
+        public double FreezeEffect
+        {
+            get { return freezeEffect; }
+            set { freezeEffect = value; }
+        }
+        public double HasteCooldown
+        {
+            get { return hasteCooldown; }
+            set {  hasteCooldown = value; }
+        }
+        public double HasteTimer
+        {
+            get { return hasteTimer; }
+            set { hasteTimer = value; }
+        }
+        public double HasteEffect
+        {
+            get { return hasteEffect; }
+            set { hasteEffect = value; }
         }
         public bool IsFrozen // Returns true if FreezeTimer is within the freeze effect's  duration
         {
             get
             {
-                if (freezeTimer >= freezeCooldownDuration - freezeEffectDuration) return true;
+                if (freezeTimer >= freezeCooldown - freezeEffect) return true;
                 else return false;
             }
         }
@@ -177,21 +207,9 @@ namespace TwelveMage
         {
             get
             {
-                if (hasteTimer >= hasteCooldownDuration - hasteEffectDuration) return true;
+                if (hasteTimer >= hasteCooldown - hasteEffect) return true;
                 else return false;
             }
-        }
-        public double FreezeTimer
-        {
-            get { return freezeTimer; }
-        }
-        public double HasteCooldownDuration
-        {
-            get { return hasteCooldownDuration; }
-        }
-        public double HasteTimer
-        {
-            get { return hasteTimer; }
         }
         #endregion
 
@@ -643,20 +661,20 @@ namespace TwelveMage
             if (canBlink && currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
             {
                 spell.Blink(dir);
-                blinkTimer = blinkCooldownDuration;
+                blinkTimer = blinkCooldown;
             }
             if (canFireball && currentKB.IsKeyDown(Keys.F) && previousKB.IsKeyUp(Keys.F))
             {
                 spell.Fireball();
-                fireballTimer = fireballCooldownDuration;
+                fireballTimer = fireballCooldown;
             }
             if (canFreeze && currentKB.IsKeyDown(Keys.R) && previousKB.IsKeyUp(Keys.R))
             {
-                freezeTimer = freezeCooldownDuration;
+                freezeTimer = freezeCooldown;
             }
             if (canHaste && currentKB.IsKeyDown(Keys.E) &&  previousKB.IsKeyUp(Keys.E))
             {
-                hasteTimer = hasteCooldownDuration;
+                hasteTimer = hasteCooldown;
             }
 
             // Handle spell effects

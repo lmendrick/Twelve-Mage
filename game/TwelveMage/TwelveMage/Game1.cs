@@ -899,6 +899,19 @@ namespace TwelveMage
         }
 
         /// <summary>
+        /// Resumes gameplay from pause menu.
+        /// </summary>
+        private void Resume()
+        {
+            isPaused = false;
+            currentState = GameState.Game;
+
+            // Sets save status back to false, disabling "Game Saved" text
+            hasSaved = false;
+            //DeactivateButtons();
+        }
+
+        /// <summary>
         /// Loads a game from a file, advances game state, and clears buttons.
         /// </summary>
         private void LoadGame()
@@ -912,10 +925,11 @@ namespace TwelveMage
             int[] stats = fileManager.LoadStats();
             score = stats[0];
             wave = stats[2];
-            if(stats[1] > highScore) highScore = stats[2];
-            if(stats[3] > highWave) highWave = stats[3];
+            if (stats[1] > highScore) highScore = stats[2];
+            if (stats[3] > highWave) highWave = stats[3];
+            fileManager.LoadSpells(player);
 
-            foreach(Spawner spawner in spawners)
+            foreach (Spawner spawner in spawners)
             {
                 spawner.Enemies = enemies;
             }
@@ -926,23 +940,10 @@ namespace TwelveMage
                 {
                     enemy.OnDeath += IncreaseScore;
                 }
-                
+
                 enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack
             }
             currentState = GameState.Game;
-            //DeactivateButtons();
-        }
-
-        /// <summary>
-        /// Resumes gameplay from pause menu.
-        /// </summary>
-        private void Resume()
-        {
-            isPaused = false;
-            currentState = GameState.Game;
-
-            // Sets save status back to false, disabling "Game Saved" text
-            hasSaved = false;
             //DeactivateButtons();
         }
 
@@ -957,7 +958,8 @@ namespace TwelveMage
             fileManager.SaveEnemies(enemies) &&
             fileManager.SaveStats(score, wave) &&
             fileManager.SavePersistentStats(highScore, highWave) &&
-            fileManager.SaveHealthPickups(healthPickups))
+            fileManager.SaveHealthPickups(healthPickups) &&
+            fileManager.SaveSpells(player))
             { hasSaved = true; } // Enables "Game Saved" text notification
         }
 
@@ -1001,6 +1003,15 @@ namespace TwelveMage
         }
 
         /// <summary>
+        /// Increases the player's score by a given amount
+        /// </summary>
+        /// <param name="increaseBy">The amount to increase the score by</param>
+        private void IncreaseScore(int increaseBy)
+        {
+            score += increaseBy;
+        }
+
+        /// <summary>
         /// (Chloe) Ends the game
         /// </summary>
         private void EndGame()
@@ -1035,10 +1046,10 @@ namespace TwelveMage
 
             // Calculate cooldown overlay size ratios
             // Overlay height : base icon height = spell timer : spell cooldown
-            blinkOverlay.Height = (int)(blinkOverlay.Height * (player.BlinkTimer / player.BlinkCooldownDuration));
-            fireballOverlay.Height = (int)(fireballOverlay.Height * (player.FireballTimer / player.FireballCooldownDuration));
-            freezeOverlay.Height = (int)(freezeOverlay.Height * (player.FreezeTimer / player.FreezeCooldownDuration));
-            hasteOverlay.Height = (int)(hasteOverlay.Height * (player.HasteTimer / player.HasteCooldownDuration));
+            blinkOverlay.Height = (int)(blinkOverlay.Height * (player.BlinkTimer / player.BlinkCooldown));
+            fireballOverlay.Height = (int)(fireballOverlay.Height * (player.FireballTimer / player.FireballCooldown));
+            freezeOverlay.Height = (int)(freezeOverlay.Height * (player.FreezeTimer / player.FreezeCooldown));
+            hasteOverlay.Height = (int)(hasteOverlay.Height * (player.HasteTimer / player.HasteCooldown));
 
             _spriteBatch.Draw(spellSlotOverlay, blinkOverlay, Color.White * 0.5f);
             _spriteBatch.Draw(spellSlotOverlay, fireballOverlay, Color.White * 0.5f);

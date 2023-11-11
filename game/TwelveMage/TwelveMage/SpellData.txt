@@ -1,0 +1,4 @@
+Blink:,4,6
+Fireball:,5,10
+Freeze:,15,20,5
+Haste:,4,10,5

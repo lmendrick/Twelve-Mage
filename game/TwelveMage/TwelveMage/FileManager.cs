@@ -17,6 +17,8 @@ namespace TwelveMage
     * No known issues.
     * Added stats save method (score, wave)
     * Added persistent stats save method (highScore, highWave)
+    * Added HealthPickup save/load methods
+    * Added Spells save/load methods
     */
     internal class FileManager
     {
@@ -30,6 +32,7 @@ namespace TwelveMage
         private const string PersistentStatsFilename = "../../../PersistentStatsData.txt";
         private const string Level1Filename = "../../../Level1Data.txt";
         private const string HealthPickupsFilename = "../../../HealthPickupsData.txt";
+        private const string SpellsFilename = "../../../SpellData.txt";
         private Player player;
         #endregion
 
@@ -176,6 +179,41 @@ namespace TwelveMage
 
             }
             if(writer != null) writer.Close();
+            return saved;
+        }
+
+        /// <summary>
+        /// Saves all spell data
+        /// </summary>
+        /// <param name="player">The current Player</param>
+        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
+        public bool SaveSpells(Player player)
+        {
+            bool saved = false;
+            try // Make sure everything works correctly with a try/catch
+            {
+                writer = new StreamWriter(SpellsFilename);
+                // All data is cast to ints because it'll make the file more readable
+                // Being within one second of the saved time is accurate enough ¯\_(ツ)_/¯
+                // Even though effect and cooldown durations aren't changeable,
+                // This method should still be functional if we add stat upgrades
+                // Spells file format:
+                // Line 1   int blinkTimer,int blinkCooldownDuration
+                // Line 2   int fireballTimer,int fireballCooldownDuration
+                // Line 3   int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
+                // Line 4   int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
+
+                writer.WriteLine("Blink:,"+(int)player.BlinkTimer+","+(int)player.BlinkCooldown); // Blink data
+                writer.WriteLine("Fireball:,"+(int)player.FireballTimer+","+(int)player.FireballCooldown); // Fireball data
+                writer.WriteLine("Freeze:,"+(int)player.FreezeTimer+","+(int)player.FreezeCooldown+","+(int)player.FreezeEffect); // Freeze data
+                writer.WriteLine("Haste:,"+(int)player.HasteTimer+","+(int)player.HasteCooldown+","+(int)player.HasteEffect); // Haste data
+                saved = true;
+            }
+            catch
+            {
+
+            }
+            if (writer != null) writer.Close();
             return saved;
         }
         #endregion
@@ -357,6 +395,72 @@ namespace TwelveMage
             }
             if(reader != null) reader.Close();
             return stats;
+        }
+
+        /// <summary>
+        /// Loads all spell data
+        /// </summary>
+        /// <param name="player">The current Player</param>
+        public void LoadSpells(Player player)
+        {
+            try // Make sure everything works correctly with a try/catch
+            {
+                reader = new StreamReader(SpellsFilename);
+                // All data is cast to ints because it'll make the file more readable
+                // Being within one second of the saved time is accurate enough ¯\_(ツ)_/¯
+                // Even though effect and cooldown durations aren't changeable,
+                // This method should still be functional if we add stat upgrades
+                // Spells file format:
+                // Line 1   int blinkTimer,int blinkCooldownDuration
+                // Line 2   int fireballTimer,int fireballCooldownDuration
+                // Line 3   int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
+                // Line 4   int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
+
+                // Blink
+                double currentValue = 0;
+                string[] currentLine = reader.ReadLine().Split(",");
+
+                double.TryParse(currentLine[1], out currentValue);
+                player.BlinkTimer = currentValue;
+                double.TryParse(currentLine[2], out currentValue);
+                player.BlinkCooldown = currentValue;
+
+                // Fireball
+                currentValue = 0;
+                currentLine = reader.ReadLine().Split(",");
+
+                double.TryParse(currentLine[1], out currentValue);
+                player.FireballTimer = currentValue;
+                double.TryParse(currentLine[2], out currentValue);
+                player.FireballCooldown = currentValue;
+
+                // Freeze
+                currentValue = 0;
+                currentLine = reader.ReadLine().Split(",");
+
+                double.TryParse(currentLine[1], out currentValue);
+                player.FreezeTimer = currentValue;
+                double.TryParse(currentLine[2], out currentValue);
+                player.FreezeCooldown = currentValue;
+                double.TryParse(currentLine[3], out currentValue);
+                player.FreezeEffect = currentValue;
+
+                // Haste
+                currentValue = 0;
+                currentLine = reader.ReadLine().Split(",");
+
+                double.TryParse(currentLine[1], out currentValue);
+                player.HasteTimer = currentValue;
+                double.TryParse(currentLine[2], out currentValue);
+                player.HasteCooldown = currentValue;
+                double.TryParse(currentLine[3], out currentValue);
+                player.HasteEffect = currentValue;
+            }
+            catch
+            {
+
+            }
+            if (reader != null) reader.Close();
         }
         #endregion
 
