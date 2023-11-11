@@ -85,7 +85,7 @@ namespace TwelveMage
             corners.Add(lowerLeftCorner);
             corners.Add(lowerRightCorner);
 
-            currentDestination = upperLeftCorner;
+            currentDestination = corners[rng.Next(0,4)];
         }
 
 
@@ -114,8 +114,13 @@ namespace TwelveMage
             }
 
             CheckHits(bullets);
-
+            if(health <= 0)
+            {
+                summoners.Remove(this);
+            }
         }
+
+
 
         /// <summary>
         /// Handles summoning logic
