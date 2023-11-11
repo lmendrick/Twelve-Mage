@@ -198,10 +198,10 @@ namespace TwelveMage
                 // Even though effect and cooldown durations aren't changeable,
                 // This method should still be functional if we add stat upgrades
                 // Spells file format:
-                // Line 1   int blinkTimer,int blinkCooldownDuration
-                // Line 2   int fireballTimer,int fireballCooldownDuration
-                // Line 3   int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
-                // Line 4   int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
+                // Line 1   "Blink:",int blinkTimer,int blinkCooldownDuration
+                // Line 2   "Fireball:",int fireballTimer,int fireballCooldownDuration
+                // Line 3   "Freeze:",int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
+                // Line 4   "Haste:",int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
 
                 writer.WriteLine("Blink:,"+(int)player.BlinkTimer+","+(int)player.BlinkCooldown); // Blink data
                 writer.WriteLine("Fireball:,"+(int)player.FireballTimer+","+(int)player.FireballCooldown); // Fireball data
@@ -411,10 +411,10 @@ namespace TwelveMage
                 // Even though effect and cooldown durations aren't changeable,
                 // This method should still be functional if we add stat upgrades
                 // Spells file format:
-                // Line 1   int blinkTimer,int blinkCooldownDuration
-                // Line 2   int fireballTimer,int fireballCooldownDuration
-                // Line 3   int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
-                // Line 4   int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
+                // Line 1   "Blink:",int blinkTimer,int blinkCooldownDuration
+                // Line 2   "Fireball:",int fireballTimer,int fireballCooldownDuration
+                // Line 3   "Freeze:",int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
+                // Line 4   "Haste:",int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
 
                 // Blink
                 double currentValue = 0;
