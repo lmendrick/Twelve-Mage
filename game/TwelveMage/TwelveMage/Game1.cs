@@ -503,7 +503,7 @@ namespace TwelveMage
                         }
 
                         
-                        /*
+                        
                         if(enemies.Count == 0)
                         {
                             for(int i = 0; i < wave * waveIncrease; i++)
@@ -521,7 +521,7 @@ namespace TwelveMage
 
                             wave++;
                         }
-                        */
+                        
                         
                         //Addded gun but since its not tweaked fully so commented out for now(AJ)
                         //gun.Update(gameTime);
