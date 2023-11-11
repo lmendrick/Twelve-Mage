@@ -73,6 +73,7 @@ namespace TwelveMage
             summoners.Add(this);
             currentEnemies = 0;
             runningSpeed = speed * 2;
+            Color = Color.Teal;
 
 
             upperLeftCorner = new Vector2(windowWidth / 4, windowHeight / 4);
@@ -197,6 +198,8 @@ namespace TwelveMage
             return distance > safeDistance;
         }
 
+
+
         /// <summary>
         /// Go to a given location
         /// </summary>
@@ -232,6 +235,7 @@ namespace TwelveMage
         }
 
 
+
         /// <summary>
         /// The summoner will wander around the given area
         /// </summary>
@@ -256,6 +260,8 @@ namespace TwelveMage
 
             dir.Normalize();
         }
+
+
 
         /// <summary>
         /// Determines the corner farthest from the player, and sets that as the new currentDestination

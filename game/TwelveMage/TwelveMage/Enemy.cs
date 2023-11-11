@@ -156,6 +156,12 @@ namespace TwelveMage
             get { return hasHealthpack; }
             set { hasHealthpack = value; }
         }
+
+        public Color Color
+        {
+            get { return color; }
+            set { color = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
