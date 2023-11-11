@@ -512,6 +512,12 @@ namespace TwelveMage
                                 spawners[rng.Next(0, 4)].SpawnEnemy();
                                 enemies[i].OnDeath += IncreaseScore;
                             }
+
+                            if((wave + 1) % 5 == 0)
+                            {
+                                spawners[rng.Next(0, 4)].SpawnSummoner();
+                            }
+
                             enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give two random enemies a healthpack
                             enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Might select the same enemy, but that's ok
 

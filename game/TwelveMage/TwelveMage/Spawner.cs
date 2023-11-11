@@ -68,7 +68,7 @@ namespace TwelveMage
             this.summoners = summoners;
             this.enemyTexture = enemyTexture;
             this.enemyHealth = enemyHealth;
-            summonerHealth = enemyHealth * 2;
+            summonerHealth = enemyHealth * 3;
             this.player = player;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
