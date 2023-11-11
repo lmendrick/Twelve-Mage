@@ -19,6 +19,9 @@ namespace TwelveMage
 
         private List<Enemy> spawned;
 
+        private List<Summoner> summoners;
+        private List<Enemy> enemies;
+
         private int maxEnemies;
         private int currentEnemies;
 
@@ -36,9 +39,15 @@ namespace TwelveMage
 
 
         private float speed = 75f;
+        private float runningSpeed;
         private bool withinArea = false;
         private int safeDistance = 75;
         private bool playerAvoided = true;
+        private int wanderRadius = 100;
+        private float playerSummonDistance = 250;
+        private float summonTimer = 5.0f;
+        private bool hasSummoned = false;
+        private int numToSummon = 4;
 
         /// <summary>
         /// corners[0] = upperLeftCorner
@@ -49,17 +58,21 @@ namespace TwelveMage
         private List<Vector2> corners = new List<Vector2>();
 
 
-        public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight) : base(rec, texture, health, enemies, player)
+        public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight, List<Summoner> summoners) : base(rec, texture, health, enemies, player)
         {
             rng = new Random();
-            personalSpawner = new Spawner(this.Position, 50, 50, enemies, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
-            playerSpawner = new Spawner(player.Position, 100, 100, enemies, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
+            personalSpawner = new Spawner(this.Position, 50, 50, enemies, summoners, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
+            playerSpawner = new Spawner(player.Position, 100, 100, enemies, summoners, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
             spawned = new List<Enemy>();
             this.maxEnemies = maxEnemies;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
             this.player = player;
+            this.summoners = summoners;
+            this.enemies = enemies;
+            summoners.Add(this);
             currentEnemies = 0;
+            runningSpeed = speed * 2;
 
 
             upperLeftCorner = new Vector2(windowWidth / 4, windowHeight / 4);
@@ -76,21 +89,97 @@ namespace TwelveMage
         }
 
 
+        /// <summary>
+        /// Handles summoner update logic
+        /// </summary>
+        /// <param name="gameTime"></param>
+        /// <param name="bullets"></param>
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
-            GoToLocation(currentDestination, 100, gameTime);
+            GoToLocation(currentDestination, wanderRadius, gameTime);
 
             int playerDistance = (int)(player.PosVector - this.Position).Length();
 
+            //If the player comes within a safe distance and the summoner has not already begun to attempt to flee, choose a new location to run to
             if(!SafePlayerDistance(playerDistance) && playerAvoided)
             {
                 DetermineDestination();
                 playerAvoided = false;
+                speed = runningSpeed;
             }
             else if(SafePlayerDistance(playerDistance))
             {
                 playerAvoided = true;
+                speed = runningSpeed / 2;
             }
+
+            CheckHits(bullets);
+
+        }
+
+        /// <summary>
+        /// Handles summoning logic
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void Summoning(GameTime gameTime)
+        {
+            //If the summoner is within its target area, and is a certain distance from the player, and hasn't already summoned, activate player summoning
+            if (withinArea && GetDistance(player.PosVector, this.Position) > playerSummonDistance && !hasSummoned)
+            {
+                PlayerSummon();
+
+            }
+            else if (hasSummoned) //If has already summoned, decrement timer
+            {
+                summonTimer -= (float)gameTime.ElapsedGameTime.TotalSeconds;
+            }
+
+
+            //If the player is too close to the summoner, and hasn't already summoned, summon enemies using it's personal spawner
+            if(GetDistance(player.PosVector, this.Position) < safeDistance && !hasSummoned)
+            {
+                personalSpawner.Position = this.Position;
+                hasSummoned = true;
+                for(int i = 0; i < numToSummon; i++)
+                {
+                    personalSpawner.SpawnEnemy();
+                }
+            }
+
+            //Check to make sure timer hasn't run out
+            if (summonTimer <= 0)
+            {
+                hasSummoned = false;
+                summonTimer = 5.0f;
+            }
+
+        }
+
+        /// <summary>
+        /// Prompts the playerSpawner to spawn enemies
+        /// </summary>
+        public void PlayerSummon()
+        {
+            playerSpawner.Position = player.PosVector;
+            hasSummoned = true;
+
+            for(int i = 0; i < numToSummon; i++)
+            {
+                playerSpawner.SpawnEnemy();
+            }
+        }
+
+
+
+        /// <summary>
+        /// Returns the distance between two vectors
+        /// </summary>
+        /// <param name="vec1"></param>
+        /// <param name="vec2"></param>
+        /// <returns></returns>
+        public float GetDistance(Vector2 vec1, Vector2 vec2)
+        {
+            return (vec2 - vec1).Length();
         }
 
         /// <summary>
@@ -155,8 +244,8 @@ namespace TwelveMage
             if (distance > wanderRadius)
             {
                 dir = location - this.Position;
-                dir.X += rng.Next(-wanderRadius * (3 / 4), (wanderRadius * (3 / 4)) + 1);
-                dir.Y += rng.Next(-wanderRadius * (3 / 4), (wanderRadius * (3 / 4)) + 1);
+                dir.X += rng.Next((int)(-wanderRadius * 0.75f), (int)(wanderRadius * 0.75f) + 1);
+                dir.Y += rng.Next((int)(-wanderRadius * 0.75f), (int)(wanderRadius * 0.75f) + 1);
             }
 
 

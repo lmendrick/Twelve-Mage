@@ -26,9 +26,11 @@ namespace TwelveMage
 
         //Enemies list
         private List<Enemy> enemies;
+        private List<Summoner> summoners;
 
         private Texture2D enemyTexture;
         private int enemyHealth;
+        private int summonerHealth;
 
         private Player player;
 
@@ -57,14 +59,16 @@ namespace TwelveMage
         /// <param name="xRadius">The X spawn radius</param>
         /// <param name="yRadius">The Y spawn radius</param>
         /// <param name="noSpawningArea">The rectangle to use as reference when constructing the noSpawnArea. The X/Y coords don't matter, only the width/height</param>
-        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, Texture2D enemyTexture, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight)
+        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, List<Summoner> summoners, Texture2D enemyTexture, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight)
         {
             this.position = position;
             this.xRadius = xRadius;
             this.yRadius = yRadius;
             this.enemies = enemies;
+            this.summoners = summoners;
             this.enemyTexture = enemyTexture;
             this.enemyHealth = enemyHealth;
+            summonerHealth = enemyHealth * 2;
             this.player = player;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
@@ -114,12 +118,13 @@ namespace TwelveMage
                     30,
                     30),
                 enemyTexture,
-                enemyHealth,
+                summonerHealth,
                 enemies,
                 player,
                 10,
                 windowWidth,
-                windowHeight);
+                windowHeight,
+                summoners);
 
             /*
             if(spawned.Rec.Intersects(NoSpawningArea))
