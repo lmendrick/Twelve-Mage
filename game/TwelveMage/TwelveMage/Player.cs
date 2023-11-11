@@ -75,6 +75,12 @@ namespace TwelveMage
         // Spell stuff
         private Spell spell;
 
+        // Spell UI drawing rectangles
+        private Rectangle blinkRec;
+        private Rectangle fireballRec;
+        private Rectangle freezeRec;
+        private Rectangle hasteRec;
+
         // Bools to track if spells are possible
         private bool canBlink;
         private bool canFireball;
@@ -293,7 +299,7 @@ namespace TwelveMage
             pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
-            UpdateSpells(gameTime, spell);
+            UpdateSpells(gameTime, spell); // Update spells
 
             // Mouse shooting (Lucas)
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed && !hasShot)
@@ -647,7 +653,6 @@ namespace TwelveMage
             pos.X = (windowWidth / 2) - (rec.Width / 2);
             pos.Y = (windowHeight / 2) - (rec.Height / 2);
         }
-        #endregion
 
         private void UpdateSpells(GameTime gameTime, Spell spell)
         {
@@ -672,7 +677,7 @@ namespace TwelveMage
             {
                 freezeTimer = freezeCooldown;
             }
-            if (canHaste && currentKB.IsKeyDown(Keys.E) &&  previousKB.IsKeyUp(Keys.E))
+            if (canHaste && currentKB.IsKeyDown(Keys.E) && previousKB.IsKeyUp(Keys.E))
             {
                 hasteTimer = hasteCooldown;
             }
@@ -685,28 +690,75 @@ namespace TwelveMage
             else speed = 200f;
 
             // Handle spell timers
-            if(blinkTimer > 0)
+            if (blinkTimer > 0)
             {
                 blinkTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             }
-            if(fireballTimer > 0)
+            if (fireballTimer > 0)
             {
                 fireballTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             }
-            if(freezeTimer > 0)
+            if (freezeTimer > 0)
             {
                 freezeTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             }
-            if(hasteTimer > 0)
+            if (hasteTimer > 0)
             {
                 hasteTimer -= gameTime.ElapsedGameTime.TotalSeconds;
             }
 
             // Clamp spell timers so they're always >= 0
-            if(blinkTimer < 0.0) blinkTimer = 0;
-            if(fireballTimer < 0.0) fireballTimer = 0;
-            if(freezeTimer < 0.0) freezeTimer = 0;
+            if (blinkTimer < 0.0) blinkTimer = 0;
+            if (fireballTimer < 0.0) fireballTimer = 0;
+            if (freezeTimer < 0.0) freezeTimer = 0;
             if (hasteTimer < 0.0) hasteTimer = 0;
         }
+
+        /// <summary>
+        /// Draws all spell slots, and their timer overlays
+        /// </summary>
+        public void DrawSpellSlots(SpriteBatch spriteBatch, Texture2D blinkSpellIcon, Texture2D fireballSpellIcon, Texture2D freezeSpellIcon, Texture2D hasteSpellIcon, Texture2D spellSlotOverlay)
+        {
+            // Rectangles for spells UI
+            blinkRec = new Rectangle(20, windowHeight - 100, 50, 80);
+            fireballRec = new Rectangle(90, windowHeight - 100, 50, 80);
+            freezeRec = new Rectangle(160, windowHeight - 100, 50, 80);
+            hasteRec = new Rectangle(230, windowHeight - 100, 50, 80);
+
+            // Draw base icons
+            // If the spells are on cooldown, draw the base icons in gray
+            if (blinkTimer > 0) spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.Gray * 0.7f);
+            else spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.White * 0.7f);
+            if (fireballTimer > 0) spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.Gray * 0.7f);
+            else spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.White * 0.7f);
+            if (freezeTimer > 0) spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.Gray * 0.7f);
+            else spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.White * 0.7f);
+            if (hasteTimer > 0) spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.Gray * 0.7f);
+            else spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.White * 0.7f);
+
+            // Rectangles for cooldown overlays
+            Rectangle blinkOverlay = blinkRec;
+            Rectangle fireballOverlay = fireballRec;
+            Rectangle freezeOverlay = freezeRec;
+            Rectangle hasteOverlay = hasteRec;
+
+            // Calculate cooldown overlay size ratios
+            // Overlay height : base icon height = spell timer : spell cooldown
+            blinkOverlay.Height = (int)(blinkOverlay.Height * (blinkTimer / blinkCooldown));
+            fireballOverlay.Height = (int)(fireballOverlay.Height * (fireballTimer / fireballCooldown));
+            freezeOverlay.Height = (int)(freezeOverlay.Height * (freezeTimer / freezeCooldown));
+            hasteOverlay.Height = (int)(hasteOverlay.Height * (hasteTimer / hasteCooldown));
+
+            spriteBatch.Draw(spellSlotOverlay, blinkOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotOverlay, fireballOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotOverlay, freezeOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotOverlay, hasteOverlay, Color.White * 0.5f);
+        }   
+
+        private void OverwriteSpellTimers(Dictionary<string, double> spellTimersDictionary)
+        {
+
+        }
+        #endregion
     }
 }
