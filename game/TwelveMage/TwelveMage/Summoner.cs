@@ -64,6 +64,13 @@ namespace TwelveMage
             personalSpawner = new Spawner(this.Position, 50, 50, enemies, summoners, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
             playerSpawner = new Spawner(player.Position, 100, 100, enemies, summoners, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
             spawned = new List<Enemy>();
+
+            // Scale of the sprite
+            drawScale = 2f;
+            // Match rectangle scale to draw scale
+            rec.X *= (int)drawScale;
+            rec.Y *= (int)drawScale;
+
             this.maxEnemies = maxEnemies;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
@@ -87,6 +94,10 @@ namespace TwelveMage
             corners.Add(lowerRightCorner);
 
             currentDestination = corners[rng.Next(0,4)];
+
+            // Scale of the sprite to be draw
+            drawScale = 2f;
+
         }
 
 
@@ -97,6 +108,75 @@ namespace TwelveMage
         /// <param name="bullets"></param>
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
+
+            // Time Freeze Spell
+            if (IsFrozen)
+            {
+                speed = 0;
+            }
+            else
+            {
+                speed = 75f;
+            }
+
+
+            // Update state for animations
+            // Don't update animation state if freeze spell is active
+            if (!isFrozen)
+            {
+                // Set the enemy's animation state based on movement direction
+                if (dir.X < 0)
+                {
+                    state = EnemyState.WalkLeft; // Walking left
+                }
+                if (dir.X > 0)
+                {
+                    state = EnemyState.WalkRight; // Walking right
+                }
+
+                // Handle vertical movement state
+                if (dir.Y != 0)
+                {
+                    if (state == EnemyState.WalkLeft || state == EnemyState.FaceLeft)
+                    {
+                        state = EnemyState.WalkLeft; // Walking left
+                    }
+                    if (state == EnemyState.WalkRight || state == EnemyState.FaceRight)
+                    {
+                        state = EnemyState.WalkRight; // Walking right
+                    }
+                }
+
+                // Set the player's state to facing left or right when not moving
+                if (dir.X == 0 && dir.Y == 0)
+                {
+                    if (state == EnemyState.WalkLeft)
+                    {
+                        state = EnemyState.FaceLeft; // Facing left
+                    }
+                    else if (state == EnemyState.WalkRight)
+                    {
+                        state = EnemyState.FaceRight; // Facing right
+                    }
+                }
+            }
+
+            // Change enemy color based on health (Lucas)
+            if (health < 75 && health >= 50)
+            {
+                color = Color.Orange;
+            }
+            else if (health < 50 && health >= 25)
+            {
+                color = Color.IndianRed;
+            }
+            else if (health < 25)
+            {
+                color = Color.Red;
+            }
+
+
+
             GoToLocation(currentDestination, wanderRadius, gameTime);
 
             int playerDistance = (int)(player.PosVector - this.Position).Length();
@@ -119,6 +199,7 @@ namespace TwelveMage
             {
                 summoners.Remove(this);
             }
+
         }
 
 
