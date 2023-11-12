@@ -892,6 +892,8 @@ namespace TwelveMage
         /// </summary>
         private void NewGame()
         {
+            player.WindowHeight = windowHeight;     // Reset window width and height so that player is centered correctly (Lucas)
+            player.WindowWidth = windowWidth;
             currentState = GameState.Game; // Set GameState
             wave = 1; // Set to wave 1
             score = 0; // Reset score

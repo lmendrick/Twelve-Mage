@@ -57,9 +57,9 @@ namespace TwelveMage
         const int WizardRectWidth = 34;      // The width of a single frame
 
         // Move player with vector2
-        Vector2 dir;
-        Vector2 pos;
-        float speed = 200f;
+        private Vector2 dir;
+        private Vector2 pos;
+        private float speed = 200f;
 
         private int windowWidth;
         private int windowHeight;
@@ -244,6 +244,7 @@ namespace TwelveMage
         #region CONSTRUCTORS
         public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
+
             this.rec = rec;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
