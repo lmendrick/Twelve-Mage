@@ -94,6 +94,7 @@ namespace TwelveMage
             corners.Add(lowerRightCorner);
 
             currentDestination = corners[rng.Next(0,4)];
+
         }
 
 
