@@ -73,7 +73,7 @@ namespace TwelveMage
         const int EnemyRectHeight = 30;     // The height of a single frame
         const int EnemyRectWidth = 32;      // The width of a single frame
 
-        private EnemyState state;
+        protected EnemyState state;
 
         private int index;
         private Random rng;
@@ -105,11 +105,13 @@ namespace TwelveMage
         private double adjustmentTimer;
 
         //Damage feedback
-        private Color color = Color.White;
+        protected Color color = Color.White;
         private double timer;
         private bool hit;
 
-        private bool isFrozen;
+        protected bool isFrozen;
+
+        protected float drawScale;
         #endregion
 
         #region PROPERTIES
@@ -189,6 +191,8 @@ namespace TwelveMage
             // Initialize
             fps = 10.0;                     // Will cycle through 10 walk frames per second
             timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
+
+            drawScale = 1f;
         }
         #endregion
 
@@ -354,7 +358,7 @@ namespace TwelveMage
                     color,
                 0,
                 Vector2.Zero,
-                1.0f,
+                drawScale,
                 flipSprite,
                 0);
         }
@@ -383,7 +387,7 @@ namespace TwelveMage
                     color,                            // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
-                1.0f,                                   // - Scale (100% - no change)
+                drawScale,                                   // - Scale (100% - no change)
                 flipSprite,                             // - Can be used to flip the image
                 0);                                     // - Layer depth (unused)
         }
