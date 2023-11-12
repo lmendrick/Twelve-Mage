@@ -48,8 +48,8 @@ namespace TwelveMage
 
         private List<GameObject> bullets;
         private List<GameObject> fireBalls;
-        private int gunWidth = 45;
-        private int gunHeight = 25;
+        private int gunWidth = 73;
+        private int gunHeight = 24;
 
 
         private SpriteFont titleFont;
@@ -164,7 +164,7 @@ namespace TwelveMage
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
 
-            // Load Health Bar Assets
+            // Load Health Bar Assets (Lucas)
             healthBar = this.Content.Load<Texture2D>("HB_1");
 
             healthPickupSprite = this.Content.Load<Texture2D>("medkit");
@@ -384,6 +384,8 @@ namespace TwelveMage
                         player.Update(gameTime, bullets);
 
                         spawner.Position = player.PosVector;
+
+                        gun.Update(gameTime, bullets);
 
                         //Spawn an enemy
                         if (SingleKeyPress(Keys.U, currentKBState))
@@ -664,9 +666,9 @@ namespace TwelveMage
 
                     // Player sprite/animations (Lucas)
                     player.Draw(_spriteBatch);
-                    
-                    
 
+                    // Draw the gun over the player (Lucas)
+                    gun.Draw(_spriteBatch);
 
                     // Enemy sprite (Lucas)
                     foreach(Enemy enemy in enemies)
