@@ -52,6 +52,12 @@ namespace TwelveMage
             set {  dir = value; }
         }
 
+        public Player Player
+        {
+            get { return player;}
+            set { player = value; }
+        }
+
 
         //constructors
         public Gun(Rectangle rec, Texture2D texture, int health, Player player) : base(rec, texture, health)
@@ -94,6 +100,9 @@ namespace TwelveMage
 
             // Calculate positon of gun
             pos = player.PosVector + posOffset;
+
+            rec.X = (int)pos.X;
+            rec.Y = (int)pos.Y;
         }
 
         /// <summary>

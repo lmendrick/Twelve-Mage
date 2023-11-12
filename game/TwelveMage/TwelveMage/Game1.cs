@@ -1,6 +1,7 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
+using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -937,6 +938,9 @@ namespace TwelveMage
             if (stats[1] > highScore) highScore = stats[2];
             if (stats[3] > highWave) highWave = stats[3];
             fileManager.LoadSpells(player);
+
+            // Re attach gun to new player (Lucas)
+            gun.Player = player;
 
             foreach (Spawner spawner in spawners)
             {
