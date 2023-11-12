@@ -94,6 +94,10 @@ namespace TwelveMage
             corners.Add(lowerRightCorner);
 
             currentDestination = corners[rng.Next(0,4)];
+
+            // Scale of the sprite to be draw
+            drawScale = 2f;
+
         }
 
 
