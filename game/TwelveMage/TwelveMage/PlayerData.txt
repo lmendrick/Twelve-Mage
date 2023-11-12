@@ -1,1 +1,1 @@
-732,329,100,FaceRight
+601,313,100,FaceRight

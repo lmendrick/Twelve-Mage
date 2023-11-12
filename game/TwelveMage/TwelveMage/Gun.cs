@@ -60,10 +60,9 @@ namespace TwelveMage
             this.rec = rec;
             this.gunTexture = texture;
             this.health = health;
-            this.pos = new Vector2(rec.X, rec.Y);
             this.player = player;
             posOffset = new Vector2(5, 15);
-
+            this.pos = player.PosVector + posOffset;
         }
 
         //methods
