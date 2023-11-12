@@ -1009,6 +1009,13 @@ namespace TwelveMage
             }
         }
 
+        public void ShootFireball()
+        {
+            //Projectile project = new Projectile(new Rectangle())
+        }
+
+
+
         /// <summary>
         /// Increases the player's score by 10; to be used with Enemy's OnDeath event (or other events in future?)
         /// </summary>

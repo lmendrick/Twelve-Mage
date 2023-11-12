@@ -134,6 +134,10 @@ namespace TwelveMage
             get { return bullet; }
             set { bullet = value; }
         }
+        public MouseState Mstate
+        {
+            get { return mState; }
+        }
         
         public double Invulneravle
         {
