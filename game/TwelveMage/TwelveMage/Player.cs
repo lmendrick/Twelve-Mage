@@ -337,7 +337,7 @@ namespace TwelveMage
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed && !hasShot)
             {
                 //AddBullet(bullets);
-                ShotgunFire(bullets, 5);
+                ShotgunFire(bullets, 6);
                 hasShot = true;
             }
 

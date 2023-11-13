@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 
 
@@ -34,14 +35,6 @@ namespace TwelveMage
 
     internal class Enemy : GameObject
     {
-        private enum AdjustmentDirection
-        {
-            Up,
-            Down,
-            Left,
-            Right
-        }
-
 
         #region FIELDS
         private const int MAX_Health = 200;
@@ -58,7 +51,14 @@ namespace TwelveMage
         private float speed = 100f;
         private Vector2 playerPos;
         private bool intersectionDetected;
-        private AdjustmentDirection direction;
+
+        private float knockbackDistance = 10;
+        private float distanceTraveled = 0;
+        private Vector2 knockbackVec;
+        private bool knockbackCompleted = true;
+        private bool knockbackReady = true;
+        private bool knocked = false;
+        
 
         // Animation
         int frame;              // The current animation frame
@@ -220,8 +220,15 @@ namespace TwelveMage
             //Collision avoidance logic
             adjustment = GetAdjustmentVector(enemies, gameTime);
             pos += adjustment * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
-            
 
+
+            //Knockback
+            HandleKnockback(gameTime);
+
+            if (knocked)
+            {
+                dir *= 0.5f;
+            }
             // Update enemy position to move towards player at set speed
             pos += dir * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
@@ -282,6 +289,7 @@ namespace TwelveMage
             if(timer <= 0)
             {
                 hit = false;
+                knockbackReady = true;
                 timer = 1f;
                // color = Color.White;
             }
@@ -331,6 +339,30 @@ namespace TwelveMage
                     break;
             }
             #endregion
+        }
+
+
+        public void HandleKnockback(GameTime gameTime)
+        {
+            if(knocked)
+            {
+                knockbackVec = dir * -5;
+                knockbackCompleted = false;
+            }
+
+            if (!knockbackCompleted)
+            {
+                pos += knockbackVec * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+                distanceTraveled += (knockbackVec * (float)gameTime.ElapsedGameTime.TotalSeconds * speed).Length();
+            }
+
+            if(distanceTraveled >= knockbackDistance)
+            {
+                distanceTraveled = 0;
+                knockbackCompleted = true;
+                knocked = false;
+            }
+
         }
 
 
@@ -407,6 +439,7 @@ namespace TwelveMage
                     health -= Damage;
                     bulletList.RemoveAt(i);
                     hit = true;
+                    knocked = true;
                 }
             }
 
