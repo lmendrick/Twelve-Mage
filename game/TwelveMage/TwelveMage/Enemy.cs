@@ -398,11 +398,13 @@ namespace TwelveMage
         /// <param name="bulletList"></param>
         public void CheckHits(List<GameObject> bulletList)
         {
+
             for(int i = bulletList.Count - 1; i >= 0; i--)
             {
                 if (bulletList[i].CheckCollision(this))
                 {
-                    health -= 20;
+                    
+                    health -= Damage;
                     bulletList.RemoveAt(i);
                     hit = true;
                 }

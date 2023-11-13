@@ -28,16 +28,23 @@ public abstract class GameObject
     protected float LinearVelocity = .5f;
 
 
-    protected float LifeSpan = 4f;
+    public float LifeSpan = 4f;
 
     public bool IsRemoved = false;
 
+
+    public int damage = 20;
 
     //properties
 
     public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
 	
+    public int Damage
+    {
+        get { return damage; }
+        set { damage = value; }
+    }
     //constructors
 	protected GameObject(Rectangle rec, Texture2D texture, int health)
 	{

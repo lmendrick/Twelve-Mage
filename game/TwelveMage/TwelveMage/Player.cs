@@ -37,6 +37,7 @@ namespace TwelveMage
         Color color = Color.White;
 
         Texture2D bullet;
+        Texture2D fireball;
 
         PlayerState state;
         //two new kb states to check if space is clicked only once as to not spam hold
@@ -128,6 +129,11 @@ namespace TwelveMage
                     health = value;
                 }
             }
+        }
+        public Texture2D Fireball
+        {
+            get { return fireball; }
+            set { fireball = value; }
         }
         public Texture2D Bullet //bullet property to get bullet texture
         {
@@ -325,7 +331,7 @@ namespace TwelveMage
             pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
-            UpdateSpells(gameTime, spell); // Update spells
+            UpdateSpells(gameTime, spell, bullets); // Update spells
 
             // Mouse shooting (Lucas)
             if (prevMState.LeftButton == ButtonState.Released && mState.LeftButton == ButtonState.Pressed && !hasShot)
@@ -413,7 +419,12 @@ namespace TwelveMage
 
         //Anthony Maldonado
         //added bullet method to take the direction of the player and add that to a list of projectiles
-
+        public void AddFireBall(List<GameObject> fireBalls)
+        {
+            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y, 75, 75), Fireball, health, 800);
+            project.Direction = new Vector2(mState.X, mState.Y) - pos;
+            fireBalls.Add(project);
+        }
         private void AddBullet(List<GameObject> bullets)
         {
             Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health, 800);
@@ -680,7 +691,7 @@ namespace TwelveMage
             pos.Y = (windowHeight / 2) - (rec.Height / 2);
         }
 
-        private void UpdateSpells(GameTime gameTime, Spell spell)
+        private void UpdateSpells(GameTime gameTime, Spell spell, List<GameObject> fire)
         {
             // Check which spells can be used this frame
             canBlink = (blinkTimer <= 0 && !(dir.X == 0 && dir.Y == 0));
@@ -696,7 +707,11 @@ namespace TwelveMage
             }
             if (canFireball && currentKB.IsKeyDown(Keys.F) && previousKB.IsKeyUp(Keys.F))
             {
-                spell.Fireball();
+                LifeSpan = 10f;
+                LinearVelocity = .01f;
+                
+                Damage = 200;
+                AddFireBall(fire);
                 fireballTimer = fireballCooldown;
             }
             if (canFreeze && currentKB.IsKeyDown(Keys.R) && previousKB.IsKeyUp(Keys.R))
@@ -739,7 +754,13 @@ namespace TwelveMage
 
             // Clamp spell timers so they're always >= 0
             if (blinkTimer < 0.0) blinkTimer = 0;
-            if (fireballTimer < 0.0) fireballTimer = 0;
+            if (fireballTimer < 0.0)
+            {
+                Damage = 200;
+                LifeSpan = 4f;
+                LinearVelocity = .5f;
+                fireballTimer = 0;
+            }
             if (freezeTimer < 0.0) freezeTimer = 0;
             if (hasteTimer < 0.0) hasteTimer = 0;
             if (invulnerableTimer < 0.0) invulnerableTimer = 0;
