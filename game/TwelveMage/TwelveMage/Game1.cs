@@ -407,6 +407,12 @@ namespace TwelveMage
                             enemies.Clear();
                         }
 
+                        if(SingleKeyPress(Keys.F, currentKBState))
+                        {
+                            player.Update(gameTime, fireBalls);
+                        }
+
+
                         // Enemy movement (Lucas)
                         // Pass current player position to enemies (Lucas)
                         // Set enemy TimeFreeze status according to if player used ability
@@ -1024,10 +1030,7 @@ namespace TwelveMage
             }
         }
 
-        public void ShootFireball()
-        {
-            //Projectile project = new Projectile(new Rectangle())
-        }
+        
 
 
 
