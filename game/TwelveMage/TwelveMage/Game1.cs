@@ -150,7 +150,7 @@ namespace TwelveMage
             playerSpriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
             //load in bullet sprite
             bulletSprite = this.Content.Load<Texture2D>("bullet2");
-
+            fireballSprite = this.Content.Load<Texture2D>("fireball");
             //Load in gun image
             Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
 
@@ -161,6 +161,7 @@ namespace TwelveMage
             player.Bullet = bulletSprite;
             //created set of bullets
             bullets = new List<GameObject>();
+            fireBalls = new List<GameObject>();
             // Pass window dimensions to Player
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
@@ -410,6 +411,8 @@ namespace TwelveMage
                         if(SingleKeyPress(Keys.F, currentKBState))
                         {
                             player.Update(gameTime, fireBalls);
+                            player.Bullet = fireballSprite;
+
                         }
 
 
@@ -458,6 +461,16 @@ namespace TwelveMage
                             }
                         }
                         
+                        foreach (GameObject fire in fireBalls)
+                        {
+                            Projectile fireball;
+                            if(fire is Projectile)
+                            {
+                                fireball = (Projectile)fire;
+                                fire.Update(gameTime, fireBalls);
+                            }
+                        }
+
 
                         //for each game object in bullets make a bullet (AJ)
                         foreach (GameObject project in bullets)
