@@ -41,7 +41,7 @@ namespace TwelveMage
         private float speed = 75f;
         private float runningSpeed;
         private bool withinArea = false;
-        private int safeDistance = 75;
+        private int safeDistance = 150;
         private bool playerAvoided = true;
         private int wanderRadius = 100;
         private float playerSummonDistance = 250;
@@ -55,7 +55,7 @@ namespace TwelveMage
         /// corners[2] = lowerLeftCorner
         /// corners[3] = lowerRightCorner
         /// </summary>
-        private List<Vector2> corners = new List<Vector2>();
+        private List<Vector2> corners;
 
 
         public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight, List<Summoner> summoners) : base(rec, texture, health, enemies, player)
@@ -77,6 +77,7 @@ namespace TwelveMage
             this.player = player;
             this.summoners = summoners;
             this.enemies = enemies;
+            corners = new List<Vector2>();
             summoners.Add(this);
             currentEnemies = 0;
             runningSpeed = speed * 2;
@@ -222,12 +223,7 @@ namespace TwelveMage
             //If the player is too close to the summoner, and hasn't already summoned, summon enemies using it's personal spawner
             if(GetDistance(player.PosVector, this.Position) < safeDistance && !hasSummoned)
             {
-                personalSpawner.Position = this.Position;
-                hasSummoned = true;
-                for(int i = 0; i < numToSummon; i++)
-                {
-                    personalSpawner.SpawnEnemy();
-                }
+                DefensiveSummon();
             }
 
             //Check to make sure timer hasn't run out
@@ -250,6 +246,19 @@ namespace TwelveMage
             for(int i = 0; i < numToSummon; i++)
             {
                 playerSpawner.SpawnEnemy();
+            }
+        }
+
+        /// <summary>
+        /// Prompts the personalSpawner to spawn enemies
+        /// </summary>
+        public void DefensiveSummon()
+        {
+            personalSpawner.Position = this.Position;
+            hasSummoned = true;
+            for (int i = 0; i < numToSummon * 1.5; i++)
+            {
+                personalSpawner.SpawnEnemy();
             }
         }
 
@@ -365,7 +374,10 @@ namespace TwelveMage
                 }
 
                 //Add to the dictionary
-                cornersByDistance.Add(playerDistance, corner);
+                if (!cornersByDistance.ContainsKey(playerDistance))
+                {
+                    cornersByDistance.Add(playerDistance, corner);
+                }
 
                 
             }

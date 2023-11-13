@@ -427,7 +427,10 @@ namespace TwelveMage
 
                         foreach(Summoner summoner in summoners)
                         {
-                            summoner.Summoning(gameTime);
+                            if (!summoner.IsFrozen)
+                            {
+                                summoner.Summoning(gameTime);
+                            }
 
 
                         }
@@ -518,11 +521,23 @@ namespace TwelveMage
 
                             if((wave + 1) % 5 == 0)
                             {
-                                spawners[rng.Next(0, 4)].SpawnSummoner();
+                                if (wave + 1 >= 20)
+                                {
+                                    for (int i = 0; i < (wave + 1) / 10 && i < 3; i++)
+                                    {
+                                        spawners[rng.Next(0, 4)].SpawnSummoner();
+                                        summoners[i].OnDeath += IncreaseScore;
+                                        summoners[i].OnDeath += IncreaseScore;
+                                    }
+                                }
+                                else {
+                                    spawners[rng.Next(0, 4)].SpawnSummoner();
+                                    summoners[0].OnDeath += IncreaseScore;
+                                    summoners[0].OnDeath += IncreaseScore;
+                                }
                             }
 
                             enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give two random enemies a healthpack
-                            enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Might select the same enemy, but that's ok
 
                             foreach (HealthPickup healthPickup in healthPickups)
                             {

@@ -68,7 +68,7 @@ namespace TwelveMage
             this.summoners = summoners;
             this.enemyTexture = enemyTexture;
             this.enemyHealth = enemyHealth;
-            summonerHealth = enemyHealth * 3;
+            summonerHealth = (int)((double)enemyHealth * 4); // Don't look at this
             this.player = player;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
@@ -115,8 +115,8 @@ namespace TwelveMage
                 new Rectangle(
                     rng.Next(lowerXRange, upperXRange + 1),
                     rng.Next(lowerYRange, upperYRange + 1),
-                    30,
-                    30),
+                    60,
+                    60),
                 enemyTexture,
                 summonerHealth,
                 enemies,

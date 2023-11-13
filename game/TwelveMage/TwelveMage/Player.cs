@@ -120,7 +120,7 @@ namespace TwelveMage
             {
                 if (value < health && !IsInvulnerable) // Only change health if the player isn't invulnerable
                 {
-                    invulnerableTimer = 4; // If health decreases, make the add invulnerability
+                    invulnerableTimer = 1; // If health decreases, make the add invulnerability
                     health = value;
                 }
                 if (value > health)
