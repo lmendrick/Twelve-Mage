@@ -532,6 +532,11 @@ namespace TwelveMage
                                 }
 
                                 deadEnemies.Add(enemies[i]);
+                                if(deadEnemies.Count > 100)
+                                {
+                                    deadEnemies.RemoveAt(0);
+                                }
+
                                 enemies[i].Color = Color.White;
                                 enemies.RemoveAt(i);
                             }
@@ -539,6 +544,8 @@ namespace TwelveMage
 
                         
                         
+
+                        // Wave handling
                         if(enemies.Count == 0)
                         {
                             for(int i = 0; i < wave * waveIncrease; i++)
