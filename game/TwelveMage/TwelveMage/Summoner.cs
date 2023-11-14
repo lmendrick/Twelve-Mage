@@ -37,6 +37,7 @@ namespace TwelveMage
 
         private Vector2 dir;
 
+        private Texture2D corpseSprite;
 
         private float speed = 75f;
         private float runningSpeed;
@@ -58,11 +59,11 @@ namespace TwelveMage
         private List<Vector2> corners;
 
 
-        public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight, List<Summoner> summoners) : base(rec, texture, health, enemies, player)
+        public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight, List<Summoner> summoners, Texture2D corpseSprite) : base(rec, texture, health, enemies, player, corpseSprite)
         {
             rng = new Random();
-            personalSpawner = new Spawner(this.Position, 50, 50, enemies, summoners, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
-            playerSpawner = new Spawner(player.Position, 100, 100, enemies, summoners, texture, 100, player, Rectangle.Empty, windowWidth, windowHeight);
+            personalSpawner = new Spawner(this.Position, 50, 50, enemies, summoners, texture, corpseSprite, 100, player, Rectangle.Empty, windowWidth, windowHeight);
+            playerSpawner = new Spawner(player.Position, 100, 100, enemies, summoners, texture, corpseSprite, 100, player, Rectangle.Empty, windowWidth, windowHeight);
             spawned = new List<Enemy>();
 
             // Scale of the sprite
@@ -77,6 +78,7 @@ namespace TwelveMage
             this.player = player;
             this.summoners = summoners;
             this.enemies = enemies;
+            this.corpseSprite = corpseSprite;
             corners = new List<Vector2>();
             summoners.Add(this);
             currentEnemies = 0;

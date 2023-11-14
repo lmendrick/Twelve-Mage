@@ -29,6 +29,7 @@ namespace TwelveMage
         private List<Summoner> summoners;
 
         private Texture2D enemyTexture;
+        private Texture2D corpseSprite;
         private int enemyHealth;
         private int summonerHealth;
 
@@ -59,7 +60,7 @@ namespace TwelveMage
         /// <param name="xRadius">The X spawn radius</param>
         /// <param name="yRadius">The Y spawn radius</param>
         /// <param name="noSpawningArea">The rectangle to use as reference when constructing the noSpawnArea. The X/Y coords don't matter, only the width/height</param>
-        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, List<Summoner> summoners, Texture2D enemyTexture, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight)
+        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, List<Summoner> summoners, Texture2D enemyTexture, Texture2D corpseSprite, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight)
         {
             this.position = position;
             this.xRadius = xRadius;
@@ -67,6 +68,7 @@ namespace TwelveMage
             this.enemies = enemies;
             this.summoners = summoners;
             this.enemyTexture = enemyTexture;
+            this.corpseSprite = corpseSprite;
             this.enemyHealth = enemyHealth;
             summonerHealth = (int)((double)enemyHealth * 4); // Don't look at this
             this.player = player;
@@ -124,7 +126,8 @@ namespace TwelveMage
                 10,
                 windowWidth,
                 windowHeight,
-                summoners);
+                summoners,
+                corpseSprite);
 
             /*
             if(spawned.Rec.Intersects(NoSpawningArea))
@@ -185,7 +188,8 @@ namespace TwelveMage
                 enemyTexture,
                 enemyHealth,
                 enemies,
-                player);
+                player,
+                corpseSprite);
 
             /*
             if(spawned.Rec.Intersects(NoSpawningArea))

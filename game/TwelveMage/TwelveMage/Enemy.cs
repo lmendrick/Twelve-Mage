@@ -27,7 +27,8 @@ namespace TwelveMage
         FaceLeft,
         FaceRight,
         WalkLeft,
-        WalkRight
+        WalkRight,
+        Dead
     }
 
     public delegate void OnDeathDelegate();
@@ -53,6 +54,7 @@ namespace TwelveMage
 
         // Enemy Movement
         private Texture2D sprite;
+        private Texture2D corpseSprite;
         private Vector2 dir;
         private Vector2 pos;
         private float speed = 100f;
@@ -74,6 +76,8 @@ namespace TwelveMage
         const int EnemyRectWidth = 32;      // The width of a single frame
 
         protected EnemyState state;
+
+        private int corpseAge = 0;
 
         private int index;
         private Random rng;
@@ -164,11 +168,17 @@ namespace TwelveMage
             get { return color; }
             set { color = value; }
         }
+
+        public int CorpseAge
+        {
+            get { return corpseAge; }
+            set { corpseAge = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
 
-        public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player) : base(rec, texture, health)
+        public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite) : base(rec, texture, health)
         {
             this.rec = rec;
             this.sprite = texture;
@@ -193,6 +203,7 @@ namespace TwelveMage
             timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
 
             drawScale = 1f;
+            this.corpseSprite = corpseSprite;
         }
         #endregion
 
@@ -329,6 +340,10 @@ namespace TwelveMage
                 case EnemyState.WalkLeft:
                     DrawWalking(SpriteEffects.FlipHorizontally, spriteBatch);
                     break;
+
+                case EnemyState.Dead:
+                    spriteBatch.Draw(corpseSprite, rec, color);
+                    break;
             }
             #endregion
         }
@@ -412,6 +427,7 @@ namespace TwelveMage
             {
                 if (OnDeath != null) OnDeath(); // Use OnDeath event
                 isActive = false;
+                state = EnemyState.Dead;
             }
         }
 
@@ -586,7 +602,7 @@ namespace TwelveMage
         /// </summary>
         public Enemy Clone()
         {
-            return new Enemy(rec, sprite, health, enemies, player);
+            return new Enemy(rec, sprite, health, enemies, player, corpseSprite);
         }
 
         public event OnDeathDelegate OnDeath; // OnDeath event, for scoring

@@ -31,6 +31,7 @@ namespace TwelveMage
         private Texture2D healthBar;
         private Texture2D healthPickupSprite;
         private Texture2D summonerSprite;
+        private Texture2D corpseSprite;
 
         // Spell UI Sprites
         private Texture2D blinkSpellIcon;
@@ -85,9 +86,11 @@ namespace TwelveMage
 
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
+        private List<Enemy> deadEnemies;
         private List<Summoner> summoners;
         private Enemy defaultEnemy;
         private bool enemiesActive;
+        private int corpseLifespan = 2;
 
 
         private List<HealthPickup> healthPickups;
@@ -184,9 +187,10 @@ namespace TwelveMage
 
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
             gun = new Gun(gunRec, gunSprite, 10, player);
-           
+
 
             // Load enemy sprite (Lucas)
+            corpseSprite = this.Content.Load<Texture2D>("corpse-back");
             enemySprite = this.Content.Load<Texture2D>("ZombieWalkSheet");
             summonerSprite = this.Content.Load<Texture2D>("enemy");
             enemiesActive = true;
@@ -198,9 +202,10 @@ namespace TwelveMage
 
             healthPickups = new List<HealthPickup>();
 
+            deadEnemies = new List<Enemy>();
             enemies = new List<Enemy>();
             summoners = new List<Summoner>();
-            defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player);
+            defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player, corpseSprite);
             enemies.Add(defaultEnemy);
             spawner = new Spawner(
                 player.PosVector,
@@ -209,6 +214,7 @@ namespace TwelveMage
                 enemies,
                 summoners,
                 enemySprite,
+                corpseSprite,
                 100,
                 player,
                 new Rectangle(0, 0, 20, 20),
@@ -229,6 +235,7 @@ namespace TwelveMage
                 enemies,
                 summoners,
                 enemySprite,
+                corpseSprite,
                 100,
                 player,
                 Rectangle.Empty,
@@ -242,6 +249,7 @@ namespace TwelveMage
                 enemies,
                 summoners,
                 enemySprite,
+                corpseSprite,
                 100, 
                 player,
                 Rectangle.Empty,
@@ -255,6 +263,7 @@ namespace TwelveMage
                 enemies,
                 summoners,
                 enemySprite,
+                corpseSprite,
                 100,
                 player,
                 Rectangle.Empty,
@@ -268,6 +277,7 @@ namespace TwelveMage
                 enemies,
                 summoners,
                 enemySprite,
+                corpseSprite,
                 100,
                 player,
                 Rectangle.Empty,
@@ -524,6 +534,8 @@ namespace TwelveMage
                                         player));
                                 }
 
+                                deadEnemies.Add(enemies[i]);
+                                enemies[i].Color = Color.White;
                                 enemies.RemoveAt(i);
                             }
                         }
@@ -562,6 +574,25 @@ namespace TwelveMage
                             {
                                 healthPickup.Age++;
                             }
+
+
+                            // Ages all existing corpses
+                            foreach(Enemy corpse in deadEnemies)
+                            {
+                                corpse.CorpseAge++;
+                                
+                            }
+
+                            // If any corpses are older than the allowed corpseLifespan, remove them
+                            for(int i = deadEnemies.Count - 1; i >= 0; i--)
+                            {
+                                if (deadEnemies[i].CorpseAge > corpseLifespan)
+                                {
+                                    deadEnemies.RemoveAt(i);
+                                }
+                            }
+
+                            
 
                             wave++;
                         }
@@ -692,8 +723,14 @@ namespace TwelveMage
 
                 case GameState.Game:
 
+                    // Enemy corpse drawing
+                    foreach (Enemy enemy in deadEnemies)
+                    {
+                        enemy.Draw(_spriteBatch);
+                    }
+
                     // Health pickup drawing
-                    foreach(HealthPickup healthPickup in healthPickups)
+                    foreach (HealthPickup healthPickup in healthPickups)
                     {
                         healthPickup.Draw(_spriteBatch);
                     }
@@ -710,6 +747,8 @@ namespace TwelveMage
                     {
                         enemy.Draw(_spriteBatch);
                     }
+
+                    
 
                     
 

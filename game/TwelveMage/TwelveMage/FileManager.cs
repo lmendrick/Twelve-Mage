@@ -243,7 +243,7 @@ namespace TwelveMage
                     int.TryParse(line[2].Trim(), out int health);
                     Rectangle pos = new Rectangle(X, Y, 30, 30); // Enemy height & width are 30 & 30
 
-                    enemies.Add(new Enemy(pos, spritesheet, health, enemies, player));
+                    enemies.Add(new Enemy(pos, spritesheet, health, enemies, player, null));
                     currentLine = reader.ReadLine();
                 }
             }
