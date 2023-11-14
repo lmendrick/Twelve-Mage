@@ -64,13 +64,13 @@ namespace TwelveMage
 
         private int windowWidth;
         private int windowHeight;
-
+        
         // Mouse shooting
         private MouseState mState;
         private MouseState prevMState;
         private float shootingTimer;
         private bool hasShot;
-
+        private int damageGiven = 20;
         // Spell stuff
         private Spell spell;
 
@@ -145,7 +145,12 @@ namespace TwelveMage
             get { return mState; }
         }
         
-        public double Invulneravle
+        public int DamageGiven
+        {
+            get { return damageGiven; }
+            set {  damageGiven = value; }
+        }
+        public double Invulnerable
         {
             get { return invulnerableTimer; }
         }
@@ -421,7 +426,7 @@ namespace TwelveMage
         //added bullet method to take the direction of the player and add that to a list of projectiles
         public void AddFireBall(List<GameObject> fireBalls)
         {
-            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y, 75, 75), Fireball, health, 800);
+            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y, 150, 150), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
             fireBalls.Add(project);
         }
@@ -707,10 +712,10 @@ namespace TwelveMage
             }
             if (canFireball && currentKB.IsKeyDown(Keys.F) && previousKB.IsKeyUp(Keys.F))
             {
-                LifeSpan = 10f;
+                LifeSpan = 50f;
                 LinearVelocity = .01f;
                 
-                Damage = 200;
+                damageGiven = 200;
                 AddFireBall(fire);
                 fireballTimer = fireballCooldown;
             }
@@ -754,9 +759,9 @@ namespace TwelveMage
 
             // Clamp spell timers so they're always >= 0
             if (blinkTimer < 0.0) blinkTimer = 0;
-            if (fireballTimer < 0.0)
+            if (fireballTimer <= 0.0)
             {
-                Damage = 200;
+                damageGiven = 20;
                 LifeSpan = 4f;
                 LinearVelocity = .5f;
                 fireballTimer = 0;

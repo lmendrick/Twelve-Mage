@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -53,6 +54,7 @@ namespace TwelveMage
         private float speed = 100f;
         private Vector2 playerPos;
         private bool intersectionDetected;
+        private int damageTaken;
 
         private float knockbackDistance = 10;
         private float distanceTraveled = 0;
@@ -128,6 +130,11 @@ namespace TwelveMage
         {
             get { return (int)pos.X; }
             set { pos.X = value; }
+        }
+        public int DamageTaken
+        {
+            get { return damageTaken; }
+            set { damageTaken = value; }
         }
         public int Y // Property to set Y coord
         {
@@ -451,7 +458,7 @@ namespace TwelveMage
                 if (bulletList[i].CheckCollision(this))
                 {
                     
-                    health -= Damage;
+                    health -= DamageTaken;
                     bulletList.RemoveAt(i);
                     hit = true;
                     knocked = true;

@@ -169,7 +169,7 @@ namespace TwelveMage
             // Pass window dimensions to Player
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
-
+            
             // Load Health Bar Assets (Lucas)
             healthBar = this.Content.Load<Texture2D>("HB_1");
 
@@ -399,7 +399,7 @@ namespace TwelveMage
                         spawner.Position = player.PosVector;
 
                         gun.Update(gameTime, bullets);
-
+                        
                         //Spawn an enemy
                         if (SingleKeyPress(Keys.U, currentKBState))
                         {
@@ -432,10 +432,11 @@ namespace TwelveMage
                             {
                                 enemy.Update(gameTime, bullets);
                                 enemy.UpdateAnimation(gameTime);
+                                
                             }
                             enemy.PlayerPos = player.PosVector;
                             enemy.IsFrozen = player.IsFrozen;
-
+                            enemy.DamageTaken = player.DamageGiven;
                             
 
                         }
