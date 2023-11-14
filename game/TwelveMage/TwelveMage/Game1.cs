@@ -1007,6 +1007,7 @@ namespace TwelveMage
         {
             player = fileManager.LoadPlayer(playerSpriteSheet);
             player.Bullet = bulletSprite;
+            //deadEnemies.Clear();
             enemies.Clear();
             enemies = fileManager.LoadEnemies(enemySprite);
             healthPickups.Clear();

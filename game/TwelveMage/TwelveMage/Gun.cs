@@ -35,9 +35,11 @@ namespace TwelveMage
         private const int GunRectWidth = 73;        // The width of the image 
         private const int GunRectOffsetY = 0;
 
-        // Offset gun from player origin
-        private Vector2 posOffset;
-        
+
+        // Gun rotation
+        private Vector2 mouseDir;
+        private MouseState mState;
+        private float gunRotation;
 
         //properties
         public Vector2 PosVector
@@ -67,15 +69,15 @@ namespace TwelveMage
             this.gunTexture = texture;
             this.health = health;
             this.player = player;
-            posOffset = new Vector2(5, 15);
-            this.pos = player.PosVector + posOffset;
+            this.pos = new Vector2(player.Rec.Center.X, player.Rec.Center.Y);
+            this.gunRotation = 0;
         }
 
         //methods
 
         /// <summary>
         /// Lucas:
-        /// Update method determines position and orientation of gun relative to player
+        /// Update method determines position and rotation of gun based on mouse cursor
         /// </summary>
         /// <param name="gameTime">
         /// Passed in from main
@@ -85,21 +87,21 @@ namespace TwelveMage
         /// </param>
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {
+            mState = Mouse.GetState();
 
-            // Set offset for facing left
-            if (player.State == PlayerState.FaceLeft || player.State == PlayerState.WalkLeft)
-            {
-                posOffset = new Vector2(-5, 15);
-            }
+            // Update gun position to be centered on player
+            pos = new Vector2(player.Rec.Center.X, player.Rec.Center.Y); 
 
-            // Set offset for facing right
-            else
-            {
-                posOffset = new Vector2(5, 15);
-            }
+            // Update vector between gun and mouse cursor
+            mouseDir = new Vector2(mState.X, mState.Y) - pos;
 
-            // Calculate positon of gun
-            pos = player.PosVector + posOffset;
+
+
+            // Set projectile vector in Player to be gun's mouse dir
+           // player.MouseDir = mouseDir;
+
+            // Calculate rotation
+            gunRotation = (float)Math.Atan2(mouseDir.Y, mouseDir.X);
 
             rec.X = (int)pos.X;
             rec.Y = (int)pos.Y;
@@ -107,25 +109,28 @@ namespace TwelveMage
 
         /// <summary>
         /// Lucas:
-        /// Draws gun by referencing current player state
+        /// Draws gun based on rotation
         /// </summary>
         /// <param name="spriteBatch">
         /// spriteBatch passed in from main
         /// </param>
         public override void Draw(SpriteBatch spriteBatch)
         {
+            // This code will flip gun left or right (if not using rotate code)
 
-            // Facing left
-            if (player.State == PlayerState.FaceLeft || player.State == PlayerState.WalkLeft)
-            {
-                DrawLeft(SpriteEffects.FlipHorizontally, spriteBatch);
-            }
+            //// Facing left
+            //if (player.State == PlayerState.FaceLeft || player.State == PlayerState.WalkLeft)
+            //{
+            //    DrawLeft(SpriteEffects.FlipHorizontally, spriteBatch);
+            //}
 
-            // Facing right
-            else
-            {
-                DrawRight(SpriteEffects.None, spriteBatch);
-            }
+            //// Facing right
+            //else
+            //{
+            //    DrawRight(SpriteEffects.None, spriteBatch);
+            //}
+
+            DrawRotate(spriteBatch);
             
         }
 
@@ -184,6 +189,26 @@ namespace TwelveMage
                 0);
         }
 
+        /// <summary>
+        /// Draws the gun to always point towards the mouse cursor
+        /// </summary>
+        /// <param name="spriteBatch"></param>
+        public void DrawRotate(SpriteBatch spriteBatch)
+        {
+            spriteBatch.Draw(
+                texture,
+                pos,
+                new Rectangle(
+                    0,
+                    GunRectOffsetY,
+                    GunRectWidth,
+                    GunRectHeight),
+                Color.White,
+                gunRotation,                            // Rotation
+                new Vector2(0, GunRectHeight / 2),                           // Origin
+                spriteScale,                             
+                SpriteEffects.None,                     
+                0);
+        }
     }
-
 }

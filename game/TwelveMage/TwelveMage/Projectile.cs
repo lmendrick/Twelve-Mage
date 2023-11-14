@@ -50,6 +50,7 @@ namespace TwelveMage
                 IsRemoved = true;
             }
             //base position of direction and velocity of bullet
+
             Position += Direction * LinearVelocity;
             displacement += (Direction * LinearVelocity).Length();
             rec.X = (int)Position.X + rec.X;
