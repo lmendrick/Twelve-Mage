@@ -56,7 +56,10 @@ namespace TwelveMage
             rec.X = (int)Position.X + rec.X;
             rec.Y = (int)Position.Y + rec.Y;
 
-            
+            if(displacement > range)
+            {
+                IsRemoved = true;
+            }
         }
 
         public override void Draw(SpriteBatch spriteBatch) 
