@@ -153,7 +153,7 @@ namespace TwelveMage
             playerSpriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
             //load in bullet sprite
             bulletSprite = this.Content.Load<Texture2D>("bullet2");
-            fireballSprite = this.Content.Load<Texture2D>("fireball");
+            fireballSprite = this.Content.Load<Texture2D>("truefireball");
             //Load in gun image
             Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
 
@@ -162,6 +162,7 @@ namespace TwelveMage
             player = new Player(playerRec, playerSpriteSheet, 100);
             //set bullet sprite to bullet property for use
             player.Bullet = bulletSprite;
+            player.Fireball = fireballSprite;
             //created set of bullets
             bullets = new List<GameObject>();
             fireBalls = new List<GameObject>();
@@ -418,12 +419,8 @@ namespace TwelveMage
                             enemies.Clear();
                         }
 
-                        if(SingleKeyPress(Keys.F, currentKBState))
-                        {
-                            player.Update(gameTime, fireBalls);
-                            player.Bullet = fireballSprite;
-
-                        }
+                       
+                        
 
 
                         // Enemy movement (Lucas)

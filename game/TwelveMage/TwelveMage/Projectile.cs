@@ -20,8 +20,9 @@ namespace TwelveMage
         //fields
 
         private float timer;
-        private float range;
+        private float range = 5;
         private float displacement;
+
 
 
         //methods
@@ -31,6 +32,7 @@ namespace TwelveMage
         public Projectile(Rectangle position, Texture2D texture, int health, float range) : base(position, texture, health)
         {
             //standard velocity of 4
+
             this.LinearVelocity = LinearVelocity * .05f;
             this.range = range;
             displacement = 0;
