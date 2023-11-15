@@ -431,7 +431,7 @@ namespace TwelveMage
             Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 50, 150, 150), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
             project.LinearVelocity = .001f;
-            project.isFire = true;
+            isFire = true;
             project.LifeSpan = 5;
             fireBalls.Add(project);
         }
@@ -449,7 +449,7 @@ namespace TwelveMage
             //    project.Direction = dir;
             //}
             project.LifeSpan = .05f;
-            project.isFire = false;
+            isFire = false;
             
             
             // Mouse shooting (Lucas)
