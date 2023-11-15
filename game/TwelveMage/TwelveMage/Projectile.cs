@@ -23,7 +23,7 @@ namespace TwelveMage
         private float range = 5;
         private float displacement;
 
-
+        
 
         //methods
 
@@ -44,11 +44,12 @@ namespace TwelveMage
             //timer is based off real time
             timer += (float)gametime.ElapsedGameTime.TotalSeconds;
 
-            if (timer > LifeSpan)
+            if (timer > LifeSpan )
             {
                 //after lifespan of 4 remove bullet
                 IsRemoved = true;
             }
+            
             //base position of direction and velocity of bullet
 
             Position += Direction * LinearVelocity;

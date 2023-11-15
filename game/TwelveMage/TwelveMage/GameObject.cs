@@ -18,7 +18,7 @@ public abstract class GameObject
 	protected Texture2D texture;
 	protected int health;
     protected bool isActive = true;
-
+    public bool isFire = false;
     public Vector2 Position;
     public Vector2 Origin;
 

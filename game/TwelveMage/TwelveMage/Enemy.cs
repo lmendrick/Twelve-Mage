@@ -474,7 +474,11 @@ namespace TwelveMage
                 {
                     
                     health -= DamageTaken;
-                    bulletList.RemoveAt(i);
+                    if(isFire == true)
+                    {
+                        bulletList.RemoveAt(i);
+                    }
+                    
                     hit = true;
                     knocked = true;
                 }

@@ -485,14 +485,14 @@ namespace TwelveMage
                         }
 
                         //for bullets after timespan ends remove(AJ)
-                        for (int i = 0; i < bullets.Count; i++)
-                        {
-                            if (bullets[i].IsRemoved)
-                            {
-                                bullets.RemoveAt(i); ;
-                                i--;
-                            }
-                        }
+                        //for (int i = 0; i < bullets.Count; i++)
+                        //{
+                        //    if (bullets[i].IsRemoved)
+                        //    {
+                        //        bullets.RemoveAt(i); ;
+                        //        i--;
+                        //    }da
+                        //}
 
 
                         //Enemy damage logic moved to enemy class
