@@ -49,7 +49,7 @@ namespace TwelveMage
         /// Saves all Enemies
         /// </summary>
         /// <param name="enemies">The List of every Enemy that currently exists</param>
-        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
+        /// <returns>True if succesfully saved, False if an error occurred</returns>
         public bool SaveEnemies(List<Enemy> enemies)
         {
             bool saved = false;
@@ -79,7 +79,7 @@ namespace TwelveMage
         /// Saves all HealthPickups
         /// </summary>
         /// <param name="healthpickups">The List of every HealthPickup that currently exists</param>
-        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
+        /// <returns>True if succesfully saved, False if an error occurred</returns>
         public bool SaveHealthPickups(List<HealthPickup> healthpickups)
         {
             bool saved = false;
@@ -110,7 +110,7 @@ namespace TwelveMage
         /// </summary>
         /// <param name="highScore">The high score, stored in memory</param>
         /// <param name="highWave">The highest wave, stored in memory</param>
-        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
+        /// <returns>True if succesfully saved, False if an error occurred</returns>
         public bool SavePersistentStats(int highScore, int highWave) // Saves global data (high score, highest wave)
         {
             bool saved = false;
@@ -135,7 +135,7 @@ namespace TwelveMage
         /// Saves the Player data (position, health, state)
         /// </summary>
         /// <param name="player">The current Player</param>
-        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
+        /// <returns>True if succesfully saved, False if an error occurred</returns>
         public bool SavePlayer(Player player)
         {
             bool saved = false;
@@ -161,7 +161,7 @@ namespace TwelveMage
         /// </summary>
         /// <param name="score">The current score</param>
         /// <param name="wave">The current wave</param>
-        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
+        /// <returns>True if succesfully saved, False if an error occurred</returns>
         public bool SaveStats(int score, int wave)
         {
             bool saved = false;
@@ -186,8 +186,9 @@ namespace TwelveMage
         /// Saves all spell data
         /// </summary>
         /// <param name="player">The current Player</param>
-        /// <returns>True if succesfully saved, False if not succesfully saved</returns>
-        public bool SaveSpells(Player player)
+        /// <returns>True if succesfully saved, False if an error occurred</returns>
+        
+        public bool SaveSpells(Dictionary<string, double> SpellsDictionary)
         {
             bool saved = false;
             try // Make sure everything works correctly with a try/catch
@@ -203,10 +204,36 @@ namespace TwelveMage
                 // Line 3   "Freeze:",int freezeTimer,int freezeCooldownDuration,int freezeEffectDuration
                 // Line 4   "Haste:",int hasteTimer,int hasteCooldownDuration,int hasteEffectDuration
 
-                writer.WriteLine("Blink:,"+(int)player.BlinkTimer+","+(int)player.BlinkCooldown); // Blink data
-                writer.WriteLine("Fireball:,"+(int)player.FireballTimer+","+(int)player.FireballCooldown); // Fireball data
-                writer.WriteLine("Freeze:,"+(int)player.FreezeTimer+","+(int)player.FreezeCooldown+","+(int)player.FreezeEffect); // Freeze data
-                writer.WriteLine("Haste:,"+(int)player.HasteTimer+","+(int)player.HasteCooldown+","+(int)player.HasteEffect); // Haste data
+                String currentLine = "";
+                // Blink
+                SpellsDictionary.TryGetValue("BlinkTimer", out double blinkTimer);
+                SpellsDictionary.TryGetValue("BlinkCooldown", out double blinkCooldown);
+                currentLine += "Blink:," + blinkTimer + "," + blinkCooldown;
+                writer.WriteLine(currentLine);
+                currentLine = "";
+
+                // Fireball
+                SpellsDictionary.TryGetValue("FireballTimer", out double fireballTimer);
+                SpellsDictionary.TryGetValue("FireballCooldown", out double fireballCooldown);
+                currentLine += "Fireball:," + fireballTimer + "," + fireballCooldown;
+                writer.WriteLine(currentLine);
+                currentLine = "";
+
+                // Freeze
+                SpellsDictionary.TryGetValue("FreezeTimer", out double freezeTimer);
+                SpellsDictionary.TryGetValue("FreezeCooldown", out double freezeCooldown);
+                SpellsDictionary.TryGetValue("FreezeEffect", out double freezeEffect);
+                currentLine += "Freeze:," + freezeTimer + "," + freezeCooldown + "," + freezeEffect;
+                writer.WriteLine(currentLine);
+                currentLine = "";
+
+                // Haste
+                SpellsDictionary.TryGetValue("HasteTimer", out double hasteTimer);
+                SpellsDictionary.TryGetValue("HasteCooldown", out double hasteCooldown);
+                SpellsDictionary.TryGetValue("HasteEffect", out double hasteEffect);
+                currentLine += "Haste:," + hasteTimer + "," + hasteCooldown + "," + hasteEffect;
+                writer.WriteLine(currentLine);
+
                 saved = true;
             }
             catch
@@ -218,12 +245,12 @@ namespace TwelveMage
         }
         #endregion
 
-        #region LOADING
-        /// <summary>
-        /// Loads all Enemies from EnemyData.txt
-        /// </summary>
-        /// <param name="spritesheet">The spritesheet to pass to each Enemy</param>
-        /// <returns>A new list of every loaded Enemy</returns>
+            #region LOADING
+            /// <summary>
+            /// Loads all Enemies from EnemyData.txt
+            /// </summary>
+            /// <param name="spritesheet">The spritesheet to pass to each Enemy</param>
+            /// <returns>A new list of every loaded Enemy</returns>
         public List<Enemy> LoadEnemies(Texture2D spritesheet)
         {
             List<Enemy> enemies = new List<Enemy>();
@@ -259,7 +286,6 @@ namespace TwelveMage
         /// Loads all HealthPickups from HealthPickupData.txt
         /// </summary>
         /// <param name="sprite">The sprite to pass to each HealthPickup</param>
-        /// <param name="player">The Player to pass to each HealthPickup</param>
         /// <returns>A new list of every loaded HealthPickup</returns>
         public List<HealthPickup> LoadHealthPickups(Texture2D sprite, Player player)
         {
@@ -401,8 +427,10 @@ namespace TwelveMage
         /// Loads all spell data
         /// </summary>
         /// <param name="player">The current Player</param>
-        public void LoadSpells(Player player)
+        /// <returns>A Dictionary with spell data</returns>
+        public Dictionary<String, double> LoadSpells()
         {
+            Dictionary<String, double> SpellsDictionary = new Dictionary<String, double>();
             try // Make sure everything works correctly with a try/catch
             {
                 reader = new StreamReader(SpellsFilename);
@@ -418,50 +446,52 @@ namespace TwelveMage
 
                 // Blink
                 double currentValue = 0;
-                string[] currentLine = reader.ReadLine().Split(",");
+                string[] currentLine = reader.ReadLine().Split(","); // Line 1:
 
-                double.TryParse(currentLine[1], out currentValue);
-                player.BlinkTimer = currentValue;
-                double.TryParse(currentLine[2], out currentValue);
-                player.BlinkCooldown = currentValue;
+                double.TryParse(currentLine[1], out currentValue); // Blink Timer,
+                SpellsDictionary.Add("BlinkTimer", currentValue);
+                double.TryParse(currentLine[2], out currentValue); // Blink Cooldown Duration
+                SpellsDictionary.Add("BlinkCooldown", currentValue);
 
                 // Fireball
                 currentValue = 0;
-                currentLine = reader.ReadLine().Split(",");
+                currentLine = reader.ReadLine().Split(","); // Line 2:
 
-                double.TryParse(currentLine[1], out currentValue);
-                player.FireballTimer = currentValue;
-                double.TryParse(currentLine[2], out currentValue);
-                player.FireballCooldown = currentValue;
+                double.TryParse(currentLine[1], out currentValue); // Fireball Timer,
+                SpellsDictionary.Add("FireballTimer", currentValue);
+                double.TryParse(currentLine[2], out currentValue); // Fireball Cooldown Duration
+                SpellsDictionary.Add("FireballCooldown", currentValue);
 
                 // Freeze
                 currentValue = 0;
-                currentLine = reader.ReadLine().Split(",");
+                currentLine = reader.ReadLine().Split(","); // Line 3:
 
-                double.TryParse(currentLine[1], out currentValue);
-                player.FreezeTimer = currentValue;
-                double.TryParse(currentLine[2], out currentValue);
-                player.FreezeCooldown = currentValue;
-                double.TryParse(currentLine[3], out currentValue);
-                player.FreezeEffect = currentValue;
+                double.TryParse(currentLine[1], out currentValue); // Freeze Timer,
+                SpellsDictionary.Add("FreezeTimer", currentValue);
+                double.TryParse(currentLine[2], out currentValue); // Freeze Cooldown Duration,
+                SpellsDictionary.Add("FreezeCooldown", currentValue);
+                double.TryParse(currentLine[3], out currentValue); // Freeze Effect Duration
+                SpellsDictionary.Add("FreezeEffect", currentValue);
 
                 // Haste
                 currentValue = 0;
-                currentLine = reader.ReadLine().Split(",");
+                currentLine = reader.ReadLine().Split(","); // Line 4:
 
-                double.TryParse(currentLine[1], out currentValue);
-                player.HasteTimer = currentValue;
-                double.TryParse(currentLine[2], out currentValue);
-                player.HasteCooldown = currentValue;
-                double.TryParse(currentLine[3], out currentValue);
-                player.HasteEffect = currentValue;
+                double.TryParse(currentLine[1], out currentValue); // Haste Timer,
+                SpellsDictionary.Add("HasteTimer", currentValue);
+                double.TryParse(currentLine[2], out currentValue); // Haste Cooldown Duration,
+                SpellsDictionary.Add("HasteCooldown", currentValue);
+                double.TryParse(currentLine[3], out currentValue); // Haste Effect Duration
+                SpellsDictionary.Add("HasteEffect", currentValue);
             }
             catch
             {
 
             }
             if (reader != null) reader.Close();
+            return SpellsDictionary;
         }
+        
         #endregion
 
         #endregion

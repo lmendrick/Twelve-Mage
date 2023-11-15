@@ -955,7 +955,7 @@ namespace TwelveMage
             wave = stats[2];
             if (stats[1] > highScore) highScore = stats[2];
             if (stats[3] > highWave) highWave = stats[3];
-            fileManager.LoadSpells(player);
+            player.OverwriteSpellData(fileManager.LoadSpells());
 
             // Re attach gun to new player (Lucas)
             gun.Player = player;
@@ -991,7 +991,7 @@ namespace TwelveMage
             fileManager.SaveStats(score, wave) &&
             fileManager.SavePersistentStats(highScore, highWave) &&
             fileManager.SaveHealthPickups(healthPickups) &&
-            fileManager.SaveSpells(player))
+            fileManager.SaveSpells(player.getSpellData()))
             { hasSaved = true; } // Enables "Game Saved" text notification
         }
 

@@ -5,6 +5,8 @@ using System;
 using TwelveMage;
 using System.Diagnostics;
 using System.Collections.Generic;
+using System.IO;
+using System.Reflection.PortableExecutable;
 
 
 /*
@@ -150,10 +152,6 @@ namespace TwelveMage
             get { return damageGiven; }
             set {  damageGiven = value; }
         }
-        public double Invulnerable
-        {
-            get { return invulnerableTimer; }
-        }
 
         public Vector2 PosVector 
         { 
@@ -183,56 +181,6 @@ namespace TwelveMage
             set { windowHeight = value; }
         }
 
-        public double BlinkCooldown
-        {
-            get { return blinkCooldown; }
-            set { blinkCooldown = value; }
-        }
-        public double BlinkTimer
-        {
-            get { return blinkTimer; }
-            set { blinkTimer = value; }
-        }
-        public double FireballCooldown
-        {
-            get { return fireballCooldown; }
-            set { fireballCooldown = value; }
-        }
-        public double FireballTimer
-        {
-            get { return fireballTimer; }
-            set { fireballTimer = value; }
-        }
-        public double FreezeCooldown
-        {
-            get { return freezeCooldown; }
-            set { freezeCooldown = value; }
-        }
-        public double FreezeTimer
-        {
-            get { return freezeTimer; }
-            set { freezeTimer = value; }
-        }
-        public double FreezeEffect
-        {
-            get { return freezeEffect; }
-            set { freezeEffect = value; }
-        }
-        public double HasteCooldown
-        {
-            get { return hasteCooldown; }
-            set {  hasteCooldown = value; }
-        }
-        public double HasteTimer
-        {
-            get { return hasteTimer; }
-            set { hasteTimer = value; }
-        }
-        public double HasteEffect
-        {
-            get { return hasteEffect; }
-            set { hasteEffect = value; }
-        }
         public bool IsFrozen // Returns true if FreezeTimer is within the freeze effect's  duration
         {
             get
@@ -816,10 +764,48 @@ namespace TwelveMage
             spriteBatch.Draw(spellSlotOverlay, hasteOverlay, Color.White * 0.5f);
         }   
 
-        private void OverwriteSpellTimers(Dictionary<string, double> spellTimersDictionary)
+        public void OverwriteSpellData(Dictionary<string, double> SpellsDictionary)
         {
-
+            SpellsDictionary.TryGetValue("BlinkTimer", out blinkTimer);
+            SpellsDictionary.TryGetValue("BlinkCooldown", out blinkCooldown);
+            SpellsDictionary.TryGetValue("FireballTimer", out fireballTimer);
+            SpellsDictionary.TryGetValue("FireballCooldown", out fireballCooldown);
+            SpellsDictionary.TryGetValue("FreezeTimer", out freezeTimer);
+            SpellsDictionary.TryGetValue("FreezeCooldown", out freezeCooldown);
+            SpellsDictionary.TryGetValue("FreezeEffect", out freezeEffect);
+            SpellsDictionary.TryGetValue("HasteTimer", out hasteTimer);
+            SpellsDictionary.TryGetValue("HasteCooldown", out hasteCooldown);
+            SpellsDictionary.TryGetValue("HasteEffect", out hasteEffect);
         }
+
+        /// <summary>
+        /// Returns a Dictionary with all spell timers, cooldowns, and durations
+        /// </summary>
+        public Dictionary<String, double> getSpellData()
+        {
+            Dictionary<String, double> SpellsDictionary = new Dictionary<String, double>();
+
+            // Blink
+            SpellsDictionary.Add("BlinkTimer", blinkTimer);
+            SpellsDictionary.Add("BlinkCooldown", blinkCooldown);
+
+            // Fireball
+            SpellsDictionary.Add("FireballTimer", fireballTimer);
+            SpellsDictionary.Add("FireballCooldown", fireballCooldown);
+
+            // Freeze
+            SpellsDictionary.Add("FreezeTimer", freezeTimer);
+            SpellsDictionary.Add("FreezeCooldown", freezeCooldown);
+            SpellsDictionary.Add("FreezeEffect", freezeEffect);
+
+            // Haste
+            SpellsDictionary.Add("HasteTimer", hasteTimer);
+            SpellsDictionary.Add("HasteCooldown", hasteCooldown);
+            SpellsDictionary.Add("HasteEffect", hasteEffect);
+
+            return SpellsDictionary;
+        }
+
         #endregion
     }
 }
