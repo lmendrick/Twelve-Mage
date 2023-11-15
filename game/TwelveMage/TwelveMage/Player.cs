@@ -426,7 +426,7 @@ namespace TwelveMage
         //added bullet method to take the direction of the player and add that to a list of projectiles
         public void AddFireBall(List<GameObject> fireBalls)
         {
-            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y, 150, 150), Fireball, health, 800);
+            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 50, 150, 150), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
             fireBalls.Add(project);
         }
