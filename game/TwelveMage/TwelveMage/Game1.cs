@@ -943,6 +943,8 @@ namespace TwelveMage
         {
             player = fileManager.LoadPlayer(playerSpriteSheet);
             player.Bullet = bulletSprite;
+            player.WindowHeight = windowHeight;
+            player.WindowWidth = windowWidth;
             //deadEnemies.Clear();            // Clear corpses (Lucas)
             enemies.Clear();
             enemies = fileManager.LoadEnemies(enemySprite);
