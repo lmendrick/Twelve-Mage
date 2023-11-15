@@ -20,7 +20,7 @@ namespace TwelveMage
     internal class Gun : GameObject
     {
         //fields
-        Texture2D gunTexture;
+        private Texture2D gunTexture;
         // Move gun with player
         private Vector2 dir;
         private Vector2 pos;
@@ -95,11 +95,6 @@ namespace TwelveMage
             // Update vector between gun and mouse cursor
             mouseDir = new Vector2(mState.X, mState.Y) - pos;
 
-
-
-            // Set projectile vector in Player to be gun's mouse dir
-           // player.MouseDir = mouseDir;
-
             // Calculate rotation
             gunRotation = (float)Math.Atan2(mouseDir.Y, mouseDir.X);
 
@@ -130,6 +125,7 @@ namespace TwelveMage
             //    DrawRight(SpriteEffects.None, spriteBatch);
             //}
 
+            // Draw the rotating gun
             DrawRotate(spriteBatch);
             
         }
@@ -157,7 +153,7 @@ namespace TwelveMage
                 Color.White,
                 0,
                 Vector2.Zero,
-                spriteScale,                           // Sprite scale
+                spriteScale,                           // scale
                 flipSprite,
                 0);
         }
@@ -184,13 +180,13 @@ namespace TwelveMage
                 Color.White,
                 0,
                 Vector2.Zero,
-                spriteScale,                           // Sprite scale
+                spriteScale,                           // scale
                 flipSprite,
                 0);
         }
 
         /// <summary>
-        /// Draws the gun to always point towards the mouse cursor
+        /// Draws the gun to always point towards the mouse cursor and rotate around the player
         /// </summary>
         /// <param name="spriteBatch"></param>
         public void DrawRotate(SpriteBatch spriteBatch)

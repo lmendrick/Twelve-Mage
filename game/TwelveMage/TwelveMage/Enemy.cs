@@ -52,10 +52,13 @@ namespace TwelveMage
         private Vector2 dir;
         private Vector2 pos;
         private float speed = 100f;
+
+        // Collision
         private Vector2 playerPos;
         private bool intersectionDetected;
         private int damageTaken;
 
+        //Knockback
         private float knockbackDistance = 10;
         private float distanceTraveled = 0;
         private Vector2 knockbackVec;
@@ -65,10 +68,10 @@ namespace TwelveMage
         
 
         // Animation
-        int frame;              // The current animation frame
-        double timeCounter;     // The amount of time that has passed
-        double fps;             // The speed of the animation
-        double timePerFrame;    // The amount of time (in fractional seconds) per frame
+        int frame;              
+        double timeCounter;     
+        double fps;             
+        double timePerFrame;    
 
         // Constants for "source" rectangle (inside the image)
         const int WalkFrameCount = 7;       // The number of frames in the animation
@@ -115,6 +118,7 @@ namespace TwelveMage
         private double timer;
         private bool hit;
 
+        // TimeFreeze spell
         protected bool isFrozen;
 
         protected float drawScale;
@@ -181,6 +185,12 @@ namespace TwelveMage
             get { return corpseAge; }
             set { corpseAge = value; }
         }
+
+        public Texture2D CorpseSprite
+        {
+            get { return corpseSprite; }
+            set { corpseSprite = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -205,9 +215,9 @@ namespace TwelveMage
             // Default sprite direction
             state = EnemyState.FaceRight;
 
-            // Initialize
-            fps = 10.0;                     // Will cycle through 10 walk frames per second
-            timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
+            // Initialize animation data
+            fps = 10.0;                     
+            timePerFrame = 1.0 / fps;       
 
             drawScale = 1f;
             this.corpseSprite = corpseSprite;
@@ -227,11 +237,11 @@ namespace TwelveMage
         {
             index = enemies.IndexOf(this);
 
-            // TimeFreeze Spell
-            TimeFreeze();
+            // TimeFreeze Spell (Lucas)
+            CheckIfFrozen();
 
 
-            // Set enemy direction based on current player position]
+            // Set enemy direction based on current player position (Lucas)
             dir = playerPos - this.pos;
             dir.Normalize();
 
@@ -363,7 +373,12 @@ namespace TwelveMage
             #endregion
         }
 
-
+        /// <summary>
+        /// Handles the enemy knockback effect
+        /// </summary>
+        /// <param name="gameTime">
+        /// gameTime passed in from main
+        /// </param>
         public void HandleKnockback(GameTime gameTime)
         {
             if(knocked)
@@ -390,7 +405,7 @@ namespace TwelveMage
 
         /// <summary>
         /// Lucas:
-        /// Draws the player character idle animation.
+        /// Draws the enemy idle animation.
         /// Adapted from Mario Walking PE.
         /// </summary>
         /// <param name="flipSprite">
@@ -419,7 +434,7 @@ namespace TwelveMage
 
         /// <summary>
         /// Lucas:
-        /// Draws the player character walking animation, based on current frame.
+        /// Draws the enemy character walking animation, based on current frame.
         /// Adapted from Mario Walking PE.
         /// </summary>
         /// <param name="flipSprite">
@@ -544,11 +559,7 @@ namespace TwelveMage
                 adjustmentTimer = 1.0f;
                 return Vector2.Zero;
             }
-
-            
-
-            
-            
+  
         }
 
         /// <summary>
@@ -652,7 +663,7 @@ namespace TwelveMage
         /// <summary>
         /// Enemies stop moving during TimeFreeze. See Player class for code.
         /// </summary>
-        public void TimeFreeze()
+        public void CheckIfFrozen()
         {
             if (isFrozen)
             {

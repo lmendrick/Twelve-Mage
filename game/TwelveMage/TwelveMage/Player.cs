@@ -33,7 +33,6 @@ namespace TwelveMage
     {
         #region FIELDS
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
-        //private int _ammo; // Ammunition count (Not yet implemented)
         Color color = Color.White;
 
         Texture2D bullet;
@@ -71,6 +70,7 @@ namespace TwelveMage
         private float shootingTimer;
         private bool hasShot;
         private int damageGiven = 20;
+
         // Spell stuff
         private Spell spell;
 
@@ -275,7 +275,7 @@ namespace TwelveMage
             // Default sprite direction
             state = PlayerState.FaceRight;
 
-            // Initialize
+            // Initialize animation data
             fps = 10.0;                     // Will cycle through 10 walk frames per second
             timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
         }
@@ -298,7 +298,7 @@ namespace TwelveMage
 
 
             #region Input Processing
-            // Process W and S keys for vertical movement
+            // Process W and S keys for vertical movement (Lucas)
             if (currentKB.IsKeyDown(Keys.W))
             {
                 dir.Y -= 1; // Move up
@@ -312,7 +312,7 @@ namespace TwelveMage
                 dir.Y = 0; // No vertical movement
             }
 
-            // Process A and D keys for horizontal movement
+            // Process A and D keys for horizontal movement (Lucas)
             if (currentKB.IsKeyDown(Keys.D))
             {
                 dir.X += 1; // Move right
@@ -326,13 +326,13 @@ namespace TwelveMage
                 dir.X = 0; // No horizontal movement
             }
 
-            // Normalize the direction vector if there is any movement
+            // Normalize the direction vector if there is any movement (Lucas)
             if (dir.X != 0 || dir.Y != 0)
             {
                 dir.Normalize();
             }
 
-            // Update the player's position based on direction, time elapsed, and speed
+            // Update the player's position based on direction, time elapsed, and speed (Lucas)
             pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
             pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
@@ -357,7 +357,7 @@ namespace TwelveMage
                 }
             }
 
-            // Set the player's animation state based on movement direction
+            // Set the player's animation state based on movement direction (Lucas)
             if (dir.X < 0)
             {
                 state = PlayerState.WalkLeft; // Walking left
@@ -367,7 +367,7 @@ namespace TwelveMage
                 state = PlayerState.WalkRight; // Walking right
             }
 
-            // Handle vertical movement state
+            // Handle vertical movement state (Lucas)
             if (dir.Y != 0)
             {
                 if (state == PlayerState.WalkLeft || state == PlayerState.FaceLeft)
@@ -380,7 +380,7 @@ namespace TwelveMage
                 }
             }
 
-            // Set the player's state to facing left or right when not moving
+            // Set the player's state to facing left or right when not moving (Lucas)
             if (dir.X == 0 && dir.Y == 0)
             {
                 if (state == PlayerState.WalkLeft)
@@ -638,9 +638,6 @@ namespace TwelveMage
         /// </param>
         private void DrawStanding(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
-
-            
-
             spriteBatch.Draw(
                 texture,
                 pos,
@@ -654,8 +651,7 @@ namespace TwelveMage
                 Vector2.Zero,
                 1.0f,
                 flipSprite,
-                0);
-            
+                0);            
         }
 
         /// <summary>

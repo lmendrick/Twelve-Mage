@@ -166,7 +166,7 @@ namespace TwelveMage
             //created set of bullets
             bullets = new List<GameObject>();
             fireBalls = new List<GameObject>();
-            // Pass window dimensions to Player
+            // Pass window dimensions to Player (Lucas)
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
             
@@ -197,8 +197,7 @@ namespace TwelveMage
             enemiesActive = true;
             
 
-            // Instantiate single test enemy (Lucas)
-            // (position will be randomized in future, may want to add enemyWidth and enemyHeight)
+            // Instantiate single default enemy (Lucas)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
 
             healthPickups = new List<HealthPickup>();
@@ -285,53 +284,45 @@ namespace TwelveMage
                 windowWidth,
                 windowHeight));
 
-            // Create a few 100x200 buttons down the left side
-            //buttons.Add(new Button(
-            //        _graphics.GraphicsDevice,           // device to create a custom texture
-            //        new Rectangle(10, 40, 200, 100),    // where to put the button
-            //        "Start New Game",                        // button label
-            //        menuFont,                               // label font
-            //        Color.Purple));                     // button color
-            //buttons[0].OnButtonClick += this.NewGame;
 
             #region Menu Buttons
             // MAIN MENU BUTTONS
 
             // New Game Button
             mainMenuButtons.Add(new Button(
-            _graphics.GraphicsDevice,           // device to create a custom texture
+            _graphics.GraphicsDevice,           
             new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
-            "New Game",                        // button label
-            menuFont,                               // label font
-            Color.DarkBlue));                     // button color
+            "New Game",                        // button text
+            menuFont,                               // font
+            Color.DarkBlue));                     // color
             mainMenuButtons[0].OnButtonClick += this.NewGame;
 
             // Load Game Button
             mainMenuButtons.Add(new Button(
-            _graphics.GraphicsDevice,           // device to create a custom texture
-            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
-            "Load Game",                        // button label
-            menuFont,                               // label font
-            Color.DarkBlue));                     // button color
+            _graphics.GraphicsDevice,           
+            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    
+            "Load Game",                        
+            menuFont,                               
+            Color.DarkBlue));                     
             mainMenuButtons[1].OnButtonClick += this.LoadGame;
 
             // GAME OVER MENU BUTTONS
 
             // New Game Button
             gameOverButtons.Add(new Button(
-            _graphics.GraphicsDevice,           // device to create a custom texture
-            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
-            "New Game",                        // button label
-            menuFont,                               // label font
-            Color.DarkBlue));                     // button color
+            _graphics.GraphicsDevice,           
+            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    
+            "New Game",                        
+            menuFont,                               
+            Color.DarkBlue));                     
             gameOverButtons[0].OnButtonClick += this.NewGame;
 
             // Main Menu Button
             gameOverButtons.Add(new Button(
-            _graphics.GraphicsDevice,           // device to create a custom texture
-            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
-            "Main Menu",                        // button label
-            menuFont,                               // label font
+            _graphics.GraphicsDevice,           
+            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    
+            "Main Menu",                        
+            menuFont,                               
             Color.DarkBlue));
             gameOverButtons[1].OnButtonClick += this.MainMenu;
 
@@ -339,19 +330,19 @@ namespace TwelveMage
 
             // Resume button
             pauseMenuButtons.Add(new Button(
-            _graphics.GraphicsDevice,           // device to create a custom texture
-            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    // where to put the button
-            "Resume",                        // button label
-            menuFont,                               // label font
-            Color.DarkBlue));                     // button color
+            _graphics.GraphicsDevice,           
+            new Rectangle(buttonCenterX, buttonCenterY - 50, buttonWidth, buttonHeight),    
+            "Resume",                        
+            menuFont,                               
+            Color.DarkBlue));                     
             pauseMenuButtons[0].OnButtonClick += this.Resume;
 
             // Save button
             pauseMenuButtons.Add(new Button(
-            _graphics.GraphicsDevice,           // device to create a custom texture
-            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    // where to put the button
-            "Save",                        // button label
-            menuFont,                               // label font
+            _graphics.GraphicsDevice,           
+            new Rectangle(buttonCenterX, buttonCenterY + 50, buttonWidth, buttonHeight),    
+            "Save",                        
+            menuFont,                               
             Color.DarkBlue));
             pauseMenuButtons[1].OnButtonClick += this.Save;
             #endregion
@@ -456,9 +447,6 @@ namespace TwelveMage
                         }
 
 
-
-                        
-
                         foreach (HealthPickup healthPickup in healthPickups)
                         {
                             healthPickup.Update(gameTime, bullets);
@@ -511,8 +499,6 @@ namespace TwelveMage
 
                         //if enemy collides with player health goes down
                         //have to tweak to tick multiple times for one player instance
-                       
-
                         foreach (Enemy enemy in enemies)
                         {
                             if (player.CheckCollision(enemy) && enemy.IsActive)
@@ -607,15 +593,9 @@ namespace TwelveMage
 
                             wave++;
                         }
-                        
-                        
-                        //Addded gun but since its not tweaked fully so commented out for now(AJ)
-                        //gun.Update(gameTime);
-                        //gun.PosVector = player.PosVector;
                     }
 
                     // Pause game logic and switch to pause state (Lucas)
-                    // Note: May be simpler to not have a pause state, and just make an overlay
                     if (SingleKeyPress(Keys.P, currentKBState))
                     {
                         isPaused = true;
@@ -654,15 +634,7 @@ namespace TwelveMage
                     break;
             }
 
-
-            /*// Checks each button in list for clicks
-            // NOTE: ".ToList()" is necessary to avoid error
-            foreach (Button button in pauseMenuButtons.ToList())
-            {
-                button.Update();
-            }*/
-
-
+            // Store last frame's keyboard state
             prevKBState = currentKBState;
             base.Update(gameTime);
 
@@ -674,8 +646,7 @@ namespace TwelveMage
 
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
-            //switch to ensure what happens in each state
-            //will add more after discussion and more work
+
 
             backgroundManager.Draw(windowWidth, windowHeight);
 
@@ -684,7 +655,7 @@ namespace TwelveMage
             {
                 case GameState.Menu:
 
-                    // Temp main menu display, can replace these with buttons later (Lucas)
+                    // Main Menu display (Lucas)
 
                     // Title
                     _spriteBatch.DrawString(
@@ -693,22 +664,6 @@ namespace TwelveMage
                         new Vector2((windowWidth / 2) - (titleFont.MeasureString("Twelve-Mage").X / 2),
                         75),
                         Color.Yellow);
-
-                    // Enter to Start
-                    //_spriteBatch.DrawString(
-                    //    menuFont,
-                    //    "Press Enter to start",
-                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press Enter to start").X / 2),
-                    //    ((windowHeight / 2)) - 50),
-                    //    Color.Black);
-
-                    // L to load
-                    //_spriteBatch.DrawString(
-                    //    menuFont,
-                    //    "Press L to load a game",
-                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press L to load a game").X / 2),
-                    //    ((windowHeight / 2))),
-                    //    Color.Black);
 
                     // Controls
                     _spriteBatch.DrawString(
@@ -753,15 +708,12 @@ namespace TwelveMage
                     // Draw the gun over the player (Lucas)
                     gun.Draw(_spriteBatch);
 
-                    // Enemy sprite (Lucas)
+                    // Enemy sprites (Lucas)
                     foreach(Enemy enemy in enemies)
                     {
                         enemy.Draw(_spriteBatch);
                     }
 
-                    
-
-                    
 
                     //draw bullets as long as its a projectile(AJ)
                     foreach (GameObject project in bullets)
@@ -773,8 +725,6 @@ namespace TwelveMage
                         
                     }
 
-                    //gun sprite
-                    //gun.Draw(_spriteBatch);
 
                     /*//enenmy health display(AJ
                     if (enemies != null && enemies.Count != 0) // Only do this if enemies has an enemy
@@ -835,7 +785,7 @@ namespace TwelveMage
                         Vector2.Zero,                           // Center of the rotation
                         new Vector2(1f, 0.5f),                  // Scale 
                         SpriteEffects.None,                     // Effects
-                        0);                                     // Layer depth;
+                        0);                                     // Layer depth
 
                     // Player Health Bar (Lucas)
                     // Scales Health Bar based on player health
@@ -855,7 +805,7 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
-                    // Temp pause menu display (Lucas)
+                    // Pause Menu display (Lucas)
 
                     // Game Paused title
                     _spriteBatch.DrawString(
@@ -865,6 +815,7 @@ namespace TwelveMage
                         75),
                         Color.DarkBlue);
 
+                    // Save notification upon succesfully saving game
                     if (hasSaved)
                     {
                         _spriteBatch.DrawString(
@@ -876,22 +827,6 @@ namespace TwelveMage
                     }
                     
 
-                    // Press P to unpause
-                    //_spriteBatch.DrawString(
-                    //    menuFont,
-                    //    "Press P to unpause",
-                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press P to unpause").X / 2),
-                    //    ((windowHeight / 2)) - 50),
-                    //    Color.Black);
-
-                    // Press S to save game
-                    //_spriteBatch.DrawString(
-                    //    menuFont,
-                    //    "Press S to save game",
-                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press S to save game").X / 2),
-                    //    ((windowHeight / 2))),
-                    //    Color.Black);
-
                     foreach(Button button in pauseMenuButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
@@ -901,7 +836,7 @@ namespace TwelveMage
 
                 case GameState.GameOver:
 
-                    // Temp GameOver display (Lucas)
+                    // Game Over display (Lucas)
 
                     //Game over title
                     _spriteBatch.DrawString(
@@ -910,14 +845,6 @@ namespace TwelveMage
                         new Vector2((windowWidth / 2) - (titleFont.MeasureString("GAME OVER").X / 2),
                         75),
                         Color.DarkBlue);
-
-                    // Enter to return to menu
-                    //_spriteBatch.DrawString(
-                    //    menuFont,
-                    //    "Press Enter to return to menu",
-                    //    new Vector2((windowWidth / 2) - (menuFont.MeasureString("Press Enter to return to menu").X / 2),
-                    //    ((windowHeight / 2)) - 50),
-                    //    Color.Black);
 
                     // Game score
                     _spriteBatch.DrawString(
@@ -986,6 +913,7 @@ namespace TwelveMage
             if(stats[3] > highWave) highWave = stats[3];
             player.Reset(); // Reset the player
             enemies.Clear(); // Clear enemies
+            deadEnemies.Clear(); // Clear corpses (Lucas)
             healthPickups.Clear(); // Clears HealthPickups
             enemies.Add(defaultEnemy.Clone()); // Add the default enemy
             enemies[0].OnDeath += IncreaseScore; // Add the score increase method to the enemy's OnDeath event
@@ -1014,7 +942,7 @@ namespace TwelveMage
         {
             player = fileManager.LoadPlayer(playerSpriteSheet);
             player.Bullet = bulletSprite;
-            //deadEnemies.Clear();
+            //deadEnemies.Clear();            // Clear corpses (Lucas)
             enemies.Clear();
             enemies = fileManager.LoadEnemies(enemySprite);
             healthPickups.Clear();
@@ -1039,6 +967,7 @@ namespace TwelveMage
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.OnDeath += IncreaseScore;
+                    enemy.CorpseSprite = corpseSprite;          // Reassign corpseSprite to avoid null ref error (Lucas)
                 }
 
                 enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack
@@ -1093,9 +1022,6 @@ namespace TwelveMage
                 button.Active = false;
             }
         }
-
-        
-
 
 
         /// <summary>

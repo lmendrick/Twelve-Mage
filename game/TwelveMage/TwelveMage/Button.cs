@@ -56,12 +56,12 @@ namespace TwelveMage
         /// <param name="color">The color to make the button's texture.</param>
         public Button(GraphicsDevice device, Rectangle position, String text, SpriteFont font, Color color)
         {
-            // Save copies/references to the info we'll need later
+            // References to button data
             this.font = font;
             this.position = position;
             this.text = text;
 
-            // Figure out where on the button to draw it
+            // Calculate where to draw text on button (centered)
             Vector2 textSize = font.MeasureString(text);
             textLoc = new Vector2(
                 (position.X + position.Width / 2) - textSize.X / 2,
@@ -87,7 +87,7 @@ namespace TwelveMage
         public void Update()
         {
             // Check/capture the mouse state regardless of whether this button
-            // if active so that it's up to date next time!
+            // is active so that it's up to date next time!
             MouseState mState = Mouse.GetState();
             if (active && mState.LeftButton == ButtonState.Released &&
                 prevMState.LeftButton == ButtonState.Pressed &&
