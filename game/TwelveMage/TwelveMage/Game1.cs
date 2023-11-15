@@ -439,6 +439,7 @@ namespace TwelveMage
                             enemy.PlayerPos = player.PosVector;
                             enemy.IsFrozen = player.IsFrozen;
                             enemy.DamageTaken = player.DamageGiven;
+                          
                             
 
                         }

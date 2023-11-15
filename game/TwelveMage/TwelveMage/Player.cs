@@ -715,7 +715,7 @@ namespace TwelveMage
                 LifeSpan = 50f;
                 LinearVelocity = .01f;
                 
-                damageGiven = 200;
+                damageGiven = 1000;
                 AddFireBall(fire);
                 fireballTimer = fireballCooldown;
             }
