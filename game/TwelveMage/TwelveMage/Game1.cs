@@ -417,6 +417,8 @@ namespace TwelveMage
                         if (SingleKeyPress(Keys.C, currentKBState))
                         {
                             enemies.Clear();
+                            summoners.Clear();
+                            deadEnemies.Clear();
                         }
 
                        
@@ -533,9 +535,12 @@ namespace TwelveMage
                                 }
 
                                 deadEnemies.Add(enemies[i]);
-                                if(deadEnemies.Count > 100)
+                                if(deadEnemies.Count > 150)
                                 {
-                                    deadEnemies.RemoveAt(0);
+                                    for(int j = 29; j >= 0; j--)
+                                    {
+                                        deadEnemies.RemoveAt(j);
+                                    }
                                 }
 
                                 enemies[i].Color = Color.White;

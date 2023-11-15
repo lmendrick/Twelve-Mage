@@ -117,8 +117,8 @@ namespace TwelveMage
                 new Rectangle(
                     rng.Next(lowerXRange, upperXRange + 1),
                     rng.Next(lowerYRange, upperYRange + 1),
-                    60,
-                    60),
+                    45,
+                    45),
                 enemyTexture,
                 summonerHealth,
                 enemies,

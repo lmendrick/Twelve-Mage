@@ -67,7 +67,7 @@ namespace TwelveMage
             spawned = new List<Enemy>();
 
             // Scale of the sprite
-            drawScale = 2f;
+            drawScale = 1.5f;
             // Match rectangle scale to draw scale
             rec.X *= (int)drawScale;
             rec.Y *= (int)drawScale;
