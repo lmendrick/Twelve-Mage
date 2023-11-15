@@ -59,7 +59,8 @@ namespace TwelveMage
         private List<Vector2> corners;
 
 
-        public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight, List<Summoner> summoners, Texture2D corpseSprite) : base(rec, texture, health, enemies, player, corpseSprite)
+        public Summoner(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, int maxEnemies, int windowWidth, int windowHeight, List<Summoner> summoners, Texture2D corpseSprite) 
+            : base(rec, texture, health, enemies, player, corpseSprite)
         {
             rng = new Random();
             personalSpawner = new Spawner(this.Position, 50, 50, enemies, summoners, texture, corpseSprite, 100, player, Rectangle.Empty, windowWidth, windowHeight);
