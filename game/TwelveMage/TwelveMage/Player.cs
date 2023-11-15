@@ -378,7 +378,8 @@ namespace TwelveMage
             
             Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 50, 150, 150), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
-            project.LinearVelocity = .001f;
+            project.Direction.Normalize();
+            project.LinearVelocity = .3f;
             isFire = true;
             project.LifeSpan = 5;
             fireBalls.Add(project);
