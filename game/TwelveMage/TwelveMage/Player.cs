@@ -394,6 +394,7 @@ namespace TwelveMage
             }
             //Anthony if player is damaged set invulnerbale 
             //then make color black after set color back to white
+            
             if(invulnerableTimer > 0 )
             {
                 color = Color.Black;
@@ -426,10 +427,12 @@ namespace TwelveMage
         //added bullet method to take the direction of the player and add that to a list of projectiles
         public void AddFireBall(List<GameObject> fireBalls)
         {
+            
             Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 50, 150, 150), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
+            project.LinearVelocity = .001f;
             project.isFire = true;
-            project.LifeSpan = 10;
+            project.LifeSpan = 5;
             fireBalls.Add(project);
         }
         private void AddBullet(List<GameObject> bullets)
@@ -445,7 +448,9 @@ namespace TwelveMage
             //{
             //    project.Direction = dir;
             //}
-
+            project.LifeSpan = .05f;
+            project.isFire = false;
+            
             
             // Mouse shooting (Lucas)
             // Set direction based on mouse cursor position minus player position
@@ -759,6 +764,7 @@ namespace TwelveMage
             if (blinkTimer < 0.0) blinkTimer = 0;
             if (fireballTimer <= 0.0)
             {
+                isFire = false;
                 damageGiven = 20;
                 LifeSpan = 4f;
                 LinearVelocity = .5f;
