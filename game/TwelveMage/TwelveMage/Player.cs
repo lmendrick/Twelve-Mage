@@ -380,41 +380,11 @@ namespace TwelveMage
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
             project.Direction.Normalize();
             project.LinearVelocity = .3f;
-            isFire = true;
+            project.IsFire = true;
             project.LifeSpan = 5;
             fireBalls.Add(project);
         }
-        private void AddBullet(List<GameObject> bullets)
-        {
-            Projectile project = new Projectile(new Rectangle(rec.X,rec.Y, 15,15), bullet, health, 800);
 
-            // Commented out to replace with mouse shooting (Lucas)
-            //if(dir == Vector2.Zero)
-            //{
-            //    project.Direction = Vector2.One;
-            //}
-            //else
-            //{
-            //    project.Direction = dir;
-            //}
-            project.LifeSpan = .05f;
-            isFire = false;
-            
-            
-            // Mouse shooting (Lucas)
-            // Set direction based on mouse cursor position minus player position
-            project.Direction = new Vector2(mState.X, mState.Y) - pos;
-
-            bullets.Add(project);
-
-            //var bullet = projectile.Clone() as Projectile;
-            //bullet.Direction = dir;
-            //bullet.Position = pos;
-            //bullet.LinearVelocity = this.LinearVelocity * 2;
-            //bullet.LifeSpan = 2f;
-            //bullet.Parent = this;
-            //sprites.Add(bullet);
-        }
 
 
         /// <summary>
@@ -447,6 +417,7 @@ namespace TwelveMage
                     health,
                     rng.Next(25, 40)));
                 shots[i].Direction = shotDirections[i];
+                shots[i].IsFire = false;
             }
 
             foreach(Projectile shot in shots)
@@ -667,7 +638,7 @@ namespace TwelveMage
                 LifeSpan = 50f;
                 LinearVelocity = .01f;
                 
-                damageGiven = 1000;
+                
                 AddFireBall(fire);
                 fireballTimer = fireballCooldown;
             }
