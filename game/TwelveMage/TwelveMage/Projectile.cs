@@ -22,8 +22,18 @@ namespace TwelveMage
         private float timer;
         private float range = 5;
         private float displacement;
+        public bool isFire = true;
 
-        
+
+
+        // Properties
+        public bool IsFire
+        {
+            get { return isFire; }
+            set { isFire = value; }
+        }
+
+
 
         //methods
 
@@ -44,10 +54,15 @@ namespace TwelveMage
             //timer is based off real time
             timer += (float)gametime.ElapsedGameTime.TotalSeconds;
 
-            if (timer > LifeSpan )
+            if (timer > LifeSpan)
             {
                 //after lifespan of 4 remove bullet
                 IsRemoved = true;
+            }
+
+            if (!isFire)
+            {
+                Console.WriteLine();
             }
             
             //base position of direction and velocity of bullet
