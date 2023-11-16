@@ -915,6 +915,7 @@ namespace TwelveMage
             if(stats[3] > highWave) highWave = stats[3];
             player.Reset(); // Reset the player
             enemies.Clear(); // Clear enemies
+            summoners.Clear(); // Clear summoners (Lucas)
             deadEnemies.Clear(); // Clear corpses (Lucas)
             healthPickups.Clear(); // Clears HealthPickups
             enemies.Add(defaultEnemy.Clone()); // Add the default enemy
