@@ -484,6 +484,15 @@ namespace TwelveMage
                     {
                         IsActive = false;
                         state = EnemyState.Dead;
+                        if (bulletList[i] is Projectile)
+                        {
+                            Projectile shot = (Projectile)bulletList[i];
+                            shot.NumPen++;
+                            if(shot.NumPen > shot.MaxPen)
+                            {
+                                bulletList.RemoveAt(i);
+                            }
+                        }
                     }
                     
                     hit = true;

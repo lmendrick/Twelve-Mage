@@ -40,6 +40,8 @@ public abstract class GameObject
     public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
     public bool IsFire { get { return isFire; } set { isFire = value; } }
+    public int Width { get { return rec.Width; } set { rec.Width = value; } }
+    public int Height { get { return rec.Height; } set { rec.Height = value; } }
 	
     public int Damage
     {

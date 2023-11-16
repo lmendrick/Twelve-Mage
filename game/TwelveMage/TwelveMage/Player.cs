@@ -372,7 +372,7 @@ namespace TwelveMage
         public void AddFireBall(List<GameObject> fireBalls)
         {
             
-            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 50, 150, 150), Fireball, health, 800);
+            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 20, 50, 50), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
             project.Direction.Normalize();
             project.LinearVelocity = .3f;

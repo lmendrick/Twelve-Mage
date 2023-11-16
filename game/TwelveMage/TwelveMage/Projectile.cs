@@ -22,7 +22,9 @@ namespace TwelveMage
         private float timer;
         private float range = 5;
         private float displacement;
-        public bool isFire = true;
+        public bool isFire = false;
+        private int maxPen = 30;
+        private int numPen;
 
 
 
@@ -33,6 +35,16 @@ namespace TwelveMage
             set { isFire = value; }
         }
 
+        public int MaxPen
+        {
+            get { return maxPen; }
+        }
+
+        public int NumPen
+        {
+            get { return numPen; }
+            set { numPen = value; }
+        }
 
 
         //methods
@@ -60,10 +72,6 @@ namespace TwelveMage
                 IsRemoved = true;
             }
 
-            if (!isFire)
-            {
-                Console.WriteLine();
-            }
             
             //base position of direction and velocity of bullet
 
@@ -75,6 +83,12 @@ namespace TwelveMage
             if(displacement > range)
             {
                 IsRemoved = true;
+            }
+
+            if (isFire)
+            {
+                this.Width += 2;
+                this.Height += 2;
             }
         }
 
