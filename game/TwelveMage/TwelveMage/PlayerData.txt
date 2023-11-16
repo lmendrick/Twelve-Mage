@@ -1,1 +1,1 @@
-463,264,100,FaceLeft
+520,80,30,FaceLeft

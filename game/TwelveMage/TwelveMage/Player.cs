@@ -343,23 +343,19 @@ namespace TwelveMage
             //Anthony if player is damaged set invulnerbale 
             //then make color black after set color back to white
             
-            if(invulnerableTimer > 0 )
+            if(IsInvulnerable && IsHastened)
+            {
+                color = Color.DarkRed;
+            }
+            else if (IsInvulnerable)
             {
                 color = Color.Black;
             }
-            else
-            {
-                color = Color.White;
-            }
-            //if hastened color is orange
-            if(IsHastened)
+            else if(IsHastened)
             {
                 color = Color.Orange;
             }
-            else
-            {
-                color = Color.White;
-            }
+            else color = Color.White;
 
 
             // Update rectangle position
