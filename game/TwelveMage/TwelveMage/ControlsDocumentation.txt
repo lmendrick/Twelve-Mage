@@ -15,7 +15,7 @@ Left-click: Shoot in the direction of the mouse cursor
 
 R: Freeze (Freezes all enemies in place for a few seconds)
 E: Haste (Gain a movement speed boost for a few seconds)
-F: Fireball (Shoot a big, heavily-damaging fireball in the direction you're walking) // Not implemented
+F: Fireball (Shoot a big, heavily-damaging fireball in the direction you're walking)
 Space: Blink (Teleport a short distance in the direction you're moving)
 
 P: Pause the game
@@ -35,4 +35,3 @@ Buttons:
 Buttons:
 	"New Game": See "New Game" in Menu
 	"Main Menu": Goes to the "Menu" screen
-	
