@@ -80,6 +80,8 @@ namespace TwelveMage
             this.summoners = summoners;
             this.enemies = enemies;
             this.corpseSprite = corpseSprite;
+
+            speed = 100f;
             corners = new List<Vector2>();
             summoners.Add(this);
             currentEnemies = 0;

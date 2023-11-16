@@ -32,6 +32,7 @@ namespace TwelveMage
         private Texture2D corpseSprite;
         private int enemyHealth;
         private int summonerHealth;
+        private int chargerHealth;
 
         private Player player;
 
@@ -71,6 +72,7 @@ namespace TwelveMage
             this.corpseSprite = corpseSprite;
             this.enemyHealth = enemyHealth;
             summonerHealth = (int)((double)enemyHealth * 4); // Don't look at this
+            chargerHealth = (int)((double)enemyHealth * 5);
             this.player = player;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
@@ -129,17 +131,57 @@ namespace TwelveMage
                 summoners,
                 corpseSprite);
 
-            /*
-            if(spawned.Rec.Intersects(NoSpawningArea))
+
+            float xDistanceFromPlayer = player.PosVector.X - spawned.X;
+            float yDistanceFromPlayer = player.PosVector.Y - spawned.Y;
+
+
+            if (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50)
             {
                 do
                 {
-                    spawned.X = rng.Next(lowerXRange, upperXRange + 1);
-                    spawned.Y = rng.Next(lowerYRange, upperYRange + 1);
-                }while(spawned.Rec.Intersects(NoSpawningArea));
-
+                    //spawned.X = rng.Next((int)(lowerXRange * 1.25), (int)((upperXRange + 1) * 1.25));
+                    //spawned.Y = rng.Next((int)(lowerYRange * 1.25), (int)((upperYRange + 1) * 1.25));
+                    spawned.X += rng.Next(-50, 51);
+                    spawned.Y += rng.Next(-50, 51);
+                    xDistanceFromPlayer = player.Rec.X - spawned.X;
+                    yDistanceFromPlayer = player.Rec.Y - spawned.Y;
+                } while (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50);
             }
-            */
+
+
+
+
+            enemies.Add(spawned);
+
+            return spawned;
+        }
+
+
+        public Charger SpawnCharger()
+        {
+            upperXRange = (int)position.X + xRadius;
+            upperYRange = (int)position.Y + YRadius;
+            lowerXRange = (int)position.X - xRadius;
+            lowerYRange = (int)position.Y - YRadius;
+
+            noSpawningArea.X = (int)position.X - (noSpawningArea.Width / 2);
+            noSpawningArea.Y = (int)position.Y - (noSpawningArea.Height / 2);
+
+            Charger spawned = new Charger(
+                new Rectangle(
+                    rng.Next(lowerXRange, upperXRange + 1),
+                    rng.Next(lowerYRange, upperYRange + 1),
+                    60,
+                    60),
+                enemyTexture,
+                chargerHealth,
+                enemies,
+                player,
+                corpseSprite);
+
+
+
             float xDistanceFromPlayer = player.PosVector.X - spawned.X;
             float yDistanceFromPlayer = player.PosVector.Y - spawned.Y;
 

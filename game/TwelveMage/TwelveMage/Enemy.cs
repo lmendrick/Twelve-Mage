@@ -51,7 +51,7 @@ namespace TwelveMage
         private Texture2D corpseSprite;
         private Vector2 dir;
         private Vector2 pos;
-        private float speed = 100f;
+        protected float speed;
 
         // Collision
         private Vector2 playerPos;
@@ -212,6 +212,8 @@ namespace TwelveMage
             adjustmentTimer = 1.0f;
             timer = 1f;
 
+            speed = 100f;
+
             // Default sprite direction
             state = EnemyState.FaceRight;
 
@@ -251,7 +253,10 @@ namespace TwelveMage
 
 
             //Knockback
-            HandleKnockback(gameTime);
+            if (!(this is Charger))
+            {
+                HandleKnockback(gameTime);
+            }
 
             if (knocked)
             {
@@ -500,6 +505,11 @@ namespace TwelveMage
                 }
             }
 
+            if(this is Charger)
+            {
+                speed = 150;
+            }
+
             if(health <= 0)
             {
                 if (OnDeath != null) OnDeath(); // Use OnDeath event
@@ -691,7 +701,14 @@ namespace TwelveMage
             }
             else
             {
-                speed = 100;
+                if (!(this is Charger))
+                {
+                    speed = 100;
+                }
+                else
+                {
+                    speed = 150;
+                }
             }
         }
 

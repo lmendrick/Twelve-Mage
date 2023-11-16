@@ -394,7 +394,7 @@ namespace TwelveMage
                         //Spawn an enemy
                         if (SingleKeyPress(Keys.U, currentKBState))
                         {
-                            spawner.SpawnSummoner();
+                            spawner.SpawnCharger();
 
                             //spawners[rng.Next(0,4)].SpawnEnemy();
                         }
@@ -538,7 +538,7 @@ namespace TwelveMage
 
                         
                         
-
+                        /*
                         // Wave handling
                         if(enemies.Count == 0)
                         {
@@ -594,6 +594,7 @@ namespace TwelveMage
 
                             wave++;
                         }
+                        */
                     }
 
                     // Pause game logic and switch to pause state (Lucas)
