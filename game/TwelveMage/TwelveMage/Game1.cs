@@ -538,7 +538,7 @@ namespace TwelveMage
 
                         
                         
-                        /*
+                        
                         // Wave handling
                         if(enemies.Count == 0)
                         {
@@ -550,13 +550,13 @@ namespace TwelveMage
 
                             if((wave + 1) % 5 == 0)
                             {
-                                if (wave + 1 >= 20)
+                                if (wave + 1 >= 15)
                                 {
-                                    for (int i = 0; i < (wave + 1) / 10 && i < 3; i++)
+                                    for (int i = 0; i < (wave + 1) / 10 && i < 4; i++)
                                     {
-                                        spawners[rng.Next(0, 4)].SpawnSummoner();
-                                        summoners[i].OnDeath += IncreaseScore;
-                                        summoners[i].OnDeath += IncreaseScore;
+                                        spawners[rng.Next(0, 4)].SpawnSpecial();
+                                        enemies[i].OnDeath += IncreaseScore;
+                                        enemies[i].OnDeath += IncreaseScore;
                                     }
                                 }
                                 else {
@@ -594,7 +594,7 @@ namespace TwelveMage
 
                             wave++;
                         }
-                        */
+                        
                     }
 
                     // Pause game logic and switch to pause state (Lucas)

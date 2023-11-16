@@ -94,7 +94,7 @@ namespace TwelveMage
         /// True = Don't avoid
         /// False = Avoid
         /// </summary>
-        private bool priority;
+        protected bool priority;
 
         /// <summary>
         /// Used for determining which direction to take perpendicularly to the players direction
@@ -605,6 +605,7 @@ namespace TwelveMage
         /// <param name="enemies"></param>
         public void DeterminePriority(List<Enemy> enemies)
         {
+
             if(index == 0)
             {
                 priority = true;

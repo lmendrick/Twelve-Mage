@@ -269,5 +269,17 @@ namespace TwelveMage
             return spawned;
 
         }
+
+        public Enemy SpawnSpecial()
+        {
+            if(rng.Next(0,2) == 0)
+            {
+                return SpawnSummoner();
+            }
+            else
+            {
+                return SpawnCharger();
+            }
+        }
     }
 }

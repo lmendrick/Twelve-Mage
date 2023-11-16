@@ -20,6 +20,7 @@ namespace TwelveMage
         private int chargeDistance = 300;
         private int distanceTraveled;
         private float pauseTimer = 0.5f;
+        
 
 
         public Charger(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite)
