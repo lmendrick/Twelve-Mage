@@ -473,10 +473,17 @@ namespace TwelveMage
                 if (bulletList[i].CheckCollision(this))
                 {
                     
-                    health -= DamageTaken;
-                    if(isFire == true)
+                    
+                    
+                    if(!bulletList[i].IsFire)
                     {
+                        health -= DamageTaken;
                         bulletList.RemoveAt(i);
+                    }
+                    else if(bulletList[i].IsFire)
+                    {
+                        IsActive = false;
+                        state = EnemyState.Dead;
                     }
                     
                     hit = true;

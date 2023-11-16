@@ -18,7 +18,7 @@ public abstract class GameObject
 	protected Texture2D texture;
 	protected int health;
     protected bool isActive = true;
-    public bool isFire = false;
+    public bool isFire = true;
     public Vector2 Position;
     public Vector2 Origin;
 
@@ -39,6 +39,7 @@ public abstract class GameObject
 
     public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
+    public bool IsFire { get { return isFire; } set { isFire = value; } }
 	
     public int Damage
     {
