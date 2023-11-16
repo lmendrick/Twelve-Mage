@@ -501,7 +501,10 @@ namespace TwelveMage
                     }
                     
                     hit = true;
-                    knocked = true;
+                    if (!(this is Charger))
+                    {
+                        knocked = true;
+                    }
                 }
             }
 
