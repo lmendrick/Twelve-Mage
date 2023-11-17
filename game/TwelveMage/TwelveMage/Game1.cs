@@ -567,7 +567,7 @@ namespace TwelveMage
                                     }
                                 }
                                 else {
-                                    spawners[rng.Next(0, 4)].SpawnCharger();
+                                    spawners[rng.Next(0, 4)].SpawnSummoner();
                                     enemies[enemies.Count - 1].OnDeath += IncreaseScore;
                                     enemies[enemies.Count - 1].OnDeath += IncreaseScore;
                                 }

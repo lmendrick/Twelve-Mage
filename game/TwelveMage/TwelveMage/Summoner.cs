@@ -48,7 +48,7 @@ namespace TwelveMage
         private float playerSummonDistance = 250;
         private float summonTimer = 5.0f;
         private bool hasSummoned = false;
-        private int numToSummon = 6;
+        private int numToSummon = 5;
 
         /// <summary>
         /// corners[0] = upperLeftCorner
