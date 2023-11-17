@@ -122,7 +122,7 @@ namespace TwelveMage
             
 
             wave = 1;
-            waveIncrease = 2;
+            waveIncrease = 3;
             score = 0;
             /*highScore = 0;
             highWave = 0;*/
@@ -505,7 +505,14 @@ namespace TwelveMage
                             if (player.CheckCollision(enemy) && enemy.IsActive)
                             {
                                 //Anthony if player collides with enemy tick health down and add to invulnerbale timer
-                                player.Health -= gun.Health;
+                                if (!(enemy is Charger))
+                                {
+                                    player.Health -= gun.Health;
+                                }
+                                else if(enemy is Charger)
+                                {
+                                    player.Health -= gun.Health * 2;
+                                }
                             }
                         }
                             
@@ -555,14 +562,14 @@ namespace TwelveMage
                                     for (int i = 0; i < (wave + 1) / 10 && i < 4; i++)
                                     {
                                         spawners[rng.Next(0, 4)].SpawnSpecial();
-                                        enemies[i].OnDeath += IncreaseScore;
-                                        enemies[i].OnDeath += IncreaseScore;
+                                        enemies[enemies.Count - 1].OnDeath += IncreaseScore;
+                                        enemies[enemies.Count - 1].OnDeath += IncreaseScore;
                                     }
                                 }
                                 else {
-                                    spawners[rng.Next(0, 4)].SpawnSummoner();
-                                    summoners[0].OnDeath += IncreaseScore;
-                                    summoners[0].OnDeath += IncreaseScore;
+                                    spawners[rng.Next(0, 4)].SpawnCharger();
+                                    enemies[enemies.Count - 1].OnDeath += IncreaseScore;
+                                    enemies[enemies.Count - 1].OnDeath += IncreaseScore;
                                 }
                             }
 

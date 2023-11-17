@@ -12,11 +12,10 @@ namespace TwelveMage
     internal class Charger : Enemy
     {
         private bool charging;
-
         Player player;
 
 
-        private int attackDistance = 200;
+        private int attackDistance = 250;
         private int chargeDistance = 300;
         private int distanceTraveled;
         private float pauseTimer = 0.5f;
@@ -69,8 +68,8 @@ namespace TwelveMage
                 }
                 else
                 {
-                    this.Position += Direction * (float)gameTime.ElapsedGameTime.TotalSeconds * (speed * 3);
-                    distanceTraveled += (int)(Direction * (float)gameTime.ElapsedGameTime.TotalSeconds * (speed * 3)).Length();
+                    this.Position += Direction * (float)gameTime.ElapsedGameTime.TotalSeconds * (speed * 4);
+                    distanceTraveled += (int)(Direction * (float)gameTime.ElapsedGameTime.TotalSeconds * (speed * 4)).Length();
 
                     rec.X = (int)Position.X;
                     rec.Y = (int)Position.Y;

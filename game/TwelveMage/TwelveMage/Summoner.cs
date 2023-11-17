@@ -42,13 +42,13 @@ namespace TwelveMage
         private float speed = 75f;
         private float runningSpeed;
         private bool withinArea = false;
-        private int safeDistance = 150;
+        private int safeDistance = 200;
         private bool playerAvoided = true;
         private int wanderRadius = 100;
         private float playerSummonDistance = 250;
         private float summonTimer = 5.0f;
         private bool hasSummoned = false;
-        private int numToSummon = 4;
+        private int numToSummon = 6;
 
         /// <summary>
         /// corners[0] = upperLeftCorner

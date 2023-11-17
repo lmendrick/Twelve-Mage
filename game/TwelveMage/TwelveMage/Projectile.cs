@@ -23,7 +23,7 @@ namespace TwelveMage
         private float range = 5;
         private float displacement;
         public bool isFire = false;
-        private int maxPen = 30;
+        private int maxPen = 25;
         private int numPen;
 
 
