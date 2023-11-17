@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 
 namespace TwelveMage
 {
@@ -16,6 +17,7 @@ namespace TwelveMage
         #region FIELDS
         private GraphicsDeviceManager _graphics;
         private SpriteBatch _spriteBatch;
+        private TextureLibrary _textureLibrary;
         private GameState currentState;
         private KeyboardState currentKBState;
         private KeyboardState prevKBState;
@@ -136,6 +138,8 @@ namespace TwelveMage
 
             // TODO: use this.Content to load your game content here
 
+            _textureLibrary = new TextureLibrary(this.Content);
+
             rng = new Random();
 
             // Load in fonts (Lucas)
@@ -176,7 +180,7 @@ namespace TwelveMage
             healthPickupSprite = this.Content.Load<Texture2D>("medkit");
 
             // Create a FileManager (Chloe)
-            fileManager = new FileManager();
+            fileManager = new FileManager(player, _textureLibrary);
 
             // Do BackgroundManager initialization
             flowersTileset = this.Content.Load<Texture2D>("FlowersTileset");
@@ -351,8 +355,6 @@ namespace TwelveMage
             int[] stats = fileManager.LoadStats();
             highScore = stats[1];
             highWave = stats[3];
-
-
         }
 
         protected override void Update(GameTime gameTime)
@@ -789,7 +791,7 @@ namespace TwelveMage
                     _spriteBatch.Draw(healthBar,                // Texture
                         new Vector2(windowWidth / 3, 30),       // Location
                         null,                                   // Texture Region Rectangle
-                        Color.Black,                             // Color
+                        Color.Black,                            // Color
                         0,                                      // Rotation
                         Vector2.Zero,                           // Center of the rotation
                         new Vector2(1f, 0.5f),                  // Scale 
@@ -957,7 +959,7 @@ namespace TwelveMage
             player.WindowWidth = windowWidth;
             //deadEnemies.Clear();            // Clear corpses (Lucas)
             enemies.Clear();
-            enemies = fileManager.LoadEnemies(enemySprite);
+            enemies = fileManager.LoadEnemies();
             healthPickups.Clear();
             healthPickups = fileManager.LoadHealthPickups(healthPickupSprite, player);
             int[] stats = fileManager.LoadStats();

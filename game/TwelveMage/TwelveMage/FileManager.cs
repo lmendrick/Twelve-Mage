@@ -25,6 +25,7 @@ namespace TwelveMage
         #region FIELDS
         private StreamReader reader;
         private StreamWriter writer;
+        private readonly TextureLibrary library;
 
         private const string PlayerFilename = "../../../PlayerData.txt";
         private const string EnemiesFilename = "../../../EnemyData.txt";
@@ -40,6 +41,12 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
+        public FileManager(Player player, TextureLibrary library)
+        {
+            this.player = player;
+            this.library = library;
+        }
+
         #endregion
 
         #region METHODS
@@ -245,15 +252,17 @@ namespace TwelveMage
         }
         #endregion
 
-            #region LOADING
-            /// <summary>
-            /// Loads all Enemies from EnemyData.txt
-            /// </summary>
-            /// <param name="spritesheet">The spritesheet to pass to each Enemy</param>
-            /// <returns>A new list of every loaded Enemy</returns>
-        public List<Enemy> LoadEnemies(Texture2D spritesheet)
+        #region LOADING
+        /// <summary>
+        /// Loads all Enemies from EnemyData.txt
+        /// </summary>
+        /// <param name="spritesheet">The spritesheet to pass to each Enemy</param>
+        /// <returns>A new list of every loaded Enemy</returns>
+        public List<Enemy> LoadEnemies()
         {
             List<Enemy> enemies = new List<Enemy>();
+            Texture2D ZombieSpriteSheet = library.GrabTexture("ZombieSheet");
+
             try // Make sure everything works correctly with a try/catch
             {
                 reader = new StreamReader(EnemiesFilename);
@@ -270,7 +279,7 @@ namespace TwelveMage
                     int.TryParse(line[2].Trim(), out int health);
                     Rectangle pos = new Rectangle(X, Y, 30, 30); // Enemy height & width are 30 & 30
 
-                    enemies.Add(new Enemy(pos, spritesheet, health, enemies, player, null));
+                    enemies.Add(new Enemy(pos, ZombieSpriteSheet, health, enemies, player, null));
                     currentLine = reader.ReadLine();
                 }
             }
