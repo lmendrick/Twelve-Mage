@@ -13,6 +13,13 @@
 
 #---------------------------------- Content ---------------------------------#
 
+#begin AlagardFont.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:AlagardFont.spritefont
+
 #begin BlinkSpellSlot.png
 /importer:TextureImporter
 /processor:TextureProcessor

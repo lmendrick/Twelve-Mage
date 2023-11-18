@@ -143,7 +143,8 @@ namespace TwelveMage
             rng = new Random();
 
             // Load in fonts (Lucas)
-            titleFont = this.Content.Load<SpriteFont>("TitleFont");
+            //titleFont = this.Content.Load<SpriteFont>("TitleFont");
+            titleFont = this.Content.Load<SpriteFont>("AlagardFont");
             menuFont = this.Content.Load<SpriteFont>("MenuFont");
 
             // Load Spell Slots (Chloe)
@@ -671,8 +672,8 @@ namespace TwelveMage
                     // Title
                     _spriteBatch.DrawString(
                         titleFont,
-                        "Twelve-Mage",
-                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("Twelve-Mage").X / 2),
+                        "Twelve Mage",
+                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("Twelve Mage").X / 2),
                         75),
                         Color.Yellow);
 
