@@ -203,6 +203,12 @@ namespace TwelveMage
                 summoners.Remove(this);
             }
 
+            // remove summoner from list if killed by fireball
+            if (state == EnemyState.Dead)
+            {
+                summoners.Remove(this);
+            }
+
         }
 
 
