@@ -790,24 +790,24 @@ namespace TwelveMage
 
                     // Player Health Bar Background (Lucas)
                     _spriteBatch.Draw(healthBar,                // Texture
-                        new Vector2(windowWidth / 3, 30),       // Location
+                        new Vector2(windowWidth / 3.6f, 10),       // Location
                         null,                                   // Texture Region Rectangle
                         Color.Black,                            // Color
                         0,                                      // Rotation
                         Vector2.Zero,                           // Center of the rotation
-                        new Vector2(1f, 0.5f),                  // Scale 
+                        new Vector2(0.75f, 0.5f),                  // Scale 
                         SpriteEffects.None,                     // Effects
                         0);                                     // Layer depth
 
                     // Player Health Bar (Lucas)
                     // Scales Health Bar based on player health
                     _spriteBatch.Draw(healthBar,                    // Texture
-                        new Vector2(windowWidth / 3, 30),           // Location
+                        new Vector2(windowWidth / 3.6f, 10),           // Location
                         null,                                       // Texture Region Rectangle
                         Color.White,                                // Color
                         0,                                          // Rotation
                         Vector2.Zero,                               // Center of the rotation
-                        new Vector2(1f * player.Health/100, 0.5f),  // Scale 
+                        new Vector2(0.75f * player.Health/100, 0.5f),  // Scale 
                         SpriteEffects.None,                         // Effects
                         0);                                         // Layer depth
 

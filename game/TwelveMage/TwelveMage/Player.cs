@@ -246,43 +246,10 @@ namespace TwelveMage
 
 
             #region Input Processing
-            // Process W and S keys for vertical movement (Lucas)
-            if (currentKB.IsKeyDown(Keys.W))
-            {
-                dir.Y -= 1; // Move up
-            }
-            else if (currentKB.IsKeyDown(Keys.S))
-            {
-                dir.Y += 1; // Move down
-            }
-            else
-            {
-                dir.Y = 0; // No vertical movement
-            }
 
-            // Process A and D keys for horizontal movement (Lucas)
-            if (currentKB.IsKeyDown(Keys.D))
-            {
-                dir.X += 1; // Move right
-            }
-            else if (currentKB.IsKeyDown(Keys.A))
-            {
-                dir.X -= 1; // Move left
-            }
-            else
-            {
-                dir.X = 0; // No horizontal movement
-            }
-
-            // Normalize the direction vector if there is any movement (Lucas)
-            if (dir.X != 0 || dir.Y != 0)
-            {
-                dir.Normalize();
-            }
-
-            // Update the player's position based on direction, time elapsed, and speed (Lucas)
-            pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
-            pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            // Update movement based on input and update state based on movement
+            HandleMovement(currentKB, gameTime);
+            
 
             UpdateSpells(gameTime, spell, bullets); // Update spells
 
@@ -305,41 +272,7 @@ namespace TwelveMage
                 }
             }
 
-            // Set the player's animation state based on movement direction (Lucas)
-            if (dir.X < 0)
-            {
-                state = PlayerState.WalkLeft; // Walking left
-            }
-            if (dir.X > 0)
-            {
-                state = PlayerState.WalkRight; // Walking right
-            }
-
-            // Handle vertical movement state (Lucas)
-            if (dir.Y != 0)
-            {
-                if (state == PlayerState.WalkLeft || state == PlayerState.FaceLeft)
-                {
-                    state = PlayerState.WalkLeft; // Walking left
-                }
-                if (state == PlayerState.WalkRight || state == PlayerState.FaceRight)
-                {
-                    state = PlayerState.WalkRight; // Walking right
-                }
-            }
-
-            // Set the player's state to facing left or right when not moving (Lucas)
-            if (dir.X == 0 && dir.Y == 0)
-            {
-                if (state == PlayerState.WalkLeft)
-                {
-                    state = PlayerState.FaceLeft; // Facing left
-                }
-                else if (state == PlayerState.WalkRight)
-                {
-                    state = PlayerState.FaceRight; // Facing right
-                }
-            }
+            
             //Anthony if player is damaged set invulnerbale 
             //then make color black after set color back to white
             
@@ -357,11 +290,7 @@ namespace TwelveMage
             }
             else color = Color.White;
 
-
-            // Update rectangle position
-            rec.X = (int)(pos.X);
-            rec.Y = (int)(pos.Y);
-
+            // Store keyboard and mouse state from last frame
             previousKB = currentKB;
             prevMState = mState;
             #endregion
@@ -772,6 +701,103 @@ namespace TwelveMage
             SpellsDictionary.Add("HasteEffect", hasteEffect);
 
             return SpellsDictionary;
+        }
+
+        /// <summary>
+        /// Lucas
+        /// Updates movement based on input and updates state based on movement
+        /// </summary>
+        /// <param name="currentKB">
+        /// KeyBoardState for input
+        /// </param>
+        /// <param name="gameTime">
+        /// GameTime from Update
+        /// </param>
+        private void HandleMovement(KeyboardState currentKB, GameTime gameTime)
+        {
+
+            #region Input and Movement
+
+            // Process W and S keys for vertical movement (Lucas)
+            if (currentKB.IsKeyDown(Keys.W))
+            {
+                dir.Y -= 1; // Move up
+            }
+            else if (currentKB.IsKeyDown(Keys.S))
+            {
+                dir.Y += 1; // Move down
+            }
+            else
+            {
+                dir.Y = 0; // No vertical movement
+            }
+
+            // Process A and D keys for horizontal movement (Lucas)
+            if (currentKB.IsKeyDown(Keys.D))
+            {
+                dir.X += 1; // Move right
+            }
+            else if (currentKB.IsKeyDown(Keys.A))
+            {
+                dir.X -= 1; // Move left
+            }
+            else
+            {
+                dir.X = 0; // No horizontal movement
+            }
+
+            // Normalize the direction vector if there is any movement (Lucas)
+            if (dir.X != 0 || dir.Y != 0)
+            {
+                dir.Normalize();
+            }
+
+            // Update the player's position based on direction, time elapsed, and speed (Lucas)
+            pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+
+            // Update rectangle position
+            rec.X = (int)(pos.X);
+            rec.Y = (int)(pos.Y);
+            #endregion
+
+            #region Player State
+            // Set the player's animation state based on movement direction (Lucas)
+            if (dir.X < 0)
+            {
+                state = PlayerState.WalkLeft; // Walking left
+            }
+            if (dir.X > 0)
+            {
+                state = PlayerState.WalkRight; // Walking right
+            }
+
+            // Handle vertical movement state (Lucas)
+            if (dir.Y != 0)
+            {
+                if (state == PlayerState.WalkLeft || state == PlayerState.FaceLeft)
+                {
+                    state = PlayerState.WalkLeft; // Walking left
+                }
+                if (state == PlayerState.WalkRight || state == PlayerState.FaceRight)
+                {
+                    state = PlayerState.WalkRight; // Walking right
+                }
+            }
+
+            // Set the player's state to facing left or right when not moving (Lucas)
+            if (dir.X == 0 && dir.Y == 0)
+            {
+                if (state == PlayerState.WalkLeft)
+                {
+                    state = PlayerState.FaceLeft; // Facing left
+                }
+                else if (state == PlayerState.WalkRight)
+                {
+                    state = PlayerState.FaceRight; // Facing right
+                }
+            }
+            #endregion
         }
 
         #endregion
