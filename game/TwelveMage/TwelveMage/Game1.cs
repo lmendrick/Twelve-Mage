@@ -103,6 +103,8 @@ namespace TwelveMage
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
+            //added fullscreen capability
+            _graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
@@ -399,7 +401,7 @@ namespace TwelveMage
                         {
                             spawner.SpawnCharger();
 
-                            //spawners[rng.Next(0,4)].SpawnEnemy();
+                            //spawners[rng.Next(0,4)].SpawnEnemyd
                         }
 
                         //Activate/Deactivate enemy Update()
