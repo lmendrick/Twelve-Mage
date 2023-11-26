@@ -759,6 +759,29 @@ namespace TwelveMage
             // Update rectangle position
             rec.X = (int)(pos.X);
             rec.Y = (int)(pos.Y);
+
+            #region Handle Player Moving Offscreen
+            // Check if player moves past top of window and wrap to bottom
+            if (rec.Bottom < 0)
+            {
+                pos.Y = windowHeight;
+            }
+            // Check if player moves past bottom of window and wrap to top
+            if (rec.Top > windowHeight)
+            {
+                pos.Y = 0;
+            }
+            // Check if player moves past right of window and wrap to left
+            if (rec.Left > windowWidth)
+            {
+                pos.X = 0;
+            }
+            // Check if player moves past left of window and wrap to right
+            if (rec.Right < 0)
+            {
+                pos.X = windowWidth;
+            }
+            #endregion
             #endregion
 
             #region Player State

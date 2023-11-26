@@ -104,7 +104,7 @@ namespace TwelveMage
         {
             _graphics = new GraphicsDeviceManager(this);
             //added fullscreen capability
-            _graphics.IsFullScreen = true;
+           // _graphics.IsFullScreen = true;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
