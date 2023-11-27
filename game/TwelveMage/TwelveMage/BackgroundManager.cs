@@ -34,7 +34,6 @@ namespace TwelveMage
         private Texture2D _paverTileset;
 
         private Random _myRand;
-        private StreamReader reader;
         private SpriteBatch _spriteBatch;
         #endregion
 
