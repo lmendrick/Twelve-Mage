@@ -37,8 +37,8 @@ namespace TwelveMage
         private const int MAX_HEALTH = 100; // Cap on health (made a constant for future readability/ease of changing)
         Color color = Color.White;
 
-        Texture2D bullet;
-        Texture2D fireball;
+        private Texture2D bullet;
+        private Texture2D fireball;
 
         PlayerState state;
         //two new kb states to check if space is clicked only once as to not spam hold
@@ -205,7 +205,7 @@ namespace TwelveMage
 
         //removed texture b/c added it as a field in object
         #region CONSTRUCTORS
-        public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
+        /*public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
         {
 
             this.rec = rec;
@@ -219,6 +219,31 @@ namespace TwelveMage
             
             shootingTimer = 0.25f;
             hasShot = false;
+
+            // Default sprite direction
+            state = PlayerState.FaceRight;
+
+            // Initialize animation data
+            fps = 10.0;                     // Will cycle through 10 walk frames per second
+            timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
+        }*/
+
+        public Player(Rectangle rec, TextureLibrary textureLibrary, int health) : base (rec, textureLibrary, health)
+        {
+            _textureLibrary = textureLibrary;
+            texture = textureLibrary.GrabTexture("PlayerSheet"); // Wizard spritesheet
+            spell = new Spell(this);
+            blinkTimer = 0;
+            fireballTimer = 0;
+            freezeTimer = 0;
+            hasteTimer = 0;
+
+            shootingTimer = 0.25f;
+            hasShot = false;
+
+            // Handle misc. sprites
+            bullet = textureLibrary.GrabTexture("Bullet");
+            fireball = textureLibrary.GrabTexture("Fireball");
 
             // Default sprite direction
             state = PlayerState.FaceRight;
@@ -300,14 +325,20 @@ namespace TwelveMage
         //added bullet method to take the direction of the player and add that to a list of projectiles
         public void AddFireBall(List<GameObject> fireBalls)
         {
-            
-            Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 20, 50, 50), Fireball, health, 800);
+            /*Projectile project = new Projectile(new Rectangle(rec.X, rec.Y - 20, 50, 50), Fireball, health, 800);
             project.Direction = new Vector2(mState.X, mState.Y) - pos;
             project.Direction.Normalize();
             project.LinearVelocity = .3f;
             project.IsFire = true;
             project.LifeSpan = 5;
-            fireBalls.Add(project);
+            fireBalls.Add(project);*/
+
+            Fireball fireball = new Fireball(new Rectangle(rec.X, rec.Y - 20, 50, 50), _textureLibrary, health, 800);
+            fireball.Direction = new Vector2(mState.X, mState.Y) - pos;
+            fireball.Direction.Normalize();
+            fireball.LinearVelocity = .3f;
+            fireball.LifeSpan = 5;
+            fireBalls.Add(fireball);
         }
 
 
@@ -338,11 +369,10 @@ namespace TwelveMage
             {
                 shots.Add(new Projectile(
                     new Rectangle(rec.X, rec.Y, 15, 15),
-                    bullet,
+                    _textureLibrary,
                     health,
                     rng.Next(25, 40)));
                 shots[i].Direction = shotDirections[i];
-                shots[i].IsFire = false;
             }
 
             foreach(Projectile shot in shots)
@@ -609,7 +639,6 @@ namespace TwelveMage
             if (blinkTimer < 0.0) blinkTimer = 0;
             if (fireballTimer <= 0.0)
             {
-                isFire = false;
                 damageGiven = 20;
                 LifeSpan = 4f;
                 LinearVelocity = .5f;

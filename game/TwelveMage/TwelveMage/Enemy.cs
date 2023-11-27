@@ -477,30 +477,29 @@ namespace TwelveMage
             {
                 if (bulletList[i].CheckCollision(this))
                 {
-                    
-                    
-                    
-                    if(!bulletList[i].IsFire)
+                    if (bulletList[i] is Projectile)
                     {
-                        health -= DamageTaken;
-                        bulletList.RemoveAt(i);
-                    }
-                    else if(bulletList[i].IsFire)
-                    {
-                        IsActive = false;
-                        state = EnemyState.Dead;
-                        if (bulletList[i] is Projectile)
+                        Projectile shot = (Projectile)bulletList[i];
+
+                        if (bulletList[i] is not Fireball) // Bullet is a basic Projectile
                         {
-                            Projectile shot = (Projectile)bulletList[i];
-                            shot.NumPen++;
-                            if(shot.NumPen > shot.MaxPen)
-                            {
-                                bulletList.RemoveAt(i);
-                            }
+                            health -= DamageTaken;
+                        }
+                        else // Bullet is a Fireball
+                        {
+                            IsActive = false;
+                            state = EnemyState.Dead;
+                        }
+
+                        shot.NumPen++; // Check the number of times this bullet has penetrated; remove it if higher than MaxPen
+                        if(shot.NumPen >= shot.MaxPen)
+                        {
+                            bulletList.RemoveAt(i);
                         }
                     }
                     
                     hit = true;
+
                     if (!(this is Charger))
                     {
                         knocked = true;

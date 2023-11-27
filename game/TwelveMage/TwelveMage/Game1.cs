@@ -5,7 +5,6 @@ using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading;
 
 namespace TwelveMage
 {
@@ -41,11 +40,6 @@ namespace TwelveMage
         private Texture2D freezeSpellIcon;
         private Texture2D hasteSpellIcon;
         private Texture2D spellSlotOverlay;
-
-        private Rectangle blinkRec;
-        private Rectangle fireballRec;
-        private Rectangle freezeRec;
-        private Rectangle hasteRec;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
@@ -156,20 +150,13 @@ namespace TwelveMage
             hasteSpellIcon = this.Content.Load<Texture2D>("HasteSpellSlot");
             spellSlotOverlay = this.Content.Load<Texture2D>("SpellSlotOverlay");
 
-            // Load in player character sprite sheet (Lucas)
-            playerSpriteSheet = this.Content.Load<Texture2D>("CharacterSheet");
-            //load in bullet sprite
-            bulletSprite = this.Content.Load<Texture2D>("bullet2");
-            fireballSprite = this.Content.Load<Texture2D>("truefireball");
             //Load in gun image
             Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(windowWidth / 2, windowHeight / 2, playerWidth, playerHeight);
-            player = new Player(playerRec, playerSpriteSheet, 100);
-            //set bullet sprite to bullet property for use
-            player.Bullet = bulletSprite;
-            player.Fireball = fireballSprite;
+            player = new Player(playerRec, _textureLibrary, 100);
+            
             //created set of bullets
             bullets = new List<GameObject>();
             fireBalls = new List<GameObject>();

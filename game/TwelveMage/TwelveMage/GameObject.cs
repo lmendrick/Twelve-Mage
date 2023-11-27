@@ -11,14 +11,14 @@ using Microsoft.Xna.Framework.Graphics;
 using System.Collections.Generic;
 using TwelveMage;
 
-public abstract class GameObject
+internal abstract class GameObject
 {
     //fields 
 	protected Rectangle rec;
+    protected TextureLibrary _textureLibrary;
 	protected Texture2D texture;
 	protected int health;
     protected bool isActive = true;
-    public bool isFire = true;
     public Vector2 Position;
     public Vector2 Origin;
 
@@ -39,7 +39,6 @@ public abstract class GameObject
 
     public Rectangle Rec {  get { return rec; } }
 	public int Health { get { return health; } set { health = value; } }
-    public bool IsFire { get { return isFire; } set { isFire = value; } }
     public int Width { get { return rec.Width; } set { rec.Width = value; } }
     public int Height { get { return rec.Height; } set { rec.Height = value; } }
 	
@@ -51,11 +50,19 @@ public abstract class GameObject
     //constructors
 	protected GameObject(Rectangle rec, Texture2D texture, int health)
 	{
-        Direction.Normalize();
+        Direction.Normalize(); // Why is this here? -Chloe
 		this.rec = rec;
 		this.texture = texture;
 		this.health = health;
 	}
+
+    protected GameObject(Rectangle rec, TextureLibrary textureLibrary, int health)
+    {
+        Direction.Normalize();
+        this.rec = rec;
+        _textureLibrary = textureLibrary;
+        this.health = health;
+    }
 
     //Anthony
     //Check if game object collides with one another

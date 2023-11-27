@@ -22,18 +22,12 @@ namespace TwelveMage
         private float timer;
         private float range = 5;
         private float displacement;
-        public bool isFire = false;
-        private int maxPen = 25;
-        private int numPen;
+        protected int maxPen = 1;
+        protected int numPen = 0;
 
 
 
         // Properties
-        public bool IsFire
-        {
-            get { return isFire; }
-            set { isFire = value; }
-        }
 
         public int MaxPen
         {
@@ -60,6 +54,14 @@ namespace TwelveMage
             displacement = 0;
         }
 
+        public Projectile(Rectangle position, TextureLibrary textureLibrary, int health, float range) : base(position, textureLibrary, health)
+        {
+            this.LinearVelocity = LinearVelocity * .05f;
+            this.range = range;
+            displacement = 0;
+            texture = textureLibrary.GrabTexture("Bullet");
+        }
+
 
         public override void Update(GameTime gametime, List<GameObject> bullets)
         {
@@ -74,7 +76,6 @@ namespace TwelveMage
 
             
             //base position of direction and velocity of bullet
-
             Position += Direction * LinearVelocity;
             displacement += (Direction * LinearVelocity).Length();
             rec.X = (int)Position.X + rec.X;
@@ -83,12 +84,6 @@ namespace TwelveMage
             if(displacement > range)
             {
                 IsRemoved = true;
-            }
-
-            if (isFire)
-            {
-                this.Width += 2;
-                this.Height += 2;
             }
         }
 

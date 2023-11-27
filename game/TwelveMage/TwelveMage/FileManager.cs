@@ -388,7 +388,7 @@ namespace TwelveMage
                 int.TryParse(line[1].Trim(), out int Y);
                 int.TryParse(line[2].Trim(), out int health);
                 Rectangle pos = new Rectangle(X, Y, 34, 30); // Player height & width are 34 & 30
-                player = new Player(pos, spritesheet, health); // Create a new Player with the loaded data
+                player = new Player(pos, library, health); // Create a new Player with the loaded data
                 player.State = Enum.Parse<PlayerState>(line[3]); // Parse the state data to PlayerState
             }
             catch
