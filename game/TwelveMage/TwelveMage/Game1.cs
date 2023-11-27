@@ -11,7 +11,7 @@ namespace TwelveMage
 {
     //Anthony Maldonado
     //creating enum for game states
-    enum GameState { Menu, Game, Pause, GameOver}
+    enum GameState { Menu, Game, Pause, GameOver, Credits}
     public class Game1 : Game
     {
         #region FIELDS
@@ -66,6 +66,7 @@ namespace TwelveMage
         private List<Button> mainMenuButtons = new List<Button>();
         private List<Button> gameOverButtons = new List<Button>();
         private List<Button> pauseMenuButtons = new List<Button>();
+        private List<Button> creditsButtons = new List<Button>();
         int buttonWidth = 150;
         int buttonHeight = 75;
         int buttonCenterX;
@@ -97,6 +98,7 @@ namespace TwelveMage
 
         private List<HealthPickup> healthPickups;
 
+        private CreditsManager creditsManager;
 
         #endregion
 
@@ -202,7 +204,8 @@ namespace TwelveMage
             enemySprite = this.Content.Load<Texture2D>("ZombieWalkSheet");
             summonerSprite = this.Content.Load<Texture2D>("enemy");
             enemiesActive = true;
-            
+
+            creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont);
 
             // Instantiate single default enemy (Lucas)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
@@ -313,6 +316,26 @@ namespace TwelveMage
             Color.DarkBlue));                     
             mainMenuButtons[1].OnButtonClick += this.LoadGame;
 
+            // Credits Button
+            mainMenuButtons.Add(new Button(
+            _graphics.GraphicsDevice,
+            new Rectangle(10, 10, buttonWidth / 2, buttonHeight / 2),
+            "Credits",
+            menuFont,
+            Color.DarkBlue));
+            mainMenuButtons[2].OnButtonClick += this.Credits;
+
+            // CREDITS BUTTONS
+
+            // Return to Main Menu
+            creditsButtons.Add(new Button(
+            _graphics.GraphicsDevice,
+            new Rectangle(10, 10, buttonWidth / 2, buttonHeight / 2),
+            "Menu",
+            menuFont,
+            Color.DarkBlue));
+            creditsButtons[0].OnButtonClick += this.MainMenu;
+
             // GAME OVER MENU BUTTONS
 
             // New Game Button
@@ -381,8 +404,17 @@ namespace TwelveMage
                     {
                         button.Update();
                     }
-
                     break;
+
+                case GameState.Credits:
+
+                    creditsManager.Update(gameTime);
+                    foreach (Button button in creditsButtons.ToList())
+                    {
+                        button.Update();
+                    }
+                    break;
+
                 case GameState.Game:
 
                     // *PUT GAME LOGIC HERE*
@@ -695,7 +727,18 @@ namespace TwelveMage
                         ((windowHeight / 2) + 175)),
                         Color.Black);
 
+                    
+
                     foreach(Button button in mainMenuButtons.ToList())
+                    {
+                        button.Draw(_spriteBatch);
+                    }
+                    break;
+
+                case GameState.Credits:
+
+                    creditsManager.Draw(_spriteBatch);
+                    foreach (Button button in creditsButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
                     }
@@ -1020,6 +1063,12 @@ namespace TwelveMage
             {
                 button.Active = true; // Activate all butons
             }*/
+        }
+
+        private void Credits()
+        {
+            creditsManager.Reset();
+            currentState = GameState.Credits;
         }
 
         /// <summary>
