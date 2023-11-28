@@ -40,6 +40,12 @@ namespace TwelveMage
         private Texture2D bullet;
         private Texture2D fireball;
 
+        private Texture2D blinkSpellIcon;
+        private Texture2D fireballSpellIcon;
+        private Texture2D freezeSpellIcon;
+        private Texture2D hasteSpellIcon;
+        private Texture2D spellSlotsOverlay;
+
         PlayerState state;
         //two new kb states to check if space is clicked only once as to not spam hold
         private KeyboardState currentKB;
@@ -203,31 +209,7 @@ namespace TwelveMage
         }
         #endregion
 
-        //removed texture b/c added it as a field in object
         #region CONSTRUCTORS
-        /*public Player(Rectangle rec, Texture2D texture, int health) : base(rec, texture, health)
-        {
-
-            this.rec = rec;
-            this.pos = new Vector2(rec.X, rec.Y);
-            this.health = health;
-            spell = new Spell(this);
-            blinkTimer = 0;
-            fireballTimer = 0;
-            freezeTimer = 0;
-            hasteTimer = 0;
-            
-            shootingTimer = 0.25f;
-            hasShot = false;
-
-            // Default sprite direction
-            state = PlayerState.FaceRight;
-
-            // Initialize animation data
-            fps = 10.0;                     // Will cycle through 10 walk frames per second
-            timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
-        }*/
-
         public Player(Rectangle rec, TextureLibrary textureLibrary, int health) : base (rec, textureLibrary, health)
         {
             _textureLibrary = textureLibrary;
@@ -241,7 +223,14 @@ namespace TwelveMage
             shootingTimer = 0.25f;
             hasShot = false;
 
-            // Handle misc. sprites
+            // Grab SpellSlot sprites
+            blinkSpellIcon = _textureLibrary.GrabTexture("BlinkSpellSlot");
+            fireballSpellIcon = _textureLibrary.GrabTexture("FireballSpellSlot");
+            freezeSpellIcon = _textureLibrary.GrabTexture("FreezeSpellSlot");
+            hasteSpellIcon = _textureLibrary.GrabTexture("HasteSpellSlot");
+            spellSlotsOverlay = _textureLibrary.GrabTexture("SpellSlotsOverlay");
+
+            // Grab misc. sprites
             bullet = textureLibrary.GrabTexture("Bullet");
             fireball = textureLibrary.GrabTexture("Fireball");
 
@@ -505,6 +494,8 @@ namespace TwelveMage
             }
             #endregion
 
+            // Draw Spells
+            DrawSpellSlots(spriteBatch);
         }
 
         /// <summary>
@@ -652,7 +643,7 @@ namespace TwelveMage
         /// <summary>
         /// Draws all spell slots, and their timer overlays
         /// </summary>
-        public void DrawSpellSlots(SpriteBatch spriteBatch, Texture2D blinkSpellIcon, Texture2D fireballSpellIcon, Texture2D freezeSpellIcon, Texture2D hasteSpellIcon, Texture2D spellSlotOverlay)
+        public void DrawSpellSlots(SpriteBatch spriteBatch)
         {
             // Rectangles for spells UI
             blinkRec = new Rectangle(20, windowHeight - 100, 50, 80);
@@ -684,10 +675,10 @@ namespace TwelveMage
             freezeOverlay.Height = (int)(freezeOverlay.Height * (freezeTimer / freezeCooldown));
             hasteOverlay.Height = (int)(hasteOverlay.Height * (hasteTimer / hasteCooldown));
 
-            spriteBatch.Draw(spellSlotOverlay, blinkOverlay, Color.White * 0.5f);
-            spriteBatch.Draw(spellSlotOverlay, fireballOverlay, Color.White * 0.5f);
-            spriteBatch.Draw(spellSlotOverlay, freezeOverlay, Color.White * 0.5f);
-            spriteBatch.Draw(spellSlotOverlay, hasteOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotsOverlay, blinkOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotsOverlay, fireballOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotsOverlay, freezeOverlay, Color.White * 0.5f);
+            spriteBatch.Draw(spellSlotsOverlay, hasteOverlay, Color.White * 0.5f);
         }   
 
         public void OverwriteSpellData(Dictionary<string, double> SpellsDictionary)

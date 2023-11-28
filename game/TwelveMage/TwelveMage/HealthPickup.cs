@@ -17,9 +17,10 @@ namespace TwelveMage
 
 
 
-        public HealthPickup(Rectangle rec, Texture2D texture, int health, Player player) 
-            : base(rec, texture, health)
+        public HealthPickup(Rectangle rec, TextureLibrary textureLibrary, int health, Player player) 
+            : base(rec, textureLibrary, health)
         {
+            texture = _textureLibrary.GrabTexture("HealthPickup");
             this.player = player;
             rng = new Random();
             isActive = true;

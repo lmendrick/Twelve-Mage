@@ -25,7 +25,7 @@ namespace TwelveMage
         #region FIELDS
         private StreamReader reader;
         private StreamWriter writer;
-        private readonly TextureLibrary library;
+        private readonly TextureLibrary _textureLibrary;
 
         private const string PlayerFilename = "../../../PlayerData.txt";
         private const string EnemiesFilename = "../../../EnemyData.txt";
@@ -41,10 +41,10 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        public FileManager(Player player, TextureLibrary library)
+        public FileManager(Player player, TextureLibrary textureLibrary)
         {
             this.player = player;
-            this.library = library;
+            _textureLibrary = textureLibrary;
         }
 
         #endregion
@@ -261,7 +261,7 @@ namespace TwelveMage
         public List<Enemy> LoadEnemies()
         {
             List<Enemy> enemies = new List<Enemy>();
-            Texture2D ZombieSpriteSheet = library.GrabTexture("ZombieSheet");
+            Texture2D ZombieSpriteSheet = _textureLibrary.GrabTexture("ZombieSheet");
 
             try // Make sure everything works correctly with a try/catch
             {
@@ -279,7 +279,7 @@ namespace TwelveMage
                     int.TryParse(line[2].Trim(), out int health);
                     Rectangle pos = new Rectangle(X, Y, 30, 30); // Enemy height & width are 30 & 30
 
-                    enemies.Add(new Enemy(pos, ZombieSpriteSheet, health, enemies, player, null));
+                    enemies.Add(new Enemy(pos, _textureLibrary, health, enemies, player, null));
                     currentLine = reader.ReadLine();
                 }
             }
@@ -296,7 +296,7 @@ namespace TwelveMage
         /// </summary>
         /// <param name="sprite">The sprite to pass to each HealthPickup</param>
         /// <returns>A new list of every loaded HealthPickup</returns>
-        public List<HealthPickup> LoadHealthPickups(Texture2D sprite, Player player)
+        public List<HealthPickup> LoadHealthPickups(Player player)
         {
             List<HealthPickup> pickups = new List<HealthPickup>();
             try // Make sure everything works correctly with a try/catch
@@ -315,7 +315,7 @@ namespace TwelveMage
                     int.TryParse(line[2], out int health);
                     Rectangle pos = new Rectangle(X, Y, 16, 16); // HealthPickup height & width are 30 & 30
 
-                    pickups.Add(new HealthPickup(pos, sprite, health, player));
+                    pickups.Add(new HealthPickup(pos, _textureLibrary, health, player));
                     currentLine = reader.ReadLine();
                 }
             }
@@ -375,7 +375,7 @@ namespace TwelveMage
         /// </summary>
         /// <param name="spritesheet">The spritesheet to pass to the new Player</param>
         /// <returns>A new Player with the loaded stats</returns>
-        public Player LoadPlayer(Texture2D spritesheet)
+        public Player LoadPlayer()
         {
             player = null;
             try // Make sure everything works correctly with a try/catch
@@ -388,7 +388,7 @@ namespace TwelveMage
                 int.TryParse(line[1].Trim(), out int Y);
                 int.TryParse(line[2].Trim(), out int health);
                 Rectangle pos = new Rectangle(X, Y, 34, 30); // Player height & width are 34 & 30
-                player = new Player(pos, library, health); // Create a new Player with the loaded data
+                player = new Player(pos, _textureLibrary, health); // Create a new Player with the loaded data
                 player.State = Enum.Parse<PlayerState>(line[3]); // Parse the state data to PlayerState
             }
             catch

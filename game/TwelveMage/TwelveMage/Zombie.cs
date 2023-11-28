@@ -16,7 +16,7 @@ namespace TwelveMage
     {
         double zombieSpeed = 1.0; // Zombie-Specific speed multiplier
 
-        public Zombie(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite) : base(rec, texture, health, enemies, player, corpseSprite)
+        public Zombie(Rectangle rec, TextureLibrary textureLibrary, int health, List<Enemy> enemies, Player player, Random rng) : base(rec, textureLibrary, health, enemies, player, rng)
         {
 
         }

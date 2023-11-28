@@ -47,15 +47,14 @@ namespace TwelveMage
         private Player player;
 
         // Enemy Movement
-        private Texture2D sprite;
         private Texture2D corpseSprite;
         private Vector2 dir;
         private Vector2 pos;
-        protected float speed;
+        protected float speed = 100f;
 
         // Collision
         private Vector2 playerPos;
-        private bool intersectionDetected;
+        private bool intersectionDetected = false;
         private int damageTaken;
 
         //Knockback
@@ -94,7 +93,7 @@ namespace TwelveMage
         /// True = Don't avoid
         /// False = Avoid
         /// </summary>
-        protected bool priority;
+        protected bool priority = false;
 
         /// <summary>
         /// Used for determining which direction to take perpendicularly to the players direction
@@ -107,15 +106,15 @@ namespace TwelveMage
         /// <summary>
         /// Determines whether or not all collisions have been resolved
         /// </summary>
-        private bool collisionsResolved;
+        private bool collisionsResolved = true;
 
 
         private Vector2 adjustment;
-        private double adjustmentTimer;
+        private double adjustmentTimer = 1.0f;
 
         //Damage feedback
         protected Color color = Color.White;
-        private double timer;
+        private double timer = 1f;
         private bool hit;
 
         // TimeFreeze spell
@@ -185,20 +184,14 @@ namespace TwelveMage
             get { return corpseAge; }
             set { corpseAge = value; }
         }
-
-        public Texture2D CorpseSprite
-        {
-            get { return corpseSprite; }
-            set { corpseSprite = value; }
-        }
         #endregion
 
         #region CONSTRUCTORS
 
-        public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite) : base(rec, texture, health)
+        /*public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite) : base(rec, texture, health)
         {
             this.rec = rec;
-            this.sprite = texture;
+            this.texture = texture;
             this.pos = new Vector2(rec.X, rec.Y);
             this.health = health;
             this.enemies = enemies;
@@ -223,6 +216,29 @@ namespace TwelveMage
 
             drawScale = 1f;
             this.corpseSprite = corpseSprite;
+        }*/
+        
+        public Enemy(Rectangle rec, TextureLibrary textureLibrary, int health, List<Enemy> enemies, Player player, Random rng)
+            : base(rec, textureLibrary, health)
+        {
+            _textureLibrary = textureLibrary;
+            texture = _textureLibrary.GrabTexture("ZombieSheet");
+            corpseSprite = textureLibrary.GrabTexture("ZombieCorpse");
+
+            pos = new Vector2(rec.X, rec.Y);
+            this.enemies = enemies;
+            this.player = player;
+
+            this.rng = rng;
+
+            // Default sprite direction
+            state = EnemyState.FaceRight;
+
+            // Initialize animation data
+            fps = 10.0;
+            timePerFrame = 1.0 / fps;
+
+            drawScale = 1f;
         }
         #endregion
 
@@ -688,7 +704,7 @@ namespace TwelveMage
         /// </summary>
         public Enemy Clone()
         {
-            return new Enemy(rec, sprite, health, enemies, player, corpseSprite);
+            return new Enemy(rec, _textureLibrary, health, enemies, player, rng);
         }
 
         public event OnDeathDelegate OnDeath; // OnDeath event, for scoring

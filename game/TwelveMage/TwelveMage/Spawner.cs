@@ -28,8 +28,7 @@ namespace TwelveMage
         private List<Enemy> enemies;
         private List<Summoner> summoners;
 
-        private Texture2D enemyTexture;
-        private Texture2D corpseSprite;
+        private TextureLibrary _textureLibrary;
         private int enemyHealth;
         private int summonerHealth;
         private int chargerHealth;
@@ -61,22 +60,22 @@ namespace TwelveMage
         /// <param name="xRadius">The X spawn radius</param>
         /// <param name="yRadius">The Y spawn radius</param>
         /// <param name="noSpawningArea">The rectangle to use as reference when constructing the noSpawnArea. The X/Y coords don't matter, only the width/height</param>
-        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, List<Summoner> summoners, Texture2D enemyTexture, Texture2D corpseSprite, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight)
+        public Spawner(Vector2 position, int xRadius, int yRadius, List<Enemy> enemies, List<Summoner> summoners, TextureLibrary textureLibrary, int enemyHealth, Player player, Rectangle noSpawningArea, int windowWidth, int windowHeight, Random rng)
         {
+            _textureLibrary = textureLibrary;
+
             this.position = position;
             this.xRadius = xRadius;
             this.yRadius = yRadius;
             this.enemies = enemies;
             this.summoners = summoners;
-            this.enemyTexture = enemyTexture;
-            this.corpseSprite = corpseSprite;
             this.enemyHealth = enemyHealth;
             summonerHealth = (int)((double)enemyHealth * 4); // Don't look at this
             chargerHealth = (int)((double)enemyHealth * 5);
             this.player = player;
             this.windowHeight = windowHeight;
             this.windowWidth = windowWidth;
-            rng = new Random();
+            this.rng = rng;
             this.noSpawningArea = new Rectangle((int)position.X - (noSpawningArea.Width / 2), (int)position.Y - (noSpawningArea.Height / 2), noSpawningArea.Width, noSpawningArea.Height);
 
 
@@ -121,7 +120,7 @@ namespace TwelveMage
                     rng.Next(lowerYRange, upperYRange + 1),
                     45,
                     45),
-                enemyTexture,
+                _textureLibrary,
                 summonerHealth,
                 enemies,
                 player,
@@ -129,7 +128,7 @@ namespace TwelveMage
                 windowWidth,
                 windowHeight,
                 summoners,
-                corpseSprite);
+                rng);
 
 
             float xDistanceFromPlayer = player.PosVector.X - spawned.X;
@@ -174,11 +173,11 @@ namespace TwelveMage
                     rng.Next(lowerYRange, upperYRange + 1),
                     60,
                     60),
-                enemyTexture,
+                _textureLibrary,
                 chargerHealth,
                 enemies,
                 player,
-                corpseSprite);
+                rng);
 
 
 
@@ -227,11 +226,11 @@ namespace TwelveMage
                     rng.Next(lowerYRange, upperYRange + 1),
                     30,
                     30),
-                enemyTexture,
+                _textureLibrary,
                 enemyHealth,
                 enemies,
                 player,
-                corpseSprite);
+                rng);
 
             /*
             if(spawned.Rec.Intersects(NoSpawningArea))

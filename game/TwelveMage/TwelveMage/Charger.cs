@@ -22,11 +22,12 @@ namespace TwelveMage
         
 
 
-        public Charger(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite)
-            : base(rec, texture, health, enemies, player, corpseSprite)
+        public Charger(Rectangle rec, TextureLibrary textureLibrary, int health, List<Enemy> enemies, Player player, Random rng)
+            : base(rec, textureLibrary, health, enemies, player, rng)
         {
+            _textureLibrary = textureLibrary;
             this.player = player;
-            this.Color = Color.DarkMagenta;
+            Color = Color.DarkMagenta;
             drawScale = 2.5f;
             speed = 100;
         }

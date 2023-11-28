@@ -20,7 +20,6 @@ namespace TwelveMage
     internal class Gun : GameObject
     {
         //fields
-        private Texture2D gunTexture;
         // Move gun with player
         private Vector2 dir;
         private Vector2 pos;
@@ -62,15 +61,12 @@ namespace TwelveMage
 
 
         //constructors
-        public Gun(Rectangle rec, Texture2D texture, int health, Player player) : base(rec, texture, health)
+        public Gun(Rectangle rec, TextureLibrary textureLibrary, int health, Player player) : base(rec, textureLibrary, health)
         {
-
-            this.rec = rec;
-            this.gunTexture = texture;
-            this.health = health;
+            texture = _textureLibrary.GrabTexture("Gun");
             this.player = player;
-            this.pos = new Vector2(player.Rec.Center.X, player.Rec.Center.Y);
-            this.gunRotation = 0;
+            pos = new Vector2(player.Rec.Center.X, player.Rec.Center.Y);
+            gunRotation = 0;
         }
 
         //methods

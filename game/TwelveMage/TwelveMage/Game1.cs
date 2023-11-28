@@ -25,21 +25,7 @@ namespace TwelveMage
         private FileManager fileManager;
         private Random rng;
 
-        private Texture2D playerSpriteSheet;
-        private Texture2D enemySprite;
-        private Texture2D bulletSprite;
-        private Texture2D fireballSprite;
         private Texture2D healthBar;
-        private Texture2D healthPickupSprite;
-        private Texture2D summonerSprite;
-        private Texture2D corpseSprite;
-
-        // Spell UI Sprites
-        private Texture2D blinkSpellIcon;
-        private Texture2D fireballSpellIcon;
-        private Texture2D freezeSpellIcon;
-        private Texture2D hasteSpellIcon;
-        private Texture2D spellSlotOverlay;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
@@ -77,9 +63,6 @@ namespace TwelveMage
 
         // BackgroundManager stuff
         private BackgroundManager backgroundManager;
-        private Texture2D flowersTileset;
-        private Texture2D grassTileset;
-        private Texture2D paversTileset;
 
         // List of enemies to add to for each wave
         private List<Enemy> enemies;
@@ -136,7 +119,7 @@ namespace TwelveMage
 
             // TODO: use this.Content to load your game content here
 
-            _textureLibrary = new TextureLibrary(this.Content);
+            _textureLibrary = new TextureLibrary(this.Content); // Initialize the texture library
 
             rng = new Random();
 
@@ -144,16 +127,6 @@ namespace TwelveMage
             //titleFont = this.Content.Load<SpriteFont>("TitleFont");
             titleFont = this.Content.Load<SpriteFont>("AlagardFont");
             menuFont = this.Content.Load<SpriteFont>("MenuFont");
-
-            // Load Spell Slots (Chloe)
-            blinkSpellIcon = this.Content.Load<Texture2D>("BlinkSpellSlot");
-            fireballSpellIcon = this.Content.Load<Texture2D>("FireballSpellSlot");
-            freezeSpellIcon = this.Content.Load<Texture2D>("FreezeSpellSlot");
-            hasteSpellIcon = this.Content.Load<Texture2D>("HasteSpellSlot");
-            spellSlotOverlay = this.Content.Load<Texture2D>("SpellSlotOverlay");
-
-            //Load in gun image
-            Texture2D gunSprite = this.Content.Load<Texture2D>("Spas_12");
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(windowWidth / 2, windowHeight / 2, playerWidth, playerHeight);
@@ -167,29 +140,20 @@ namespace TwelveMage
             player.WindowWidth = windowWidth;
             
             // Load Health Bar Assets (Lucas)
-            healthBar = this.Content.Load<Texture2D>("HB_1");
-
-            healthPickupSprite = this.Content.Load<Texture2D>("medkit");
+            healthBar = _textureLibrary.GrabTexture("HealthBar");
 
             // Create a FileManager (Chloe)
             fileManager = new FileManager(player, _textureLibrary);
 
             // Do BackgroundManager initialization
-            flowersTileset = this.Content.Load<Texture2D>("FlowersTileset");
-            grassTileset = this.Content.Load<Texture2D>("GrassTileset");
-            paversTileset = this.Content.Load<Texture2D>("PaversTileset");
-
-            backgroundManager = new BackgroundManager(grassTileset, flowersTileset, paversTileset, rng, _spriteBatch);
+            backgroundManager = new BackgroundManager(_textureLibrary, rng, _spriteBatch);
             backgroundManager.LoadLevel(fileManager);
 
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
-            gun = new Gun(gunRec, gunSprite, 10, player);
+            gun = new Gun(gunRec, _textureLibrary, 10, player);
 
 
             // Load enemy sprite (Lucas)
-            corpseSprite = this.Content.Load<Texture2D>("corpse-back");
-            enemySprite = this.Content.Load<Texture2D>("ZombieWalkSheet");
-            summonerSprite = this.Content.Load<Texture2D>("enemy");
             enemiesActive = true;
 
             creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont);
@@ -202,7 +166,7 @@ namespace TwelveMage
             deadEnemies = new List<Enemy>();
             enemies = new List<Enemy>();
             summoners = new List<Summoner>();
-            defaultEnemy = new Enemy(enemyRec, enemySprite, 100, enemies, player, corpseSprite);
+            defaultEnemy = new Enemy(enemyRec, _textureLibrary, 100, enemies, player, rng);
             enemies.Add(defaultEnemy);
             spawner = new Spawner(
                 player.PosVector,
@@ -210,13 +174,13 @@ namespace TwelveMage
                 100,
                 enemies,
                 summoners,
-                enemySprite,
-                corpseSprite,
+                _textureLibrary,
                 100,
                 player,
                 new Rectangle(0, 0, 20, 20),
                 windowWidth,
-                windowHeight);
+                windowHeight,
+                rng);
             spawners = new List<Spawner>();
 
 
@@ -231,13 +195,13 @@ namespace TwelveMage
                 0,
                 enemies,
                 summoners,
-                enemySprite,
-                corpseSprite,
+                _textureLibrary,
                 100,
                 player,
                 Rectangle.Empty,
                 windowWidth,
-                windowHeight));
+                windowHeight,
+                rng));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth / 2, windowHeight + 40),
@@ -245,13 +209,13 @@ namespace TwelveMage
                 0,
                 enemies,
                 summoners,
-                enemySprite,
-                corpseSprite,
+                _textureLibrary,
                 100, 
                 player,
                 Rectangle.Empty,
                 windowWidth,
-                windowHeight));
+                windowHeight,
+                rng));
 
             spawners.Add(new Spawner(
                 new Vector2(-40, windowHeight / 2),
@@ -259,13 +223,13 @@ namespace TwelveMage
                 windowHeight / 2,
                 enemies,
                 summoners,
-                enemySprite,
-                corpseSprite,
+                _textureLibrary,
                 100,
                 player,
                 Rectangle.Empty,
                 windowWidth,
-                windowHeight));
+                windowHeight,
+                rng));
 
             spawners.Add(new Spawner(
                 new Vector2(windowWidth + 40, windowHeight / 2),
@@ -273,13 +237,13 @@ namespace TwelveMage
                 windowHeight / 2,
                 enemies,
                 summoners,
-                enemySprite,
-                corpseSprite,
+                _textureLibrary,
                 100,
                 player,
                 Rectangle.Empty,
                 windowWidth,
-                windowHeight));
+                windowHeight,
+                rng));
 
 
             #region Menu Buttons
@@ -548,7 +512,7 @@ namespace TwelveMage
                                 {
                                     healthPickups.Add(new HealthPickup(
                                         new Rectangle(enemies[i].X, enemies[i].Y, 16, 16),
-                                        healthPickupSprite,
+                                        _textureLibrary,
                                         10,
                                         player));
                                 }
@@ -843,8 +807,6 @@ namespace TwelveMage
                         SpriteEffects.None,                         // Effects
                         0);                                         // Layer depth
 
-                    // Draw Spells
-                    player.DrawSpellSlots(_spriteBatch, blinkSpellIcon, fireballSpellIcon, freezeSpellIcon, hasteSpellIcon, spellSlotOverlay);
                     break;
 
                 case GameState.Pause:
@@ -985,16 +947,14 @@ namespace TwelveMage
         /// </summary>
         private void LoadGame()
         {
-            player = fileManager.LoadPlayer(playerSpriteSheet);
-            player.Bullet = bulletSprite;
-            player.Fireball = fireballSprite;
+            player = fileManager.LoadPlayer();
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
             //deadEnemies.Clear();            // Clear corpses (Lucas)
             enemies.Clear();
             enemies = fileManager.LoadEnemies();
             healthPickups.Clear();
-            healthPickups = fileManager.LoadHealthPickups(healthPickupSprite, player);
+            healthPickups = fileManager.LoadHealthPickups(player);
             int[] stats = fileManager.LoadStats();
             score = stats[0];
             wave = stats[2];
@@ -1015,7 +975,6 @@ namespace TwelveMage
                 foreach (Enemy enemy in enemies)
                 {
                     enemy.OnDeath += IncreaseScore;
-                    enemy.CorpseSprite = corpseSprite;          // Reassign corpseSprite to avoid null ref error (Lucas)
                 }
 
                 enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack

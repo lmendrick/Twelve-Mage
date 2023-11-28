@@ -28,6 +28,8 @@ namespace TwelveMage
         private const int tileWidth = 32;
         private const int tileHeight = 32;
 
+        private readonly TextureLibrary _textureLibrary;
+
         // Tilesets to grab textures from, and associated data
         private Texture2D _grassTileset;
         private Texture2D _flowerTileset;
@@ -43,11 +45,12 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        public BackgroundManager(Texture2D grassTileset, Texture2D flowerTileset, Texture2D paverTileset, Random myRand, SpriteBatch spriteBatch)
+        public BackgroundManager(TextureLibrary textureLibrary, Random myRand, SpriteBatch spriteBatch)
         {
-            _grassTileset = grassTileset;
-            _flowerTileset = flowerTileset;
-            _paverTileset = paverTileset;
+            _textureLibrary = textureLibrary;
+            _grassTileset = _textureLibrary.GrabTexture("GrassTileset");
+            _flowerTileset = _textureLibrary.GrabTexture("FlowersTileset");
+            _paverTileset = _textureLibrary.GrabTexture("PaversTileset");
             _myRand = myRand;
             _spriteBatch = spriteBatch;
         }

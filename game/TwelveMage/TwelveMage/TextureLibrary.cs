@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework.Content;
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 /*
  * Chloe Hall
@@ -56,7 +57,7 @@ namespace TwelveMage
             // Add all texture entries
             AddEntry("BlinkSpellSlot", blinkSlotFile);
             AddEntry("Bullet", bulletFile);
-            AddEntry("Corpse", corpseFile);
+            AddEntry("ZombieCorpse", corpseFile);
             AddEntry("Fireball", fireballFile);
             AddEntry("FireballSpellSlot", fireballSlotFile);
             AddEntry("FlowersTileset", flowersTilesetFile);
@@ -91,7 +92,11 @@ namespace TwelveMage
             {
                 return texturesDict[entryName]; // Return it;
             }
-            else return DefaultTexture; // Otherwise, return the default "missing" texture.
+            else
+            {
+                Debug.WriteLine(entryName + " could not be found in the TextureLibrary.");
+                return DefaultTexture; // Otherwise, return the default "missing" texture.
+            }
         }
     }
 }
