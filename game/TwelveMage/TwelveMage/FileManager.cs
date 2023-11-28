@@ -261,7 +261,6 @@ namespace TwelveMage
         public List<Enemy> LoadEnemies()
         {
             List<Enemy> enemies = new List<Enemy>();
-            Texture2D ZombieSpriteSheet = _textureLibrary.GrabTexture("ZombieSheet");
 
             try // Make sure everything works correctly with a try/catch
             {

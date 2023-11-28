@@ -37,8 +37,6 @@ namespace TwelveMage
 
         private Vector2 dir;
 
-        private Texture2D corpseSprite;
-
         private float speed = 75f;
         private float runningSpeed;
         private bool withinArea = false;

@@ -42,18 +42,6 @@ namespace TwelveMage
 
 
         //methods
-
-
-
-        public Projectile(Rectangle position, Texture2D texture, int health, float range) : base(position, texture, health)
-        {
-            //standard velocity of 4
-
-            this.LinearVelocity = LinearVelocity * .05f;
-            this.range = range;
-            displacement = 0;
-        }
-
         public Projectile(Rectangle position, TextureLibrary textureLibrary, int health, float range) : base(position, textureLibrary, health)
         {
             this.LinearVelocity = LinearVelocity * .05f;

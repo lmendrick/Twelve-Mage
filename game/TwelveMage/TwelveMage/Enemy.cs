@@ -187,37 +187,6 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-
-        /*public Enemy(Rectangle rec, Texture2D texture, int health, List<Enemy> enemies, Player player, Texture2D corpseSprite) : base(rec, texture, health)
-        {
-            this.rec = rec;
-            this.texture = texture;
-            this.pos = new Vector2(rec.X, rec.Y);
-            this.health = health;
-            this.enemies = enemies;
-            this.player = player;
-
-            rng = new Random();
-
-            intersectionDetected = false;
-            collisionsResolved = true;
-            priority = false;
-            adjustmentTimer = 1.0f;
-            timer = 1f;
-
-            speed = 100f;
-
-            // Default sprite direction
-            state = EnemyState.FaceRight;
-
-            // Initialize animation data
-            fps = 10.0;                     
-            timePerFrame = 1.0 / fps;       
-
-            drawScale = 1f;
-            this.corpseSprite = corpseSprite;
-        }*/
-        
         public Enemy(Rectangle rec, TextureLibrary textureLibrary, int health, List<Enemy> enemies, Player player, Random rng)
             : base(rec, textureLibrary, health)
         {

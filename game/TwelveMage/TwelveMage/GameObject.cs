@@ -48,13 +48,6 @@ internal abstract class GameObject
         set { damage = value; }
     }
     //constructors
-	protected GameObject(Rectangle rec, Texture2D texture, int health)
-	{
-        Direction.Normalize(); // Why is this here? -Chloe
-		this.rec = rec;
-		this.texture = texture;
-		this.health = health;
-	}
 
     protected GameObject(Rectangle rec, TextureLibrary textureLibrary, int health)
     {
