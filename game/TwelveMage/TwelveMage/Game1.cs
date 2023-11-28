@@ -183,7 +183,6 @@ namespace TwelveMage
                 rng);
             spawners = new List<Spawner>();
 
-
             //spawners[0] is top spawner
             //spawners[1] is bottom spawner
             //spawners[2] is left spawner
@@ -244,7 +243,6 @@ namespace TwelveMage
                 windowWidth,
                 windowHeight,
                 rng));
-
 
             #region Menu Buttons
             // MAIN MENU BUTTONS
@@ -400,29 +398,22 @@ namespace TwelveMage
                             deadEnemies.Clear();
                         }
 
-                       
-                        
-
-
                         // Enemy movement (Lucas)
                         // Pass current player position to enemies (Lucas)
                         // Set enemy TimeFreeze status according to if player used ability
                         foreach (Enemy enemy in enemies)
                         {
+                            enemy.PlayerPos = player.PosVector;
+                            enemy.IsFrozen = player.IsFrozen;
+                            enemy.DamageTaken = player.DamageGiven;
+
                             if (enemiesActive)
                             {
                                 enemy.Update(gameTime, bullets);
                                 enemy.UpdateAnimation(gameTime);
-                                
                             }
-                            enemy.PlayerPos = player.PosVector;
-                            enemy.IsFrozen = player.IsFrozen;
-                            enemy.DamageTaken = player.DamageGiven;
-                          
                             
-
                         }
-
 
                         foreach(Summoner summoner in summoners)
                         {
@@ -430,10 +421,7 @@ namespace TwelveMage
                             {
                                 summoner.Summoning(gameTime);
                             }
-
-
                         }
-
 
                         foreach (HealthPickup healthPickup in healthPickups)
                         {
@@ -474,15 +462,13 @@ namespace TwelveMage
 
                         //for bullets after timespan ends remove(AJ)
                         for (int i = 0; i < bullets.Count; i++)
+                        {
+                            if (bullets[i].IsRemoved)
                             {
-                                if (bullets[i].IsRemoved)
-                                {
-                                    bullets.RemoveAt(i); ;
-                                    i--;
-                                }
-                                
+                                bullets.RemoveAt(i); ;
+                                i--;
+                            }
                         }
-
 
                         //Enemy damage logic moved to enemy class
 
@@ -530,9 +516,6 @@ namespace TwelveMage
                                 enemies.RemoveAt(i);
                             }
                         }
-
-                        
-                        
                         
                         // Wave handling
                         if(enemies.Count == 0)
@@ -568,12 +551,10 @@ namespace TwelveMage
                                 healthPickup.Age++;
                             }
 
-
                             // Ages all existing corpses
                             foreach(Enemy corpse in deadEnemies)
                             {
                                 corpse.CorpseAge++;
-                                
                             }
 
                             // If any corpses are older than the allowed corpseLifespan, remove them
@@ -584,8 +565,6 @@ namespace TwelveMage
                                     deadEnemies.RemoveAt(i);
                                 }
                             }
-
-                            
 
                             wave++;
                         }
@@ -644,11 +623,9 @@ namespace TwelveMage
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
-
             backgroundManager.Draw(windowWidth, windowHeight);
 
             switch (currentState)
-
             {
                 case GameState.Menu:
 
@@ -709,7 +686,6 @@ namespace TwelveMage
                         healthPickup.Draw(_spriteBatch);
                     }
 
-
                     // Player sprite/animations (Lucas)
                     player.Draw(_spriteBatch);
 
@@ -722,7 +698,6 @@ namespace TwelveMage
                         enemy.Draw(_spriteBatch);
                     }
 
-
                     //draw bullets as long as its a projectile(AJ)
                     foreach (GameObject project in bullets)
                     {
@@ -730,44 +705,7 @@ namespace TwelveMage
                         {
                             project.Draw(_spriteBatch);
                         }
-                        
                     }
-
-
-                    /*//enenmy health display(AJ
-                    if (enemies != null && enemies.Count != 0) // Only do this if enemies has an enemy
-                    {
-                        _spriteBatch.DrawString(
-                        menuFont,
-                        "Enemy Health: " + enemies[0].Health,
-                        new Vector2(10, 10),
-                        Color.Black);
-                    }
-                    //player health display(AJ)
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Player Health: " + player.Health,
-                        new Vector2(10, 50),
-                        Color.Black);
-                    //Blink timer display (Ben)
-                    string timerString = String.Format("{0:0.00}", player.BlinkTimer);
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Blink: " + timerString,
-                        new Vector2(10, 90),
-                        Color.Black);
-                    // Freeze cooldown display (Lucas)
-                    string freezeString = String.Format("{0:0.00}", player.FreezeTimer);
-                    _spriteBatch.DrawString(
-                        menuFont,
-                        "Time Freeze: " + freezeString,
-                        new Vector2(10, 130),
-                        Color.Black);
-                    string hasteString = string.Format("{0:0.00}", player.HasteTimer);
-                    _spriteBatch.DrawString(menuFont,
-                        "Haster CoolDown: " + hasteString,
-                        new Vector2(10, 170), 
-                        Color.Black);*/
 
                     //Wave counter display
                     _spriteBatch.DrawString(
@@ -874,7 +812,6 @@ namespace TwelveMage
                     }
 
                     break;
-
             }
 
             _spriteBatch.End();
@@ -1036,7 +973,6 @@ namespace TwelveMage
             }
         }
 
-
         /// <summary>
         /// Increases the player's score by 10; to be used with Enemy's OnDeath event (or other events in future?)
         /// </summary>
@@ -1048,10 +984,10 @@ namespace TwelveMage
         /// <summary>
         /// Increases the player's score by a given amount
         /// </summary>
-        /// <param name="increaseBy">The amount to increase the score by</param>
-        private void IncreaseScore(int increaseBy)
+        /// <param name="amount">The amount to increase the score by</param>
+        private void IncreaseScore(int amount)
         {
-            score += increaseBy;
+            score += amount;
         }
 
         /// <summary>
