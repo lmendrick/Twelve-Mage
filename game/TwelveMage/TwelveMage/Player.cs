@@ -785,21 +785,25 @@ namespace TwelveMage
             if (rec.Bottom < 0)
             {
                 pos.Y = windowHeight;
+                health -= 10;
             }
             // Check if player moves past bottom of window and wrap to top
             if (rec.Top > windowHeight)
             {
                 pos.Y = 0;
+                health -= 10;
             }
             // Check if player moves past right of window and wrap to left
             if (rec.Left > windowWidth)
             {
                 pos.X = 0;
+                health -= 10;
             }
             // Check if player moves past left of window and wrap to right
             if (rec.Right < 0)
             {
                 pos.X = windowWidth;
+                health -= 10;
             }
             #endregion
             #endregion
