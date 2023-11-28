@@ -466,14 +466,14 @@ namespace TwelveMage
                     {
                         Projectile shot = (Projectile)bulletList[i];
 
-                        if (bulletList[i] is not Fireball) // Bullet is a basic Projectile
-                        {
-                            health -= DamageTaken;
-                        }
-                        else // Bullet is a Fireball
+                        if (bulletList[i] is Fireball) // Bullet is a Fireball
                         {
                             IsActive = false;
                             state = EnemyState.Dead;
+                        }
+                        else // Bullet is a basic Projectile
+                        {
+                            health -= DamageTaken;
                         }
 
                         shot.NumPen++; // Check the number of times this bullet has penetrated; remove it if higher than MaxPen
