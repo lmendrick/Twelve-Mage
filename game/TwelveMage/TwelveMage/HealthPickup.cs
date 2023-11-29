@@ -15,19 +15,42 @@ namespace TwelveMage
         private int age;
         private Random rng;
 
+        public int Lifespan { get; }
+        public int Age { get; set; }
 
-
-        public HealthPickup(Rectangle rec, TextureLibrary textureLibrary, int health, Player player) 
+        public HealthPickup(Rectangle rec, TextureLibrary textureLibrary, int health, Player player, Random rng) 
             : base(rec, textureLibrary, health)
         {
             texture = _textureLibrary.GrabTexture("HealthPickup");
             this.player = player;
-            rng = new Random();
+            this.rng = rng;
             isActive = true;
             lifespan = rng.Next(3, 6);
             age = 0;
         }
         
+        public HealthPickup(Rectangle rec, TextureLibrary textureLibrary, int health, Player player, Random rng, int lifespan, int age)
+            : base(rec, textureLibrary, health)
+        {
+            texture = _textureLibrary.GrabTexture("HealthPickup");
+            this.player = player;
+            this.rng = rng;
+            isActive = true;
+
+            // Lifespan sanity check
+            if (lifespan >= 3 && lifespan < 6)
+            {
+                this.lifespan = lifespan;
+            }
+            else this.lifespan = rng.Next(3, 6);
+
+            // Age sanity check
+            if (age >= 0 && age <= lifespan)
+            {
+                this.age = age;
+            }
+            else this.age = 0;
+        }
 
         public bool IsActive
         {
@@ -35,12 +58,7 @@ namespace TwelveMage
             set { isActive = value; }
         }
 
-        public int Age
-        {
-            get { return age; }
-            set { age = value; }
-
-        }
+        
 
         public override void Update(GameTime gameTime, List<GameObject> bullets)
         {

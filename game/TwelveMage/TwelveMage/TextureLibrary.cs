@@ -16,7 +16,7 @@ namespace TwelveMage
     {
         private readonly Dictionary<string, Texture2D> texturesDict = new Dictionary<string, Texture2D>(); // Dictionary of every texture
         private readonly ContentManager contentManager; // ContentManager to load textures
-        private readonly Texture2D DefaultTexture; // Default texture in the case of a failed GrabTexture.
+        public readonly Texture2D DefaultTexture; // Default texture in the case of a failed GrabTexture.
 
         // Constant file names for every texture, for easy editing later. To be used with Content.LoadContent.
 
@@ -88,7 +88,7 @@ namespace TwelveMage
         /// <param name="entryName">Dictionary key to search for</param>
         public Texture2D GrabTexture(string entryName)
         {
-            if (texturesDict.ContainsKey(entryName)) // If the requested texture is in the Dictionary,
+            if (!string.IsNullOrEmpty(entryName) && texturesDict.ContainsKey(entryName)) // If the requested texture is in the Dictionary,
             {
                 return texturesDict[entryName]; // Return it;
             }

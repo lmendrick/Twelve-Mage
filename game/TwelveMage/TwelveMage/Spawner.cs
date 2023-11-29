@@ -115,20 +115,20 @@ namespace TwelveMage
             noSpawningArea.Y = (int)position.Y - (noSpawningArea.Height / 2);
 
             Summoner spawned = new Summoner(
-                new Rectangle(
-                    rng.Next(lowerXRange, upperXRange + 1),
+                new Rectangle(                              // Summoner's Rectangle is 45x45
+                    rng.Next(lowerXRange, upperXRange + 1), // And at a random position
                     rng.Next(lowerYRange, upperYRange + 1),
                     45,
                     45),
-                _textureLibrary,
-                summonerHealth,
-                enemies,
-                player,
-                10,
-                windowWidth,
-                windowHeight,
-                summoners,
-                rng);
+                _textureLibrary,                            // Texture Manager
+                summonerHealth,                             // Initial Summoner health is 4 * Enemy health
+                enemies,                                    // Enemies list
+                player,                                     // The player
+                10,                                         // Maximum enemies to spawn at once
+                windowWidth,                                // Window width
+                windowHeight,                               // Window height
+                summoners,                                  // Summoners list
+                rng);                                       // RNG
 
 
             float xDistanceFromPlayer = player.PosVector.X - spawned.X;

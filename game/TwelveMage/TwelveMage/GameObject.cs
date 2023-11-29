@@ -54,6 +54,7 @@ internal abstract class GameObject
         Direction.Normalize();
         this.rec = rec;
         _textureLibrary = textureLibrary;
+        texture = textureLibrary.DefaultTexture; // Grab the default texture, in case any child class doesn't grab a texture
         this.health = health;
     }
 

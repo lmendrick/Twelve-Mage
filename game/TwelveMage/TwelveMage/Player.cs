@@ -66,7 +66,6 @@ namespace TwelveMage
 
         // Move player with vector2
         private Vector2 dir;
-        private Vector2 pos;
         private float speed = 200f;
 
         private int windowWidth;
@@ -111,7 +110,8 @@ namespace TwelveMage
         private double hasteTimer = 0;
 
         // Invulnerability works similarly to spell effects
-        double invulnerableTimer = 0;
+        private double invulnerableTimer = 0;
+        private double invulnerableDuration = 1.0;
 
         // Note: When a spell is used, its CooldownDuration will be added to its timer.
         //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
@@ -129,7 +129,7 @@ namespace TwelveMage
             {
                 if (value < health && !IsInvulnerable) // Only change health if the player isn't invulnerable
                 {
-                    invulnerableTimer = 1; // If health decreases, make the add invulnerability
+                    invulnerableTimer = invulnerableDuration; // If health decreases, make the add invulnerability
                     health = value;
                 }
                 if (value > health)
@@ -137,16 +137,6 @@ namespace TwelveMage
                     health = value;
                 }
             }
-        }
-        public Texture2D Fireball
-        {
-            get { return fireball; }
-            set { fireball = value; }
-        }
-        public Texture2D Bullet //bullet property to get bullet texture
-        {
-            get { return bullet; }
-            set { bullet = value; }
         }
         public MouseState Mstate
         {
@@ -161,8 +151,8 @@ namespace TwelveMage
 
         public Vector2 PosVector 
         { 
-            get { return pos; }
-            set {  pos = value; }
+            get { return Position; }
+            set {  Position = value; }
         }
 
         public Vector2 DirVector
@@ -207,6 +197,8 @@ namespace TwelveMage
         {
             get { return (invulnerableTimer > 0); }
         }
+
+        public double InvulnerableTimer { get; }
         #endregion
 
         #region CONSTRUCTORS
@@ -323,7 +315,7 @@ namespace TwelveMage
             fireBalls.Add(project);*/
 
             Fireball fireball = new Fireball(new Rectangle(rec.X, rec.Y - 20, 50, 50), _textureLibrary, health, 800);
-            fireball.Direction = new Vector2(mState.X, mState.Y) - pos;
+            fireball.Direction = new Vector2(mState.X, mState.Y) - Position;
             fireball.Direction.Normalize();
             fireball.LinearVelocity = .3f;
             fireball.LifeSpan = 5;
@@ -343,7 +335,7 @@ namespace TwelveMage
         {
             Random rng = new Random();
             //When called, get mouse direction
-            Vector2 mouseDir = new Vector2(mState.X, mState.Y) - pos;
+            Vector2 mouseDir = new Vector2(mState.X, mState.Y) - Position;
             mouseDir.Normalize();
 
             //Changes shot speed
@@ -513,7 +505,7 @@ namespace TwelveMage
         {
             spriteBatch.Draw(
                 texture,
-                pos,
+                Position,
                 new Rectangle(
                     0,
                     WizardRectOffsetY,
@@ -541,14 +533,14 @@ namespace TwelveMage
         private void DrawWalking(SpriteEffects flipSprite, SpriteBatch spriteBatch)
         {
             spriteBatch.Draw(
-                texture,                            // - The texture to draw
-                pos,                                    // - The location to draw on the screen
+                texture,                                // - The texture to draw
+                Position,                               // - The location to draw on the screen
                 new Rectangle(                          // - The "source" rectangle
                     frame * WizardRectWidth,            // - This rectangle specifies
                     WizardRectOffsetY,                  //	 where "inside" the texture
                     WizardRectWidth,                    //   to get pixels (We don't want to
                     WizardRectHeight),                  //   draw the whole thing)
-                color,                            // - The color
+                color,                                  // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
                 1.0f,                                   // - Scale (100% - no change)
@@ -561,8 +553,8 @@ namespace TwelveMage
         /// </summary>
         public void Center()
         {
-            pos.X = (windowWidth / 2) - (rec.Width / 2);
-            pos.Y = (windowHeight / 2) - (rec.Height / 2);
+            Position.X = (windowWidth / 2) - (rec.Width / 2);
+            Position.Y = (windowHeight / 2) - (rec.Height / 2);
         }
 
         private void UpdateSpells(GameTime gameTime, Spell spell, List<GameObject> fire)
@@ -680,7 +672,11 @@ namespace TwelveMage
             spriteBatch.Draw(spellSlotsOverlay, freezeOverlay, Color.White * 0.5f);
             spriteBatch.Draw(spellSlotsOverlay, hasteOverlay, Color.White * 0.5f);
         }   
-
+        
+        /// <summary>
+        /// Overwrites spell timer, cooldown, and duration data.
+        /// </summary>
+        /// <param name="SpellsDictionary">A Dictionary with all spell-related data.</param>
         public void OverwriteSpellData(Dictionary<string, double> SpellsDictionary)
         {
             SpellsDictionary.TryGetValue("BlinkTimer", out blinkTimer);
@@ -696,9 +692,35 @@ namespace TwelveMage
         }
 
         /// <summary>
+        /// Overwrites health and invulnerability data.
+        /// </summary>
+        /// <param name="healthValue">An int to set health to.</param>
+        /// <param name="invulnerableTimer">A double to set invulnerableTimer to.</param>
+        public void OverwriteHealthData(int healthValue, double invulnerableTimer)
+        {
+            // HealthValue sanity check
+            if (healthValue > 0 && healthValue <= MAX_HEALTH)
+            {
+                health = healthValue;
+            }
+            else health = MAX_HEALTH;
+
+            // InvulnerableTimer sanity check
+            if (invulnerableTimer > invulnerableDuration)
+            {
+                this.invulnerableTimer = invulnerableDuration;
+            }
+            else if (invulnerableTimer < 0)
+            {
+                this.invulnerableTimer = 0;
+            }
+            else this.invulnerableTimer = invulnerableTimer;
+        }
+
+        /// <summary>
         /// Returns a Dictionary with all spell timers, cooldowns, and durations
         /// </summary>
-        public Dictionary<String, double> getSpellData()
+        public Dictionary<String, double> GetSpellData()
         {
             Dictionary<String, double> SpellsDictionary = new Dictionary<String, double>();
 
@@ -773,33 +795,33 @@ namespace TwelveMage
             }
 
             // Update the player's position based on direction, time elapsed, and speed (Lucas)
-            pos.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
-            pos.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            Position.Y += dir.Y * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
+            Position.X += dir.X * (float)gameTime.ElapsedGameTime.TotalSeconds * speed;
 
             // Update rectangle position
-            rec.X = (int)(pos.X);
-            rec.Y = (int)(pos.Y);
+            rec.X = (int)(Position.X);
+            rec.Y = (int)(Position.Y);
 
             #region Handle Player Moving Offscreen
             // Check if player moves past top of window and wrap to bottom
             if (rec.Bottom < 0)
             {
-                pos.Y = windowHeight;
+                Position.Y = windowHeight;
             }
             // Check if player moves past bottom of window and wrap to top
             if (rec.Top > windowHeight)
             {
-                pos.Y = 0;
+                Position.Y = 0;
             }
             // Check if player moves past right of window and wrap to left
             if (rec.Left > windowWidth)
             {
-                pos.X = 0;
+                Position.X = 0;
             }
             // Check if player moves past left of window and wrap to right
             if (rec.Right < 0)
             {
-                pos.X = windowWidth;
+                Position.X = windowWidth;
             }
             #endregion
             #endregion
@@ -842,7 +864,6 @@ namespace TwelveMage
             }
             #endregion
         }
-
         #endregion
     }
 }

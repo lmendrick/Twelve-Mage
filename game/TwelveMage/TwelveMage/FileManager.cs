@@ -6,6 +6,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Diagnostics;
 
 namespace TwelveMage
 {
@@ -26,6 +27,9 @@ namespace TwelveMage
         private StreamReader reader;
         private StreamWriter writer;
         private readonly TextureLibrary _textureLibrary;
+        private readonly Random rng;
+        private int windowHeight;
+        private int windowWidth;
 
         private const string PlayerFilename = "../../../PlayerData.txt";
         private const string EnemiesFilename = "../../../EnemyData.txt";
@@ -34,6 +38,7 @@ namespace TwelveMage
         private const string Level1Filename = "../../../Level1Data.txt";
         private const string HealthPickupsFilename = "../../../HealthPickupsData.txt";
         private const string SpellsFilename = "../../../SpellData.txt";
+        private const string GameObjectsFilename = "../../../Objects.txt";
         private Player player;
         #endregion
 
@@ -41,10 +46,13 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        public FileManager(Player player, TextureLibrary textureLibrary)
+        public FileManager(Player player, TextureLibrary textureLibrary, int windowHeight, int windowWidth, Random rng)
         {
             this.player = player;
+            this.windowWidth = windowHeight;
+            this.windowHeight = windowWidth;
             _textureLibrary = textureLibrary;
+            this.rng = rng;
         }
 
         #endregion
@@ -53,60 +61,64 @@ namespace TwelveMage
 
         #region SAVING
         /// <summary>
-        /// Saves all Enemies
+        /// Saves all GameObjects, including the Player, Enemies, and HealthPickups
         /// </summary>
-        /// <param name="enemies">The List of every Enemy that currently exists</param>
+        /// <param name="player">The Player to save</param>
+        /// <param name="enemies">The List of Enemies to save</param>
+        /// <param name="healthPickups">The List of HealthPickups to save</param>
         /// <returns>True if succesfully saved, False if an error occurred</returns>
-        public bool SaveEnemies(List<Enemy> enemies)
+        public bool SaveGameObjects(Player player, List<Enemy> enemies, List<HealthPickup> healthPickups)
         {
             bool saved = false;
             try // Make sure everything works correctly with a try/catch
             {
-                writer = new StreamWriter(EnemiesFilename);
-                // Enemies file format:
-                // Line 1   int pos.X,int pos.Y,int health
-                // Line 2   int pos.X,int pos.Y,int health
-                // ...
-                foreach (Enemy enemy in enemies)
+                writer = new StreamWriter(GameObjectsFilename);
+                // GameObjects file format:
+                // Line 1, Player data:             int posX, int posY, int Health, double invulnerableTimer, string PlayerState
+                // Lines 2-?, Other GameObject data:
+                // Section 1, Enemy data:           string EnemyType, int posX, int posY, int Health
+                // Section 2, HealthPickup data:    "HealthPickup", int posX, int posY, int Health, int Lifespan, int Age
+                string line = "";
+
+                // Write Player data first
+                writer.WriteLine((int)player.PosVector.X + "," + (int)player.PosVector.Y + "," + player.Health + "," + player.InvulnerableTimer + "," + player.State);
+
+                // Write Enemy data
+                foreach(Enemy enemy in enemies)
                 {
-                    string line = (int)enemy.Position.X + "," + (int)enemy.Position.Y + "," + enemy.Health;
+                    line = "";
+                    line += (int)enemy.Position.X + "," + (int)enemy.Position.Y + "," + enemy.Health; // Add basic data
+
+                    switch(enemy) // Add enemy's type to the front of the line and write it
+                    {
+                        case Summoner:
+                            writer.WriteLine("Summoner," + line);
+                            break;
+
+                        case Charger:
+                            writer.WriteLine("Charger," + line);
+                            break;
+
+                        default:
+                        case Enemy:
+                            writer.WriteLine("Enemy," + line);
+                            break;
+                    }
+                }
+
+                // Write HealthPickup data
+                foreach(HealthPickup healthPickup in healthPickups)
+                {
+                    line = "";
+                    line += "HealthPickup," + (int)healthPickup.Rec.X + "," + (int)healthPickup.Rec.Y + ","
+                        + healthPickup.Health + "," + healthPickup.Lifespan + "," + healthPickup.Age;
                     writer.WriteLine(line);
                 }
                 saved = true;
             }
-            catch
+            catch(Exception ex)
             {
-
-            }
-            if (writer != null) writer.Close();
-            return saved;
-        }
-
-        /// <summary>
-        /// Saves all HealthPickups
-        /// </summary>
-        /// <param name="healthpickups">The List of every HealthPickup that currently exists</param>
-        /// <returns>True if succesfully saved, False if an error occurred</returns>
-        public bool SaveHealthPickups(List<HealthPickup> healthpickups)
-        {
-            bool saved = false;
-            try // Make sure everything works correctly with a try/catch
-            {
-                writer = new StreamWriter(HealthPickupsFilename);
-                // HealthPickups file format:
-                // Line 1   int pos.X,int pos.Y,int health
-                // Line 2   int pos.X,int pos.Y,int health
-                // ...
-                foreach (HealthPickup pickup in healthpickups)
-                {
-                    string line = (int)pickup.Rec.X + "," + (int)pickup.Rec.Y + "," + pickup.Health;
-                    writer.WriteLine(line);
-                }
-                saved = true;
-            }
-            catch
-            {
-
+                Debug.WriteLine(ex.Message);
             }
             if (writer != null) writer.Close();
             return saved;
@@ -130,34 +142,9 @@ namespace TwelveMage
                 writer.WriteLine(line);
                 saved = true;
             }
-            catch
+            catch (Exception ex)
             {
-
-            }
-            if (writer != null) writer.Close();
-            return saved;
-        }
-
-        /// <summary>
-        /// Saves the Player data (position, health, state)
-        /// </summary>
-        /// <param name="player">The current Player</param>
-        /// <returns>True if succesfully saved, False if an error occurred</returns>
-        public bool SavePlayer(Player player)
-        {
-            bool saved = false;
-            try // Make sure everything works correctly with a try/catch
-            {
-                writer = new StreamWriter(PlayerFilename);
-                // Player file format:
-                // Line 1   int pos.X,int pos.Y,int health,string state
-                string line = (int)player.PosVector.X + "," + (int)player.PosVector.Y + "," + player.Health + "," + player.State;
-                writer.WriteLine(line);
-                saved = true;
-            }
-            catch
-            {
-
+                Debug.WriteLine("Failed while saving Persistent Stats: " + ex.Message);
             }
             if (writer != null) writer.Close();
             return saved;
@@ -181,11 +168,11 @@ namespace TwelveMage
                 writer.WriteLine(line);
                 saved = true;
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Failed while saving Stats: " + ex.Message);
             }
-            if(writer != null) writer.Close();
+            if (writer != null) writer.Close();
             return saved;
         }
 
@@ -194,7 +181,6 @@ namespace TwelveMage
         /// </summary>
         /// <param name="player">The current Player</param>
         /// <returns>True if succesfully saved, False if an error occurred</returns>
-        
         public bool SaveSpells(Dictionary<string, double> SpellsDictionary)
         {
             bool saved = false;
@@ -243,9 +229,9 @@ namespace TwelveMage
 
                 saved = true;
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Failed while saving Spells: " + ex.Message);
             }
             if (writer != null) writer.Close();
             return saved;
@@ -254,76 +240,116 @@ namespace TwelveMage
 
         #region LOADING
         /// <summary>
-        /// Loads all Enemies from EnemyData.txt
+        /// Loads all GameObject data, including the Player, Enemies, and HealthPickups
         /// </summary>
-        /// <param name="spritesheet">The spritesheet to pass to each Enemy</param>
-        /// <returns>A new list of every loaded Enemy</returns>
-        public List<Enemy> LoadEnemies()
+        /// <param name="player">The Player object to overwite the data of</param>
+        /// <param name="enemies">The List of Enemies to add loaded Enemies to</param>
+        /// <param name="summoners">The List of Summoners to add loaded Summoners to</param>
+        /// <param name="healthPickups">The List of HealthPickups to add loaded HealthPickups to</param>
+        /// <param name="spawners">The List of Spawners to pass to loaded Summoners</param>
+        public void LoadGameObjects(Player player, List<Enemy> enemies, List<Summoner> summoners,
+            List<HealthPickup> healthPickups, List<Spawner> spawners)
         {
-            List<Enemy> enemies = new List<Enemy>();
+            // Clear all relevant Lists
+            enemies.Clear();
+            summoners.Clear();
+            healthPickups.Clear();
 
             try // Make sure everything works correctly with a try/catch
             {
-                reader = new StreamReader(EnemiesFilename);
-                // Enemies file format:
-                // Line 1   int pos.X,int pos.Y,int health
-                // Line 2   int pos.X,int pos.Y,int health
-                // ...
+                reader = new StreamReader(GameObjectsFilename);
+                // GameObjects file format:
+                // Line 1, Player data:             int posX, int posY, int Health, double invulnerableTimer, string PlayerState
+                // Lines 2-?, Other GameObject data:
+                // Section 1, Enemy data:           string EnemyType, int posX, int posY, int Health
+                // Section 2, HealthPickup data:    "HealthPickup", int posX, int posY, int Health, int Lifespan, int Age
+                string[] splitLine;
+
+                // Read Player data
+                splitLine = reader.ReadLine().Split(",");
+
+                int.TryParse(splitLine[0], out int X);
+                int.TryParse(splitLine[1], out int Y);
+                int.TryParse(splitLine[2], out int health);
+                double.TryParse(splitLine[3], out double invulnerableTimer);
+
+                // Overwrite Player's data; don't create a new Player
+                player.PosVector = new Vector2(X, Y);
+                player.OverwriteHealthData(health, invulnerableTimer);
+                player.State = Enum.Parse<PlayerState>(splitLine[4]);
+
+                // Read other GameObject data
                 string currentLine = reader.ReadLine(); // Read the first line
                 while (!String.IsNullOrEmpty(currentLine)) // Keep going until the next line is empty
                 {
-                    string[] line = currentLine.Split(','); // Split the current line
-                    int.TryParse(line[0].Trim(), out int X);
-                    int.TryParse(line[1].Trim(), out int Y);
-                    int.TryParse(line[2].Trim(), out int health);
-                    Rectangle pos = new Rectangle(X, Y, 30, 30); // Enemy height & width are 30 & 30
+                    splitLine = currentLine.Split(",");
 
-                    enemies.Add(new Enemy(pos, _textureLibrary, health, enemies, player, null));
-                    currentLine = reader.ReadLine();
+                    switch(splitLine[0])
+                    {
+                        case "HealthPickup":
+
+                            int.TryParse(splitLine[1], out X);
+                            int.TryParse(splitLine[2], out Y);
+                            int.TryParse(splitLine[3], out health);
+                            int.TryParse(splitLine[4], out int lifespan);
+                            int.TryParse(splitLine[5], out int age);
+
+                            Rectangle HPRec = new Rectangle(X, Y, 16, 16); // Healthpack rectangle is 16x16
+
+                            healthPickups.Add(new HealthPickup(HPRec, _textureLibrary, health, player, rng, lifespan, age));
+
+                            break;
+
+                        case "Summoner":
+
+                            int.TryParse(splitLine[1], out X);
+                            int.TryParse(splitLine[2], out Y);
+                            int.TryParse(splitLine[3], out health);
+
+                            Rectangle summonerRec = new Rectangle(X, Y, 45, 45); // Summoner rectangle is 45x45
+
+                            // Add the new Summoner to enemies; it adds itself to summoners
+                            enemies.Add(new Summoner(summonerRec, _textureLibrary, health, enemies, player, 10, windowWidth, windowHeight, summoners, rng));
+
+                            break;
+
+                        case "Charger":
+
+                            int.TryParse(splitLine[1], out X);
+                            int.TryParse(splitLine[2], out Y);
+                            int.TryParse(splitLine[3], out health);
+
+                            Rectangle chargerRec = new Rectangle(X, Y, 60, 60); // Charger rectangle is 60x60
+
+                            // Add the new Charger to enemies
+                            enemies.Add(new Charger(chargerRec, _textureLibrary, health, enemies, player, rng));
+
+                            break;
+
+                        default: // Default to Enemy / Zombie
+                        case "Enemy":
+                        case "Zombie":
+
+                            int.TryParse(splitLine[1], out X);
+                            int.TryParse(splitLine[2], out Y);
+                            int.TryParse(splitLine[3], out health);
+
+                            Rectangle zombieRec = new Rectangle(X, Y, 30, 30); // Enemy rectangle is 30x30
+
+                            // Add the new Charger to enemies
+                            enemies.Add(new Enemy(zombieRec, _textureLibrary, health, enemies, player, rng));
+
+                            break;
+                    }
+
+                    currentLine = reader.ReadLine(); // Read the next line
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Failed while loading GameObjects: " + ex.ToString());
             }
             if (reader != null) reader.Close();
-            return enemies;
-        }
-
-        /// <summary>
-        /// Loads all HealthPickups from HealthPickupData.txt
-        /// </summary>
-        /// <param name="sprite">The sprite to pass to each HealthPickup</param>
-        /// <returns>A new list of every loaded HealthPickup</returns>
-        public List<HealthPickup> LoadHealthPickups(Player player)
-        {
-            List<HealthPickup> pickups = new List<HealthPickup>();
-            try // Make sure everything works correctly with a try/catch
-            {
-                reader = new StreamReader(HealthPickupsFilename);
-                // HealthPickups file format:
-                // Line 1   int pos.X,int pos.Y,int health
-                // Line 2   int pos.X,int pos.Y,int health
-                // ...
-                string currentLine = reader.ReadLine(); // Read the first line
-                while (!String.IsNullOrEmpty(currentLine)) // Keep going until the next line is empty
-                {
-                    string[] line = currentLine.Split(','); // Split the current line
-                    int.TryParse(line[0].Trim(), out int X);
-                    int.TryParse(line[1].Trim(), out int Y);
-                    int.TryParse(line[2], out int health);
-                    Rectangle pos = new Rectangle(X, Y, 16, 16); // HealthPickup height & width are 30 & 30
-
-                    pickups.Add(new HealthPickup(pos, _textureLibrary, health, player));
-                    currentLine = reader.ReadLine();
-                }
-            }
-            catch
-            {
-
-            }
-            if (reader != null) reader.Close();
-            return pickups;
         }
 
         /// <summary>
@@ -361,41 +387,12 @@ namespace TwelveMage
                     }
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Failed while loading Default Level: " + ex.Message);
             }
             if (reader != null) reader.Close();
             return tileTypes;
-        }
-
-        /// <summary>
-        /// Loads the player from PlayerData.txt
-        /// </summary>
-        /// <param name="spritesheet">The spritesheet to pass to the new Player</param>
-        /// <returns>A new Player with the loaded stats</returns>
-        public Player LoadPlayer()
-        {
-            player = null;
-            try // Make sure everything works correctly with a try/catch
-            {
-                reader = new StreamReader(PlayerFilename);
-                // Player file format:
-                // Line 1   int pos.X,int pos.Y,int health,string state
-                string[] line = reader.ReadLine().Split(','); // Split the line into a string[]
-                int.TryParse(line[0].Trim(), out int X);
-                int.TryParse(line[1].Trim(), out int Y);
-                int.TryParse(line[2].Trim(), out int health);
-                Rectangle pos = new Rectangle(X, Y, 34, 30); // Player height & width are 34 & 30
-                player = new Player(pos, _textureLibrary, health); // Create a new Player with the loaded data
-                player.State = Enum.Parse<PlayerState>(line[3]); // Parse the state data to PlayerState
-            }
-            catch
-            {
-
-            }
-            if (reader != null) reader.Close();
-            return player;
         }
 
         /// <summary>
@@ -423,11 +420,11 @@ namespace TwelveMage
                 int.TryParse(currentLine[0], out stats[1]);
                 int.TryParse(currentLine[1], out stats[3]);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Failed while loading Stats: " + ex.Message);
             }
-            if(reader != null) reader.Close();
+            if (reader != null) reader.Close();
             return stats;
         }
 
@@ -492,9 +489,9 @@ namespace TwelveMage
                 double.TryParse(currentLine[3], out currentValue); // Haste Effect Duration
                 SpellsDictionary.Add("HasteEffect", currentValue);
             }
-            catch
+            catch (Exception ex)
             {
-
+                Debug.WriteLine("Failed while loading Spells: " + ex.Message);
             }
             if (reader != null) reader.Close();
             return SpellsDictionary;

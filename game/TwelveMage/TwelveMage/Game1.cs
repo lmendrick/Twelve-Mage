@@ -143,7 +143,7 @@ namespace TwelveMage
             healthBar = _textureLibrary.GrabTexture("HealthBar");
 
             // Create a FileManager (Chloe)
-            fileManager = new FileManager(player, _textureLibrary);
+            fileManager = new FileManager(player, _textureLibrary, windowHeight, windowWidth, rng);
 
             // Do BackgroundManager initialization
             backgroundManager = new BackgroundManager(_textureLibrary, rng, _spriteBatch);
@@ -500,7 +500,8 @@ namespace TwelveMage
                                         new Rectangle(enemies[i].X, enemies[i].Y, 16, 16),
                                         _textureLibrary,
                                         10,
-                                        player));
+                                        player,
+                                        rng));
                                 }
 
                                 deadEnemies.Add(enemies[i]);
@@ -884,30 +885,17 @@ namespace TwelveMage
         /// </summary>
         private void LoadGame()
         {
-            player = fileManager.LoadPlayer();
-            player.WindowHeight = windowHeight;
-            player.WindowWidth = windowWidth;
-            //deadEnemies.Clear();            // Clear corpses (Lucas)
-            enemies.Clear();
-            enemies = fileManager.LoadEnemies();
-            healthPickups.Clear();
-            healthPickups = fileManager.LoadHealthPickups(player);
+            // Does all GameObject-related saving
+            deadEnemies.Clear();
+            fileManager.LoadGameObjects(player, enemies, summoners, healthPickups, spawners);
+            player.OverwriteSpellData(fileManager.LoadSpells());
             int[] stats = fileManager.LoadStats();
             score = stats[0];
             wave = stats[2];
-            if (stats[1] > highScore) highScore = stats[2];
+            if (stats[1] > highScore) highScore = stats[1];
             if (stats[3] > highWave) highWave = stats[3];
-            player.OverwriteSpellData(fileManager.LoadSpells());
 
-            // Re attach gun to new player (Lucas)
-            gun.Player = player;
-
-            foreach (Spawner spawner in spawners)
-            {
-                spawner.Enemies = enemies;
-            }
-
-            if (enemies != null)
+            if (enemies != null && enemies.Count != 0)
             {
                 foreach (Enemy enemy in enemies)
                 {
@@ -917,7 +905,6 @@ namespace TwelveMage
                 enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give a single, random enemy a healthpack
             }
             currentState = GameState.Game;
-            //DeactivateButtons();
         }
 
         /// <summary>
@@ -927,12 +914,10 @@ namespace TwelveMage
         {
             if(score > highScore) highScore = score;
             if(wave > highWave) highWave = wave;
-            if (fileManager.SavePlayer(player) &&
-            fileManager.SaveEnemies(enemies) &&
+            if (fileManager.SaveGameObjects(player, enemies, healthPickups) && // Does all GameObject-related loading
             fileManager.SaveStats(score, wave) &&
             fileManager.SavePersistentStats(highScore, highWave) &&
-            fileManager.SaveHealthPickups(healthPickups) &&
-            fileManager.SaveSpells(player.getSpellData()))
+            fileManager.SaveSpells(player.GetSpellData()))
             { hasSaved = true; } // Enables "Game Saved" text notification
         }
 
