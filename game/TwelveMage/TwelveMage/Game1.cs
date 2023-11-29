@@ -35,6 +35,11 @@ namespace TwelveMage
         private int gunWidth = 73;
         private int gunHeight = 24;
 
+        private int flameWidth = 15;
+        private int flameHeight = 15;
+        private Flame flame;
+
+        private BorderFlames borderFlames;
 
         private SpriteFont titleFont;
         private SpriteFont menuFont;
@@ -149,11 +154,14 @@ namespace TwelveMage
             backgroundManager = new BackgroundManager(_textureLibrary, rng, _spriteBatch);
             backgroundManager.LoadLevel(fileManager);
 
+            // Instantiate gun
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
             gun = new Gun(gunRec, _textureLibrary, 10, player);
 
-
-            // Load enemy sprite (Lucas)
+            // Test flame object
+            Rectangle fireRec = new Rectangle(15, 100, flameWidth, flameHeight);
+            flame = new Flame(fireRec, _textureLibrary, 100);
+            borderFlames = new BorderFlames(_textureLibrary, windowWidth, windowHeight);
             enemiesActive = true;
 
             creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont);
@@ -348,7 +356,8 @@ namespace TwelveMage
             switch (currentState)
             {
                 case GameState.Menu:
-
+                    flame.Update(gameTime, bullets);
+                    borderFlames.Update(gameTime);
                     foreach(Button button in mainMenuButtons.ToList())
                     {
                         button.Update();
@@ -631,6 +640,10 @@ namespace TwelveMage
 
                     // Main Menu display (Lucas)
 
+                    // Test flame
+                    flame.Draw(_spriteBatch);
+                    borderFlames.Draw(_spriteBatch);
+
                     // Title
                     _spriteBatch.DrawString(
                         titleFont,
@@ -657,7 +670,7 @@ namespace TwelveMage
 
                     
 
-                    foreach(Button button in mainMenuButtons.ToList())
+                    foreach (Button button in mainMenuButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
                     }

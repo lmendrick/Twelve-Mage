@@ -30,6 +30,7 @@ namespace TwelveMage
         private const string healthPackFile = "medkit";
         private const string gunFile = "Spas_12";
         private const string fireballFile = "truefireball";
+        private const string flameSpriteSheetFile = "FlameSprites";
 
         // UI Textures
         private const string buttonImgFile = ""; // Placeholder for button sprite
@@ -74,6 +75,7 @@ namespace TwelveMage
             AddEntry("PlayerSheet", playerSheetFile);
             AddEntry("SpellSlotsOverlay", spellOverlayFile);
             AddEntry("ZombieSheet", zombieSheetFile);
+            AddEntry("FlameSheet", flameSpriteSheetFile);
         }
 
         // Simplifies the constructor to make it more readable
