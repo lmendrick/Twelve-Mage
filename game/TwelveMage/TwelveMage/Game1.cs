@@ -39,7 +39,7 @@ namespace TwelveMage
         private int flameHeight = 15;
         private Flame flame;
 
-        private BorderFlames borderFlames;
+        private BorderFlameManager borderFlames;
 
         private SpriteFont titleFont;
         private SpriteFont menuFont;
@@ -135,7 +135,7 @@ namespace TwelveMage
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(windowWidth / 2, windowHeight / 2, playerWidth, playerHeight);
-            player = new Player(playerRec, _textureLibrary, 100);
+            player = new Player(playerRec, _textureLibrary, 100, windowWidth, windowHeight);
             
             //created set of bullets
             bullets = new List<GameObject>();
@@ -161,7 +161,7 @@ namespace TwelveMage
             // Test flame object
             Rectangle fireRec = new Rectangle(15, 100, flameWidth, flameHeight);
             flame = new Flame(fireRec, _textureLibrary, 100);
-            borderFlames = new BorderFlames(_textureLibrary, windowWidth, windowHeight);
+            borderFlames = new BorderFlameManager(_textureLibrary, windowWidth, windowHeight);
             enemiesActive = true;
 
             creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont);

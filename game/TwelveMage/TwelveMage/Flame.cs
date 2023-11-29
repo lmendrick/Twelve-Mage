@@ -7,13 +7,14 @@ using System.Diagnostics;
 
 namespace TwelveMage
 {
+
     internal class Flame : GameObject
     {
         private TextureLibrary textureLibrary;
         private Texture2D flameSpriteSheet;
 
         // Animation
-        public int frame = 1;              // The current animation frame
+        private int frame;              // The current animation frame
         private double timeCounter;     // The amount of time that has passed
         private double fps;             // The speed of the animation
         private double timePerFrame;    // The amount of time (in fractional seconds) per frame
@@ -25,7 +26,7 @@ namespace TwelveMage
         const int FireRectHeight = 15;     // The height of a single frame
         const int FireRectWidth = 16;      // The width of a single frame
 
-        private int randomFrame = 1;
+        private float scale;
 
         private Vector2 position;
 
@@ -35,10 +36,15 @@ namespace TwelveMage
             set { position = value; }
         }
 
-        public int RandomFrame
+        public int Frame
         {
-            get { return randomFrame;}
-            set { randomFrame = value; }
+            get { return frame;}
+            set { frame = value; }
+        }
+
+        public float Scale
+        {
+            get { return scale; }
         }
 
         public Flame(Rectangle rec, TextureLibrary textureLibrary, int health) : base (rec, textureLibrary, health)
@@ -50,13 +56,11 @@ namespace TwelveMage
             position = new Vector2 (rec.X, rec.Y);
 
             // Initialize animation data
-            
-            frame = randomFrame;
+            scale = 2f;
 
             fps = 10.0;                     // Will cycle through 10 walk frames per second
             timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
 
-            //randomFrame = 0;
         }
 
         public override void Update(GameTime gameTime, List<GameObject> bullets)
@@ -102,8 +106,44 @@ namespace TwelveMage
                 Color.DarkCyan,                            // - The color
                 0,                                      // - Rotation (none currently)
                 Vector2.Zero,                           // - Origin inside the image (top left)
-                2.0f,                                   // - Scale (100% - no change)
+                scale,                                   // - Scale (100% - no change)
                 SpriteEffects.None,                             // - Can be used to flip the image
+                0);                                     // - Layer depth (unused)
+        }
+
+        public void DrawHorizontal(SpriteBatch spriteBatch, SpriteEffects spriteEffects)
+        {
+            spriteBatch.Draw(
+                flameSpriteSheet,                            // - The texture to draw
+                position,                                    // - The location to draw on the screen
+                new Rectangle(                          // - The "source" rectangle
+                    frame * FireRectWidth,            // - This rectangle specifies
+                    FireRectOffsetY,                  //	 where "inside" the texture
+                    FireRectWidth,                    //   to get pixels (We don't want to
+                    FireRectHeight),                  //   draw the whole thing)
+                Color.DarkCyan,                            // - The color
+                0,                                      // - Rotation (none currently)
+                Vector2.Zero,                           // - Origin inside the image (top left)
+                scale,                                   // - Scale (100% - no change)
+                spriteEffects,                             // - Can be used to flip the image
+                0);                                     // - Layer depth (unused)
+        }
+
+        public void DrawVertical(SpriteBatch spriteBatch, SpriteEffects spriteEffects)
+        {
+            spriteBatch.Draw(
+                flameSpriteSheet,                            // - The texture to draw
+                position,                                    // - The location to draw on the screen
+                new Rectangle(                          // - The "source" rectangle
+                    frame * FireRectWidth,            // - This rectangle specifies
+                    FireRectOffsetY,                  //	 where "inside" the texture
+                    FireRectWidth,                    //   to get pixels (We don't want to
+                    FireRectHeight),                  //   draw the whole thing)
+                Color.DarkCyan,                            // - The color
+                MathHelper.ToRadians(90f),                                      // - Rotation (none currently)
+                Vector2.Zero,                           // - Origin inside the image (top left)
+                scale,                                   // - Scale (100% - no change)
+                spriteEffects,                             // - Can be used to flip the image
                 0);                                     // - Layer depth (unused)
         }
     }

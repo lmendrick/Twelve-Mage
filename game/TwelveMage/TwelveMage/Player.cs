@@ -113,8 +113,10 @@ namespace TwelveMage
         private double invulnerableTimer = 0;
         private double invulnerableDuration = 1.0;
 
+        // Window border wrapping
         private double wrapTimer = 0.25;
         private bool hasWrapped = false;
+        private BorderFlameManager borderFlameManager;
 
         // Note: When a spell is used, its CooldownDuration will be added to its timer.
         //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
@@ -205,7 +207,7 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        public Player(Rectangle rec, TextureLibrary textureLibrary, int health) : base (rec, textureLibrary, health)
+        public Player(Rectangle rec, TextureLibrary textureLibrary, int health, int windowWidth, int windowHeight) : base (rec, textureLibrary, health)
         {
             _textureLibrary = textureLibrary;
             texture = textureLibrary.GrabTexture("PlayerSheet"); // Wizard spritesheet
@@ -235,6 +237,11 @@ namespace TwelveMage
             // Initialize animation data
             fps = 10.0;                     // Will cycle through 10 walk frames per second
             timePerFrame = 1.0 / fps;       // Time per frame = amount of time in a single walk image
+
+
+
+            // Initialize flame manager for going offscreen (visual feedback)
+            borderFlameManager = new BorderFlameManager(textureLibrary, windowWidth, windowHeight);
         }
         #endregion
 
@@ -252,7 +259,7 @@ namespace TwelveMage
 
             currentKB = Keyboard.GetState();
             mState = Mouse.GetState();
-
+            borderFlameManager.Update(gameTime);
 
             #region Input Processing
 
@@ -491,6 +498,8 @@ namespace TwelveMage
 
             // Draw Spells
             DrawSpellSlots(spriteBatch);
+
+            borderFlameManager.Draw(spriteBatch);
         }
 
         /// <summary>
@@ -825,11 +834,12 @@ namespace TwelveMage
             if (rec.Bottom < 0)
             {
                 Position.Y = windowHeight;
-
+                borderFlameManager.State = FlameState.Top;
                 // Damages player if they move off the screen (wrap to other side)
                 // Avoids player taking double damage if they wrap from a corner (uses wrapTimer)
                 if (!hasWrapped)
                 {
+                    
                     hasWrapped = true;
                     health -= 10;
                 }
