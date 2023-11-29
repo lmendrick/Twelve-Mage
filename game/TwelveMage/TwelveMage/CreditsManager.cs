@@ -39,6 +39,14 @@ namespace TwelveMage
 
         public void Draw(SpriteBatch spriteBatch)
         {
+            /* Still need credits for:
+             * Fireball sprite
+             * Medkit sprite (maybe?)
+             * Zombie sprites
+             *      By: Cuddlebug
+             *      Link: https://cuddle-bug.itch.io/apocalypse
+             */
+
             // Title
             spriteBatch.DrawString(
                 titleFont,
