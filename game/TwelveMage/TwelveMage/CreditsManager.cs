@@ -60,8 +60,11 @@ namespace TwelveMage
                 "\nChloe Hall" +
                 "\nAnthony Maldonado" +
                 "\nLucas Mendrick",
-                new Vector2(((windowWidth / 2)) - (titleFont.MeasureString(
-                "Made By").X / 2), (scrollLocY + ySpacing * 2)),
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Benjamin Fawley" +
+                "\nChloe Hall" +
+                "\nAnthony Maldonado" +
+                "\nLucas Mendrick").X / 2), (scrollLocY + ySpacing * 2)),
                 Color.Yellow);
 
             // Assets
@@ -99,6 +102,66 @@ namespace TwelveMage
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
                 "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 10)),
+                Color.Yellow);
+
+            // UI Keys
+            spriteBatch.DrawString(
+                smallFont,
+                "UI Keys by Gerald Burke" +
+                "\ngerald-burke.itch.io",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 12)),
+                Color.Yellow);
+
+            // Spell Icons
+            spriteBatch.DrawString(
+                smallFont,
+                "Spell Icons by Aleksandr Makarov" +
+                "\niknowkingrabbit.itch.io",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 14)),
+                Color.Yellow);
+
+            // Spell UI Frames
+            spriteBatch.DrawString(
+                smallFont,
+                "Spell UI Frames by Batuhan Karagol" +
+                "\nandelrodis.itch.io",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 16)),
+                Color.Yellow);
+
+            // Health Bars
+            spriteBatch.DrawString(
+                smallFont,
+                "Health Bars by Cethiel" +
+                "\nopengameart.org/users/cethiel",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 18)),
+                Color.Yellow);
+
+            // Flame Sprites
+            spriteBatch.DrawString(
+                smallFont,
+                "Flame Sprites by Max1Truc" +
+                "\nmax1truc.itch.io",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 20)),
+                Color.Yellow);
+
+            // Title Font
+            spriteBatch.DrawString(
+                smallFont,
+                "Alagard Font by Pix3M" +
+                "\ndeviantart.com/pix3m",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 22)),
                 Color.Yellow);
         }
 
