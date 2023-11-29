@@ -113,6 +113,9 @@ namespace TwelveMage
         private double invulnerableTimer = 0;
         private double invulnerableDuration = 1.0;
 
+        private double wrapTimer = 0.25;
+        private bool hasWrapped = false;
+
         // Note: When a spell is used, its CooldownDuration will be added to its timer.
         //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
         //       For any spell with a lasting effect, it will be in effect when its Timer is >= CooldownDuration - EffectDuration
@@ -803,25 +806,63 @@ namespace TwelveMage
             rec.Y = (int)(Position.Y);
 
             #region Handle Player Moving Offscreen
+
+            // Once the player goes off the screen start the timer
+            if (hasWrapped)
+            {
+                wrapTimer -= gameTime.ElapsedGameTime.TotalSeconds;
+
+            }
+
+            // Once the timer reaches zero, reset the timer and allow the player to be damaged again
+            if (wrapTimer <= 0)
+            {
+                hasWrapped = false;
+                wrapTimer = 0.25;
+            }
+
             // Check if player moves past top of window and wrap to bottom
             if (rec.Bottom < 0)
             {
                 Position.Y = windowHeight;
+
+                // Damages player if they move off the screen (wrap to other side)
+                // Avoids player taking double damage if they wrap from a corner (uses wrapTimer)
+                if (!hasWrapped)
+                {
+                    hasWrapped = true;
+                    health -= 10;
+                }
             }
             // Check if player moves past bottom of window and wrap to top
             if (rec.Top > windowHeight)
             {
                 Position.Y = 0;
+                if (!hasWrapped)
+                {
+                    hasWrapped = true;
+                    health -= 10;
+                }
             }
             // Check if player moves past right of window and wrap to left
             if (rec.Left > windowWidth)
             {
                 Position.X = 0;
+                if (!hasWrapped)
+                {
+                    hasWrapped = true;
+                    health -= 10;
+                }
             }
             // Check if player moves past left of window and wrap to right
             if (rec.Right < 0)
             {
                 Position.X = windowWidth;
+                if (!hasWrapped)
+                {
+                    hasWrapped = true;
+                    health -= 10;
+                }
             }
             #endregion
             #endregion
