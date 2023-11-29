@@ -642,8 +642,8 @@ namespace TwelveMage
                     // Main Menu display (Lucas)
 
                     // Test flame
-                    flame.Draw(_spriteBatch);
-                    borderFlames.Draw(_spriteBatch);
+                    /*flame.Draw(_spriteBatch);
+                    borderFlames.Draw(_spriteBatch);*/
 
                     // Title
                     _spriteBatch.DrawString(
@@ -758,6 +758,9 @@ namespace TwelveMage
                         new Vector2(0.75f * player.Health/100, 0.5f),  // Scale 
                         SpriteEffects.None,                         // Effects
                         0);                                         // Layer depth
+
+                    // Spells UI
+                    player.DrawSpellSlots(_spriteBatch);
 
                     break;
 

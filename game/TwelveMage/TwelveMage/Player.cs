@@ -496,9 +496,6 @@ namespace TwelveMage
             }
             #endregion
 
-            // Draw Spells
-            DrawSpellSlots(spriteBatch);
-
             borderFlameManager.Draw(spriteBatch);
         }
 
