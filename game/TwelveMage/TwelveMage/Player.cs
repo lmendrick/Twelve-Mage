@@ -209,8 +209,7 @@ namespace TwelveMage
         #region CONSTRUCTORS
         public Player(Rectangle rec, TextureLibrary textureLibrary, int health, int windowWidth, int windowHeight) : base (rec, textureLibrary, health)
         {
-            _textureLibrary = textureLibrary;
-            texture = textureLibrary.GrabTexture("PlayerSheet"); // Wizard spritesheet
+            texture = _textureLibrary.GrabTexture("PlayerSheet"); // Wizard spritesheet
             spell = new Spell(this);
             blinkTimer = 0;
             fireballTimer = 0;

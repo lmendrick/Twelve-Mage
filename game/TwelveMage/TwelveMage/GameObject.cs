@@ -24,14 +24,11 @@ internal abstract class GameObject
 
     public Vector2 Direction = new Vector2(4,4);
 
-    
     public float LinearVelocity = .5f;
-
 
     public float LifeSpan = 4f;
 
     public bool IsRemoved = false;
-
 
     public int damage = 20;
 

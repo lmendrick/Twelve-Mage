@@ -18,7 +18,7 @@ namespace TwelveMage
 
         public Zombie(Rectangle rec, TextureLibrary textureLibrary, int health, List<Enemy> enemies, Player player, Random rng) : base(rec, textureLibrary, health, enemies, player, rng)
         {
-
+            this.texture = _textureLibrary.GrabTexture("ZombieSheet");
         }
     }
 }

@@ -2,11 +2,6 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using System.Threading;
-using System.Threading.Tasks;
 
 
 namespace TwelveMage
@@ -40,7 +35,7 @@ namespace TwelveMage
 
         #region FIELDS
         private const int MAX_Health = 200;
-        private int damage;
+        private int damage = 10;
         private List<Enemy> enemies;
         private bool hasHealthpack;
 

@@ -8,7 +8,21 @@ using System.Linq;
 /*
  * Chloe Hall
  * Twelve-Mage
+ * 
  * This class acts as a unified place to store textures.
+ * It's built around a Dictionary of string keys and Texture2D data, such that any texture the program uses can be quickly retrieved.
+ * TextureLibrary is meant to be used as a singleton, and passed to any object that 1.) has a sprite of its own, or 2.) creates objects with sprites.
+ * 
+ * The primary difference in functionality from a standard Dictionary, is that TextureLibrary has a fail-state "missing" texture that is returned
+ * when a requested entry does not exist.
+ * 
+ * To add a new texture:
+ *  1.) Add it to the content folder
+ *  2.) Build it with Content.mgcb
+ *  3.) Add the texture in the constructor as an AddEntry(Key, Filename) call.
+ *      * Please put them under the correct sub-heading, and keep each subheading in alphabetical order!
+ *      * If the thing you're adding doesn't match any subheading, feel free to add a new one!
+ *  4.) Use TextureLibrary.GrabTexture() with the key you assigned the texture, and assign the retrieved texture to a local Texture2D reference.
  */
 namespace TwelveMage
 {
@@ -16,38 +30,8 @@ namespace TwelveMage
     {
         private readonly Dictionary<string, Texture2D> texturesDict = new Dictionary<string, Texture2D>(); // Dictionary of every texture
         private readonly ContentManager contentManager; // ContentManager to load textures
-        public readonly Texture2D DefaultTexture; // Default texture in the case of a failed GrabTexture.
+        public readonly Texture2D DefaultTexture; // Default texture in the case of a failed GrabTexture. Can also be accessed publicly.
 
-        // Constant file names for every texture, for easy editing later. To be used with Content.LoadContent.
-
-        // Characters
-        private const string playerSheetFile = "CharacterSheet";
-        private const string zombieSheetFile = "ZombieWalkSheet";
-        private const string corpseFile = "corpse-back";
-
-        // Non-Character Game Objects
-        private const string bulletFile = "bullet2";
-        private const string healthPackFile = "medkit";
-        private const string gunFile = "Spas_12";
-        private const string fireballFile = "truefireball";
-        private const string flameSpriteSheetFile = "FlameSprites";
-
-        // UI Textures
-        private const string buttonImgFile = ""; // Placeholder for button sprite
-        private const string blinkSlotFile = "BlinkSpellSlot";
-        private const string fireballSlotFile = "FireballSpellSlot";
-        private const string freezeSlotFile = "FreezeSpellSlot";
-        private const string hasteSlotFile = "HasteSpellSlot";
-        private const string spellOverlayFile = "SpellSlotOverlay";
-        private const string healthBarFile = "HB_1";
-
-        // Tilesets
-        private const string flowersTilesetFile = "FlowersTileset";
-        private const string grassTilesetFile = "GrassTileset";
-        private const string horizontalHalfPaversFile = "HorizontalHalfPaversTileset"; // Say that five times fast
-        private const string miscTilesetFile = "MiscTileset";
-        private const string paversTilesetFile = "PaversTileset";
-        private const string verticalHalfPaversFile = "VerticalHalfPaversTileset";
 
         public TextureLibrary(ContentManager contentManager)
         {
@@ -55,30 +39,37 @@ namespace TwelveMage
             this.contentManager = contentManager;
             DefaultTexture = contentManager.Load<Texture2D>("MissingTexture");
 
-            // Add all texture entries
-            AddEntry("BlinkSpellSlot", blinkSlotFile);
-            AddEntry("Bullet", bulletFile);
-            AddEntry("ZombieCorpse", corpseFile);
-            AddEntry("Fireball", fireballFile);
-            AddEntry("FireballSpellSlot", fireballSlotFile);
-            AddEntry("FlowersTileset", flowersTilesetFile);
-            AddEntry("FreezeSpellSlot", freezeSlotFile);
-            AddEntry("GrassTileset", grassTilesetFile);
-            AddEntry("Gun", gunFile);
-            AddEntry("HalfPaversH", horizontalHalfPaversFile);
-            AddEntry("HalfPaversV", verticalHalfPaversFile);
-            AddEntry("HasteSpellSlot", hasteSlotFile);
-            AddEntry("HealthBar", healthBarFile);
-            AddEntry("HealthPickup", healthPackFile);
-            AddEntry("MiscTileset", miscTilesetFile);
-            AddEntry("PaversTileset", paversTilesetFile);
-            AddEntry("PlayerSheet", playerSheetFile);
-            AddEntry("SpellSlotsOverlay", spellOverlayFile);
-            AddEntry("ZombieSheet", zombieSheetFile);
-            AddEntry("FlameSheet", flameSpriteSheetFile);
+            // ADD NEW ENTRIES HERE:
+            // Characters
+            AddEntry("PlayerSheet", "CharacterSheet");
+            AddEntry("ZombieCorpse", "corpse-back");
+            AddEntry("ZombieSheet", "ZombieWalkSheet");
+
+            // Non-Character GameObjects
+            AddEntry("Bullet", "bullet2");
+            AddEntry("Fireball", "truefireball");
+            AddEntry("FlameSheet", "FlameSprites");
+            AddEntry("Gun", "Spas_12");
+            AddEntry("HealthPickup", "medkit");
+
+            // UI Textures
+            AddEntry("BlinkSpellSlot", "BlinkSpellSlot");
+            AddEntry("FireballSpellSlot", "FireballSpellSlot");
+            AddEntry("FreezeSpellSlot", "FreezeSpellSlot");
+            AddEntry("HasteSpellSlot", "HasteSpellSlot");
+            AddEntry("HealthBar", "HB_1");
+            AddEntry("SpellSlotsOverlay", "SpellSlotOverlay");
+
+            // Tilesets
+            AddEntry("FlowersTileset", "FlowersTileset");
+            AddEntry("GrassTileset", "GrassTileset");
+            AddEntry("HalfPaversH", "HorizontalHalfPaversTileset");
+            AddEntry("HalfPaversV", "VerticalHalfPaversTileset");
+            AddEntry("MiscTileset", "MiscTileset");
+            AddEntry("PaversTileset", "PaversTileset");
         }
 
-        // Simplifies the constructor to make it more readable
+        // Helper method to simplify loading new textures in the constructor
         private void AddEntry(string entryName, string fileName)
         {
             texturesDict.Add(entryName, contentManager.Load<Texture2D>(fileName));
