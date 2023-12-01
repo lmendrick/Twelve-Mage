@@ -35,11 +35,6 @@ namespace TwelveMage
         private int gunWidth = 73;
         private int gunHeight = 24;
 
-        private int flameWidth = 15;
-        private int flameHeight = 15;
-        private Flame flame;
-
-        private BorderFlameManager borderFlames;
 
         private SpriteFont titleFont;
         private SpriteFont menuFont;
@@ -158,10 +153,7 @@ namespace TwelveMage
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
             gun = new Gun(gunRec, _textureLibrary, 10, player);
 
-            // Test flame object
-            Rectangle fireRec = new Rectangle(15, 100, flameWidth, flameHeight);
-            flame = new Flame(fireRec, _textureLibrary, 100);
-            borderFlames = new BorderFlameManager(_textureLibrary, windowWidth, windowHeight);
+
             enemiesActive = true;
 
             creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont);
@@ -356,8 +348,6 @@ namespace TwelveMage
             switch (currentState)
             {
                 case GameState.Menu:
-                    flame.Update(gameTime, bullets);
-                    borderFlames.Update(gameTime);
                     foreach(Button button in mainMenuButtons.ToList())
                     {
                         button.Update();
@@ -641,9 +631,7 @@ namespace TwelveMage
 
                     // Main Menu display (Lucas)
 
-                    // Test flame
-                    /*flame.Draw(_spriteBatch);
-                    borderFlames.Draw(_spriteBatch);*/
+
 
                     // Title
                     _spriteBatch.DrawString(

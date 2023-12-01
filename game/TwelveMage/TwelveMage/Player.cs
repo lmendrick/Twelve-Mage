@@ -844,6 +844,7 @@ namespace TwelveMage
             if (rec.Top > windowHeight)
             {
                 Position.Y = 0;
+                borderFlameManager.State = FlameState.Bottom;
                 if (!hasWrapped)
                 {
                     hasWrapped = true;
@@ -854,6 +855,7 @@ namespace TwelveMage
             if (rec.Left > windowWidth)
             {
                 Position.X = 0;
+                borderFlameManager.State = FlameState.Right;
                 if (!hasWrapped)
                 {
                     hasWrapped = true;
@@ -864,6 +866,7 @@ namespace TwelveMage
             if (rec.Right < 0)
             {
                 Position.X = windowWidth;
+                borderFlameManager.State = FlameState.Left;
                 if (!hasWrapped)
                 {
                     hasWrapped = true;

@@ -17,10 +17,10 @@ namespace TwelveMage
     }
 
     internal class BorderFlameManager
-	{
-		private TextureLibrary textureLibrary;
-		private int windowWidth;
-		private int windowHeight;
+    {
+        private TextureLibrary textureLibrary;
+        private int windowWidth;
+        private int windowHeight;
 
         // Animation
         private int frame;              // The current animation frame
@@ -62,6 +62,9 @@ namespace TwelveMage
         private Vector2 startRightPosition;
         private Vector2 startLeftPosition;
 
+        private Vector2 moveDirection;
+        private float moveSpeed = 50f;
+
         public FlameState State
         {
             get { return currentState; }
@@ -69,10 +72,10 @@ namespace TwelveMage
         }
 
         public BorderFlameManager(TextureLibrary textureLibrary, int windowWidth, int windowHeight)
-		{
-			this.textureLibrary = textureLibrary;
-			this.windowWidth = windowWidth;
-			this.windowHeight = windowHeight;
+        {
+            this.textureLibrary = textureLibrary;
+            this.windowWidth = windowWidth;
+            this.windowHeight = windowHeight;
             numHorizSprites = windowWidth / FireRectWidth;
             numVertSprites = windowHeight / FireRectHeight;
 
@@ -86,15 +89,17 @@ namespace TwelveMage
 
             rng = new Random();
 
+            // Set starting and ending positions for each border animation
             startTopPosition = new Vector2(-20, -FireRectHeight * flame.Scale);
             startBottomPosition = new Vector2(-20, windowHeight + (FireRectHeight * flame.Scale));
             startRightPosition = new Vector2(windowWidth + (FireRectHeight * flame.Scale), -20);
             startLeftPosition = new Vector2(-FireRectHeight * flame.Scale, -20);
 
             extendedTopPosition = new Vector2(-20, 0);
-            extendedBottomPosition = new Vector2(0, windowHeight - (FireRectHeight * flame.Scale));
-            extendedRightPosition = new Vector2(windowWidth, 0);
-            extendedLeftPosition = new Vector2(FireRectHeight * flame.Scale, 0);
+            extendedBottomPosition = new Vector2(-20, windowHeight - (FireRectHeight * flame.Scale));
+            extendedRightPosition = new Vector2(windowWidth - ((FireRectHeight * flame.Scale)), -20);
+            extendedLeftPosition = new Vector2(FireRectHeight * flame.Scale, -20);
+
 
 
             // Fill top list with Flame objects
@@ -128,46 +133,39 @@ namespace TwelveMage
 
 
 
-            horizOffset = 0;
-
+            // Set positions of each flame
             foreach (Flame flame in topFlames)
             {
-                //flame.RandomFrame = rng.Next(1, 6);
-                flame.Position = extendedTopPosition;
-                //horizOffset += flame.Width;
+                flame.Position = startTopPosition;
                 startTopPosition.X += flame.Width;
                 extendedTopPosition.X += flame.Width;
-                
+
             }
-            horizOffset = 0;
+
             foreach (Flame flame in bottomFlames)
             {
-                //flame.RandomFrame = rng.Next(1, 6);
-                flame.Position = extendedBottomPosition;
-                //horizOffset += flame.Width;
+                flame.Position = startBottomPosition;
                 startBottomPosition.X += flame.Width;
                 extendedBottomPosition.X += flame.Width;
             }
 
-            vertOffset = 0;
+
             foreach (Flame flame in rightFlames)
             {
-                //flame.RandomFrame = rng.Next(1, 6);
-                flame.Position = extendedRightPosition;
-                //vertOffset += flame.Height;
+                flame.Position = startRightPosition;
                 startRightPosition.Y += flame.Height;
                 extendedRightPosition.Y += flame.Height;
             }
-            vertOffset = 0;
+
             foreach (Flame flame in leftFlames)
             {
-                //flame.RandomFrame = rng.Next(1, 6);
-                flame.Position = extendedLeftPosition;
-                //vertOffset += flame.Height;
+                flame.Position = startLeftPosition;
                 startLeftPosition.Y += flame.Height;
                 extendedLeftPosition.Y += flame.Height;
             }
-           // currentState = FlameState.Inactive;
+            currentState = FlameState.Inactive;
+            moveDirection = Vector2.UnitX;
+            //moveSpeed = 50f;
         }
 
         public void Update(GameTime gameTime)
@@ -180,114 +178,216 @@ namespace TwelveMage
                     break;
 
                 case FlameState.Top:
-                    foreach (Flame flame in topFlames)
-                    {
-                        Vector2 dir = startTopPosition - extendedTopPosition;
-                        dir.Normalize();
-                        dir *= 10;
-                        flame.UpdateAnimation(gameTime);
-                        if (flame.Position == extendedTopPosition)
-                        {
-                            dir = -dir;
-                        }
-                    }
+                    moveDirection = Vector2.UnitY;
+                    UpdateFlameMovement(topFlames, gameTime, extendedTopPosition, startTopPosition);
                     break;
 
                 case FlameState.Bottom:
                     foreach (Flame flame in bottomFlames)
                     {
+                        moveDirection = Vector2.UnitY * new Vector2(0, -1);
                         flame.UpdateAnimation(gameTime);
+                        UpdateFlameMovement(bottomFlames, gameTime, extendedBottomPosition, startBottomPosition);
                     }
                     break;
 
                 case FlameState.Right:
                     foreach (Flame flame in rightFlames)
                     {
+                        moveDirection = Vector2.UnitX * new Vector2(-1, 0);
                         flame.UpdateAnimation(gameTime);
+                        UpdateFlameMovement(rightFlames, gameTime, extendedRightPosition, startRightPosition);
                     }
                     break;
 
                 case FlameState.Left:
                     foreach (Flame flame in leftFlames)
                     {
+                        moveDirection = Vector2.UnitX;
                         flame.UpdateAnimation(gameTime);
+                        UpdateFlameMovement(leftFlames, gameTime, extendedLeftPosition, startLeftPosition);
                     }
                     break;
-            }
-
-
-            foreach (Flame flame in bottomFlames)
-            {
-                flame.UpdateAnimation(gameTime);
-            }
-            foreach (Flame flame in rightFlames)
-            {
-                flame.UpdateAnimation(gameTime);
-            }
-            foreach (Flame flame in topFlames)
-            {
-                flame.UpdateAnimation(gameTime);
-            }
-            foreach (Flame flame in leftFlames)
-            {
-                flame.UpdateAnimation(gameTime);
             }
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
 
-            //switch (currentState)
-            //{
-            //    case FlameState.Inactive:
-
-            //        break;
-
-            //    case FlameState.Top:
-            //        foreach (Flame flame in topFlames)
-            //        {
-            //            flame.DrawHorizontal(spriteBatch, SpriteEffects.FlipVertically);
-            //        }
-            //        break;
-
-            //    case FlameState.Bottom:
-            //        foreach (Flame flame in bottomFlames)
-            //        {
-            //            flame.DrawHorizontal(spriteBatch, SpriteEffects.None);
-            //        }
-            //        break;
-
-            //    case FlameState.Right:
-            //        foreach (Flame flame in rightFlames)
-            //        {
-            //            flame.DrawVertical(spriteBatch, SpriteEffects.FlipVertically);
-            //        }
-            //        break;
-
-            //    case FlameState.Left:
-            //        foreach (Flame flame in leftFlames)
-            //        {
-            //            flame.DrawVertical(spriteBatch, SpriteEffects.None);
-            //        }
-            //        break;
-            //}
-            foreach (Flame flame in topFlames)
+            switch (currentState)
             {
-                flame.DrawHorizontal(spriteBatch, SpriteEffects.FlipVertically);
-            }
-            foreach (Flame flame in bottomFlames)
-            {
-                flame.DrawHorizontal(spriteBatch, SpriteEffects.None);
-            }
-            foreach (Flame flame in rightFlames)
-            {
-                flame.DrawVertical(spriteBatch, SpriteEffects.FlipVertically);
-            }
-            foreach (Flame flame in leftFlames)
-            {
-                flame.DrawVertical(spriteBatch, SpriteEffects.None);
+                case FlameState.Inactive:
+
+                    break;
+
+                case FlameState.Top:
+                    foreach (Flame flame in topFlames)
+                    {
+                        flame.DrawHorizontal(spriteBatch, SpriteEffects.FlipVertically);
+                    }
+                    break;
+
+                case FlameState.Bottom:
+                    foreach (Flame flame in bottomFlames)
+                    {
+                        flame.DrawHorizontal(spriteBatch, SpriteEffects.None);
+                    }
+                    break;
+
+                case FlameState.Right:
+                    foreach (Flame flame in rightFlames)
+                    {
+                        flame.DrawVertical(spriteBatch, SpriteEffects.FlipVertically);
+                    }
+                    break;
+
+                case FlameState.Left:
+                    foreach (Flame flame in leftFlames)
+                    {
+                        flame.DrawVertical(spriteBatch, SpriteEffects.None);
+                    }
+                    break;
             }
         }
 
+        private void UpdateFlameMovement(List<Flame> flames, GameTime gameTime, Vector2 extendedPosition, Vector2 startPosition)
+        {
+
+            foreach (Flame flame in flames)
+            {
+                flame.UpdateAnimation(gameTime);
+
+                // Update flame position based on direction and speed
+                flame.Position += moveDirection * moveSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
+
+
+                // Top
+                if (currentState == FlameState.Top)
+                {
+                    // Check if fully extended
+                    if (moveDirection.Y > 0 && flame.Position.Y >= extendedPosition.Y)
+                    {
+                        // Reverse the direction on the Y-axis to move back
+                        moveDirection.Y = -moveDirection.Y;
+                    }
+                    // Flame is back at starting position, reset
+                    else if (moveDirection.Y < 0 && flame.Position.Y <= startPosition.Y)
+                    {
+
+                        Reset();
+                        currentState = FlameState.Inactive;
+                        return;
+
+                    }
+
+                }
+
+                // Bottom
+                else if (currentState == FlameState.Bottom)
+                {
+                    // Check if fully extended
+                    if (moveDirection.Y < 0 && flame.Position.Y <= extendedPosition.Y)
+                    {
+                        // Reverse the direction on the Y-axis to move back
+                        moveDirection.Y = -moveDirection.Y;
+                    }
+                    // Flame is back at starting position, reset
+                    else if (moveDirection.Y > 0 && flame.Position.Y >= startPosition.Y)
+                    {
+
+                        Reset();
+                        currentState = FlameState.Inactive;
+                        return;
+                    }
+                }
+
+                // Right
+                else if (currentState == FlameState.Right)
+                {
+                    // Check if fully extended
+                    if (moveDirection.X < 0 && flame.Position.X <= extendedPosition.X)
+                    {
+                        // Reverse the direction on the X-axis to move back
+                        moveDirection.X = -moveDirection.X;
+                    }
+
+                    // Flame is back at starting position, reset
+                    else if (moveDirection.X > 0 && flame.Position.X >= startPosition.X)
+                    {
+
+                        Reset();
+                        currentState = FlameState.Inactive;
+                        return;
+                    }
+                }
+
+                // Left
+                else if (currentState == FlameState.Left)
+                {
+                    // Check if fully extended
+                    if (moveDirection.X > 0 && flame.Position.X >= extendedPosition.X)
+                    {
+                        // Reverse the direction on the X-axis to move back
+                        moveDirection.X = -moveDirection.X;
+                    }
+
+                    // Flame is back at starting position, reset
+                    else if (moveDirection.X < 0 && flame.Position.X <= startPosition.X)
+                    {
+
+                        Reset();
+                        currentState = FlameState.Inactive;
+                        return;
+                    }
+                }
+
+            }
+
+        }
+
+        // There's probably a better way to do this....
+        private void Reset()
+        {
+            startTopPosition = new Vector2(-20, -FireRectHeight * flame.Scale);
+            startBottomPosition = new Vector2(-20, windowHeight + (FireRectHeight * flame.Scale));
+            startRightPosition = new Vector2(windowWidth + (FireRectHeight * flame.Scale), -20);
+            startLeftPosition = new Vector2(-FireRectHeight * flame.Scale, -20);
+
+            extendedTopPosition = new Vector2(-20, 0);
+            extendedBottomPosition = new Vector2(-20, windowHeight - (FireRectHeight * flame.Scale));
+            extendedRightPosition = new Vector2(windowWidth - ((FireRectHeight * flame.Scale)), -20);
+            extendedLeftPosition = new Vector2(FireRectHeight * flame.Scale, -20);
+
+            // Set positions of each flame
+            foreach (Flame flame in topFlames)
+            {
+                flame.Position = startTopPosition;
+                startTopPosition.X += flame.Width;
+                extendedTopPosition.X += flame.Width;
+
+            }
+
+            foreach (Flame flame in bottomFlames)
+            {
+                flame.Position = startBottomPosition;
+                startBottomPosition.X += flame.Width;
+                extendedBottomPosition.X += flame.Width;
+            }
+
+
+            foreach (Flame flame in rightFlames)
+            {
+                flame.Position = startRightPosition;
+                startRightPosition.Y += flame.Height;
+                extendedRightPosition.Y += flame.Height;
+            }
+
+            foreach (Flame flame in leftFlames)
+            {
+                flame.Position = startLeftPosition;
+                startLeftPosition.Y += flame.Height;
+                extendedLeftPosition.Y += flame.Height;
+            }
+        }
     }
 }

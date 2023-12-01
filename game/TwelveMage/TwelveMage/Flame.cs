@@ -36,6 +36,17 @@ namespace TwelveMage
             set { position = value; }
         }
 
+        public float PositionX
+        {
+            get { return position.X; }
+            set { position.X = value; }
+        }
+        public float PositionY
+        {
+            get { return position.Y; }
+            set { position.Y = value; }
+        }
+
         public int Frame
         {
             get { return frame;}
