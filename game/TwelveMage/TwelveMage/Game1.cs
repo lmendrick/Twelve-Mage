@@ -853,6 +853,7 @@ namespace TwelveMage
         {
             player.WindowHeight = windowHeight;     // Reset window width and height so that player is centered correctly (Lucas)
             player.WindowWidth = windowWidth;
+            player.BorderFlameManager.Reset();      // Reset the border flame positions
             currentState = GameState.Game; // Set GameState
             wave = 1; // Set to wave 1
             score = 0; // Reset score
@@ -891,6 +892,7 @@ namespace TwelveMage
         {
             // Does all GameObject-related saving
             deadEnemies.Clear();
+            player.BorderFlameManager.Reset(); // Reset border flame positions
             fileManager.LoadGameObjects(player, enemies, summoners, healthPickups, spawners);
             player.OverwriteSpellData(fileManager.LoadSpells());
             int[] stats = fileManager.LoadStats();

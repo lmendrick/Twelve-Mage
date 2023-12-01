@@ -2,7 +2,16 @@
 using Microsoft.Xna.Framework.Graphics;
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+
+
+/*
+ * Lucas Mendrick
+ * Twelve Mage
+ * This class creates a list of Flame objects for each border (4 in total)
+ * The flames are "animated" to extend and then retract everytime the player
+ * wraps (moves offscreen)
+ * Intended to provide visual feedback for the player being damaged by wrapping.
+ */
 
 namespace TwelveMage
 {
@@ -22,29 +31,23 @@ namespace TwelveMage
         private int windowWidth;
         private int windowHeight;
 
-        // Animation
-        private int frame;              // The current animation frame
-        private double timeCounter;     // The amount of time that has passed
-        private double fps;             // The speed of the animation
-        private double timePerFrame;    // The amount of time (in fractional seconds) per frame
 
-        // Constants for "source" rectangle (inside the image)
-        const int FireFrameCount = 6;       // The number of frames in the animation
-        //const int WizardRectOffsetY = 36;   // How far down in the image are the frames?
-        //const int WizardRectOffsetX = 4;
-        const int FireRectHeight = 15;     // The height of a single frame
-        const int FireRectWidth = 16;      // The width of a single frame
+        const int FireRectHeight = 15;     
+        const int FireRectWidth = 16;      
 
-        private int numHorizSprites;
-        private int numVertSprites;
+        // Number of sprites needed to span the top and bottom border
+        private int numXSprites;
+        // Number of sprites needed to span the right and left border
+        private int numYSprites;
+
+        // Extra length to the starting position of each "wall" of flames so they start off screen 
+        private int borderPadding = -30;
 
         private List<Flame> topFlames;
         private List<Flame> bottomFlames;
         private List<Flame> rightFlames;
         private List<Flame> leftFlames;
 
-        private int horizOffset;
-        private int vertOffset;
 
         private Random rng;
 
@@ -52,18 +55,22 @@ namespace TwelveMage
 
         private FlameState currentState;
 
+        // Position for each flame when fully extended
         private Vector2 extendedTopPosition;
         private Vector2 extendedBottomPosition;
         private Vector2 extendedRightPosition;
         private Vector2 extendedLeftPosition;
 
+        // Starting position for each flame
         private Vector2 startTopPosition;
         private Vector2 startBottomPosition;
         private Vector2 startRightPosition;
         private Vector2 startLeftPosition;
 
         private Vector2 moveDirection;
-        private float moveSpeed = 50f;
+
+        // Speed at which the flames extend and retract
+        private float moveSpeed = 100f;
 
         public FlameState State
         {
@@ -76,9 +83,12 @@ namespace TwelveMage
             this.textureLibrary = textureLibrary;
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
-            numHorizSprites = windowWidth / FireRectWidth;
-            numVertSprites = windowHeight / FireRectHeight;
 
+            // Calculate number of sprites needed for each list, and add a couple more to make sure the full border is spanned
+            numXSprites = (windowWidth / FireRectWidth) + 2;
+            numYSprites = (windowHeight / FireRectHeight) + 2;
+
+            // Default rectangle and flame object
             Rectangle fireRec = new Rectangle(15, 100, FireRectWidth, FireRectHeight);
             flame = new Flame(fireRec, textureLibrary, 100);
 
@@ -87,44 +97,35 @@ namespace TwelveMage
             rightFlames = new List<Flame>();
             leftFlames = new List<Flame>();
 
+            // Random to make flame animations dynamic
             rng = new Random();
 
-            // Set starting and ending positions for each border animation
-            startTopPosition = new Vector2(-20, -FireRectHeight * flame.Scale);
-            startBottomPosition = new Vector2(-20, windowHeight + (FireRectHeight * flame.Scale));
-            startRightPosition = new Vector2(windowWidth + (FireRectHeight * flame.Scale), -20);
-            startLeftPosition = new Vector2(-FireRectHeight * flame.Scale, -20);
-
-            extendedTopPosition = new Vector2(-20, 0);
-            extendedBottomPosition = new Vector2(-20, windowHeight - (FireRectHeight * flame.Scale));
-            extendedRightPosition = new Vector2(windowWidth - ((FireRectHeight * flame.Scale)), -20);
-            extendedLeftPosition = new Vector2(FireRectHeight * flame.Scale, -20);
-
+            
 
 
             // Fill top list with Flame objects
-            for (int i = 0; i < numHorizSprites + 1; i++)
+            for (int i = 0; i < numXSprites; i++)
             {
                 Flame newFlame = new Flame(fireRec, textureLibrary, 100);
                 newFlame.Frame = rng.Next(1, 6);                        // Set random starting frame to make flames appear dynamic
                 topFlames.Add(newFlame);
             }
             // Fill bottom list with Flame objects
-            for (int i = 0; i < numHorizSprites + 1; i++)
+            for (int i = 0; i < numXSprites; i++)
             {
                 Flame newFlame = new Flame(fireRec, textureLibrary, 100);
                 newFlame.Frame = rng.Next(1, 6);                        // Set random starting frame to make flames appear dynamic
                 bottomFlames.Add(newFlame);
             }
             // Fill right list with Flame objects
-            for (int i = 0; i < numVertSprites + 1; i++)
+            for (int i = 0; i < numYSprites; i++)
             {
                 Flame newFlame = new Flame(fireRec, textureLibrary, 100);
                 newFlame.Frame = rng.Next(1, 6);
                 rightFlames.Add(newFlame);
             }
             // Fill left list with Flame objects
-            for (int i = 0; i < numVertSprites + 1; i++)
+            for (int i = 0; i < numYSprites; i++)
             {
                 Flame newFlame = new Flame(fireRec, textureLibrary, 100);
                 newFlame.Frame = rng.Next(1, 6);
@@ -132,40 +133,8 @@ namespace TwelveMage
             }
 
 
-
-            // Set positions of each flame
-            foreach (Flame flame in topFlames)
-            {
-                flame.Position = startTopPosition;
-                startTopPosition.X += flame.Width;
-                extendedTopPosition.X += flame.Width;
-
-            }
-
-            foreach (Flame flame in bottomFlames)
-            {
-                flame.Position = startBottomPosition;
-                startBottomPosition.X += flame.Width;
-                extendedBottomPosition.X += flame.Width;
-            }
-
-
-            foreach (Flame flame in rightFlames)
-            {
-                flame.Position = startRightPosition;
-                startRightPosition.Y += flame.Height;
-                extendedRightPosition.Y += flame.Height;
-            }
-
-            foreach (Flame flame in leftFlames)
-            {
-                flame.Position = startLeftPosition;
-                startLeftPosition.Y += flame.Height;
-                extendedLeftPosition.Y += flame.Height;
-            }
-            currentState = FlameState.Inactive;
-            moveDirection = Vector2.UnitX;
-            //moveSpeed = 50f;
+            // Set each flame's position to default values and set state to inactive
+            Reset();
         }
 
         public void Update(GameTime gameTime)
@@ -174,87 +143,115 @@ namespace TwelveMage
             switch (currentState)
             {
                 case FlameState.Inactive:
-
+                    // Do nothing
                     break;
 
+                // TOP
                 case FlameState.Top:
+
+                    // Positive Y direction (flames extend down)
                     moveDirection = Vector2.UnitY;
                     UpdateFlameMovement(topFlames, gameTime, extendedTopPosition, startTopPosition);
+
                     break;
 
+                // BOTTOM
                 case FlameState.Bottom:
-                    foreach (Flame flame in bottomFlames)
-                    {
-                        moveDirection = Vector2.UnitY * new Vector2(0, -1);
-                        flame.UpdateAnimation(gameTime);
-                        UpdateFlameMovement(bottomFlames, gameTime, extendedBottomPosition, startBottomPosition);
-                    }
+
+                    // Negative Y direction (flames extend up)
+                    moveDirection = Vector2.UnitY * new Vector2(0, -1);
+                    UpdateFlameMovement(bottomFlames, gameTime, extendedBottomPosition, startBottomPosition);
+
                     break;
 
+                // RIGHT
                 case FlameState.Right:
-                    foreach (Flame flame in rightFlames)
-                    {
-                        moveDirection = Vector2.UnitX * new Vector2(-1, 0);
-                        flame.UpdateAnimation(gameTime);
-                        UpdateFlameMovement(rightFlames, gameTime, extendedRightPosition, startRightPosition);
-                    }
+
+                    // Negative X direction (flames extend left)
+                    moveDirection = Vector2.UnitX * new Vector2(-1, 0);
+                    UpdateFlameMovement(rightFlames, gameTime, extendedRightPosition, startRightPosition);
+
                     break;
 
+                // LEFT
                 case FlameState.Left:
-                    foreach (Flame flame in leftFlames)
-                    {
-                        moveDirection = Vector2.UnitX;
-                        flame.UpdateAnimation(gameTime);
-                        UpdateFlameMovement(leftFlames, gameTime, extendedLeftPosition, startLeftPosition);
-                    }
+
+                    // Positive X direction (flames extend right)
+                    moveDirection = Vector2.UnitX;
+                    UpdateFlameMovement(leftFlames, gameTime, extendedLeftPosition, startLeftPosition);
+
                     break;
             }
         }
 
+        /// <summary>
+        /// Draws each flame in the list depending on current state
+        /// </summary>
+        /// <param name="spriteBatch"></param>
         public void Draw(SpriteBatch spriteBatch)
         {
 
             switch (currentState)
             {
                 case FlameState.Inactive:
-
+                    // Do nothing
                     break;
 
+                // TOP
                 case FlameState.Top:
                     foreach (Flame flame in topFlames)
-                    {
-                        flame.DrawHorizontal(spriteBatch, SpriteEffects.FlipVertically);
-                    }
-                    break;
-
-                case FlameState.Bottom:
-                    foreach (Flame flame in bottomFlames)
-                    {
-                        flame.DrawHorizontal(spriteBatch, SpriteEffects.None);
-                    }
-                    break;
-
-                case FlameState.Right:
-                    foreach (Flame flame in rightFlames)
                     {
                         flame.DrawVertical(spriteBatch, SpriteEffects.FlipVertically);
                     }
                     break;
 
+                // BOTTOM
+                case FlameState.Bottom:
+                    foreach (Flame flame in bottomFlames)
+                    {
+                        flame.DrawVertical(spriteBatch, SpriteEffects.None);
+                    }
+                    break;
+
+                // RIGHT
+                case FlameState.Right:
+                    foreach (Flame flame in rightFlames)
+                    {
+                        flame.DrawHorizontal(spriteBatch, SpriteEffects.FlipVertically);
+                    }
+                    break;
+
+                // LEFT
                 case FlameState.Left:
                     foreach (Flame flame in leftFlames)
                     {
-                        flame.DrawVertical(spriteBatch, SpriteEffects.None);
+                        flame.DrawHorizontal(spriteBatch, SpriteEffects.None);
                     }
                     break;
             }
         }
 
+        /// <summary>
+        /// "Animate" flames to extend and then retract.
+        /// </summary>
+        /// <param name="flames">
+        /// The list of flames for the border
+        /// </param>
+        /// <param name="gameTime">
+        /// Update GameTime
+        /// </param>
+        /// <param name="extendedPosition">
+        /// The position at which the flames will start to retract
+        /// </param>
+        /// <param name="startPosition">
+        /// The starting position which the flames will return to
+        /// </param>
         private void UpdateFlameMovement(List<Flame> flames, GameTime gameTime, Vector2 extendedPosition, Vector2 startPosition)
         {
 
             foreach (Flame flame in flames)
             {
+                // Update animations
                 flame.UpdateAnimation(gameTime);
 
                 // Update flame position based on direction and speed
@@ -273,13 +270,9 @@ namespace TwelveMage
                     // Flame is back at starting position, reset
                     else if (moveDirection.Y < 0 && flame.Position.Y <= startPosition.Y)
                     {
-
                         Reset();
-                        currentState = FlameState.Inactive;
                         return;
-
                     }
-
                 }
 
                 // Bottom
@@ -294,9 +287,7 @@ namespace TwelveMage
                     // Flame is back at starting position, reset
                     else if (moveDirection.Y > 0 && flame.Position.Y >= startPosition.Y)
                     {
-
                         Reset();
-                        currentState = FlameState.Inactive;
                         return;
                     }
                 }
@@ -314,9 +305,7 @@ namespace TwelveMage
                     // Flame is back at starting position, reset
                     else if (moveDirection.X > 0 && flame.Position.X >= startPosition.X)
                     {
-
                         Reset();
-                        currentState = FlameState.Inactive;
                         return;
                     }
                 }
@@ -334,31 +323,34 @@ namespace TwelveMage
                     // Flame is back at starting position, reset
                     else if (moveDirection.X < 0 && flame.Position.X <= startPosition.X)
                     {
-
                         Reset();
-                        currentState = FlameState.Inactive;
                         return;
                     }
                 }
-
             }
-
         }
 
-        // There's probably a better way to do this....
-        private void Reset()
+        /// <summary>
+        /// Set FlameState to Inactive and reset each flames starting and extended positon.
+        /// </summary>
+        public void Reset()
         {
-            startTopPosition = new Vector2(-20, -FireRectHeight * flame.Scale);
-            startBottomPosition = new Vector2(-20, windowHeight + (FireRectHeight * flame.Scale));
-            startRightPosition = new Vector2(windowWidth + (FireRectHeight * flame.Scale), -20);
-            startLeftPosition = new Vector2(-FireRectHeight * flame.Scale, -20);
+            // Set to inactive
+            currentState = FlameState.Inactive;
 
-            extendedTopPosition = new Vector2(-20, 0);
-            extendedBottomPosition = new Vector2(-20, windowHeight - (FireRectHeight * flame.Scale));
-            extendedRightPosition = new Vector2(windowWidth - ((FireRectHeight * flame.Scale)), -20);
-            extendedLeftPosition = new Vector2(FireRectHeight * flame.Scale, -20);
+            // Set starting position for each list
+            startTopPosition = new Vector2(borderPadding, -FireRectHeight * flame.Scale);
+            startBottomPosition = new Vector2(borderPadding, windowHeight);
+            startRightPosition = new Vector2(windowWidth + (FireRectHeight * flame.Scale), borderPadding);
+            startLeftPosition = new Vector2(0, borderPadding);
 
-            // Set positions of each flame
+            // Set extended position for each list
+            extendedTopPosition = new Vector2(borderPadding, 0);
+            extendedBottomPosition = new Vector2(borderPadding, windowHeight - (FireRectHeight * flame.Scale));
+            extendedRightPosition = new Vector2(windowWidth, borderPadding);
+            extendedLeftPosition = new Vector2(FireRectHeight * flame.Scale, borderPadding);
+
+            // Set positions of each flame in the top list
             foreach (Flame flame in topFlames)
             {
                 flame.Position = startTopPosition;
@@ -367,6 +359,7 @@ namespace TwelveMage
 
             }
 
+            // Set positions of each flame in the bottom list
             foreach (Flame flame in bottomFlames)
             {
                 flame.Position = startBottomPosition;
@@ -374,7 +367,7 @@ namespace TwelveMage
                 extendedBottomPosition.X += flame.Width;
             }
 
-
+            // Set positions of each flame in the right list
             foreach (Flame flame in rightFlames)
             {
                 flame.Position = startRightPosition;
@@ -382,6 +375,7 @@ namespace TwelveMage
                 extendedRightPosition.Y += flame.Height;
             }
 
+            // Set positions of each flame in the left list
             foreach (Flame flame in leftFlames)
             {
                 flame.Position = startLeftPosition;

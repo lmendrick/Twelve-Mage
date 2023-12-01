@@ -3,10 +3,10 @@ using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework;
 using System;
 using TwelveMage;
-using System.Diagnostics;
+
 using System.Collections.Generic;
-using System.IO;
-using System.Reflection.PortableExecutable;
+
+
 
 
 /*
@@ -204,6 +204,12 @@ namespace TwelveMage
         }
 
         public double InvulnerableTimer { get; }
+
+        public BorderFlameManager BorderFlameManager
+        {
+            get { return borderFlameManager; }
+            set {  borderFlameManager = value; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -241,6 +247,7 @@ namespace TwelveMage
 
             // Initialize flame manager for going offscreen (visual feedback)
             borderFlameManager = new BorderFlameManager(textureLibrary, windowWidth, windowHeight);
+            borderFlameManager.Reset();
         }
         #endregion
 
@@ -830,7 +837,7 @@ namespace TwelveMage
             if (rec.Bottom < 0)
             {
                 Position.Y = windowHeight;
-                borderFlameManager.State = FlameState.Top;
+                borderFlameManager.State = FlameState.Bottom;
                 // Damages player if they move off the screen (wrap to other side)
                 // Avoids player taking double damage if they wrap from a corner (uses wrapTimer)
                 if (!hasWrapped)
@@ -844,7 +851,7 @@ namespace TwelveMage
             if (rec.Top > windowHeight)
             {
                 Position.Y = 0;
-                borderFlameManager.State = FlameState.Bottom;
+                borderFlameManager.State = FlameState.Top;
                 if (!hasWrapped)
                 {
                     hasWrapped = true;
@@ -855,7 +862,7 @@ namespace TwelveMage
             if (rec.Left > windowWidth)
             {
                 Position.X = 0;
-                borderFlameManager.State = FlameState.Right;
+                borderFlameManager.State = FlameState.Left;
                 if (!hasWrapped)
                 {
                     hasWrapped = true;
@@ -866,7 +873,7 @@ namespace TwelveMage
             if (rec.Right < 0)
             {
                 Position.X = windowWidth;
-                borderFlameManager.State = FlameState.Left;
+                borderFlameManager.State = FlameState.Right;
                 if (!hasWrapped)
                 {
                     hasWrapped = true;
