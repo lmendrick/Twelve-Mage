@@ -361,6 +361,10 @@ namespace TwelveMage
                     {
                         button.Update();
                     }
+                    if (creditsManager.IsEnded())
+                    {
+                        currentState = GameState.Menu;
+                    }
                     break;
 
                 case GameState.Game:

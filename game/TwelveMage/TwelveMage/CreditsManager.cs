@@ -21,6 +21,7 @@ namespace TwelveMage
         private float scrollLocY;
         private int ySpacing = 50;
         private float scrollSpeed = 25f;
+        private Vector2 endVector;
 
         public CreditsManager(int windowWidth, int windowHeight, SpriteFont titleFont, SpriteFont smallFont)
         {
@@ -28,23 +29,30 @@ namespace TwelveMage
             this.windowHeight = windowHeight;
             this.titleFont = titleFont;
             this.smallFont = smallFont;
+
+            Reset();
         }
 
+        /// <summary>
+        /// Updates the location of the credits based on scrollSpeed
+        /// </summary>
+        /// <param name="gameTime">
+        /// GameTime from main
+        /// </param>
         public void Update(GameTime gameTime)
         {
             scrollMultiplier -= scrollSpeed * (float)gameTime.ElapsedGameTime.TotalSeconds;
 
             scrollLocY = windowHeight + scrollMultiplier;
+
+            // Vector to check if the credits are over. Need to adjust integer based on position of last credit
+            endVector = new Vector2(0, (scrollLocY + ySpacing * 30));
         }
 
         public void Draw(SpriteBatch spriteBatch)
         {
             /* Still need credits for:
              * Fireball sprite
-             * Medkit sprite (maybe?)
-             * Zombie sprites
-             *      By: Cuddlebug
-             *      Link: https://cuddle-bug.itch.io/apocalypse
              */
 
             // Title
@@ -92,6 +100,16 @@ namespace TwelveMage
                 "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 6)),
                 Color.Yellow);
 
+            // Enemy Sprites
+            spriteBatch.DrawString(
+                smallFont,
+                "Enemy Sprites by Cuddlebug" +
+                "\ncuddle-bug.itch.io",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 8)),
+                Color.Yellow);
+
             // Tileset 
             spriteBatch.DrawString(
                 smallFont,
@@ -99,7 +117,7 @@ namespace TwelveMage
                 "\ncainos.itch.io",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 8)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 10)),
                 Color.Yellow);
 
             // Firearms
@@ -109,7 +127,7 @@ namespace TwelveMage
                 "\nivoryred.itch.io",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 10)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 12)),
                 Color.Yellow);
 
             // UI Keys
@@ -119,7 +137,7 @@ namespace TwelveMage
                 "\ngerald-burke.itch.io",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 12)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 14)),
                 Color.Yellow);
 
             // Spell Icons
@@ -129,7 +147,7 @@ namespace TwelveMage
                 "\niknowkingrabbit.itch.io",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 14)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 16)),
                 Color.Yellow);
 
             // Spell UI Frames
@@ -139,7 +157,7 @@ namespace TwelveMage
                 "\nandelrodis.itch.io",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 16)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 18)),
                 Color.Yellow);
 
             // Health Bars
@@ -149,7 +167,7 @@ namespace TwelveMage
                 "\nopengameart.org/users/cethiel",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 18)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 20)),
                 Color.Yellow);
 
             // Flame Sprites
@@ -159,7 +177,7 @@ namespace TwelveMage
                 "\nmax1truc.itch.io",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 20)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 22)),
                 Color.Yellow);
 
             // Title Font
@@ -169,14 +187,51 @@ namespace TwelveMage
                 "\ndeviantart.com/pix3m",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 22)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 24)),
                 Color.Yellow);
+
+            // End
+            spriteBatch.DrawString(
+                smallFont,
+                "Made for IGME 106-01 with Professor Bierre",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Made for IGME 106-01 with Professor Bierre").X / 2), (scrollLocY + ySpacing * 28)),
+                Color.Yellow);
+
+            spriteBatch.DrawString(
+                smallFont,
+                "Copyright 2023 Team Uninstallation Fee, All Rights Reserved",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Copyright 2023 Team Uninstallation Fee, All Rights Reserved").X / 2), (scrollLocY + ySpacing * 29)),
+                Color.Yellow);
+
+            
+            
         }
 
+        /// <summary>
+        /// Resets the location of all the credits.
+        /// Called whenever the credits button is clicked from the main menu.
+        /// </summary>
         public void Reset()
         {
-            //scrollLocY = windowHeight;
             scrollMultiplier = 0;
+        }
+
+        /// <summary>
+        /// Checks if the credits are over. Used in Game1 to return to main menu.
+        /// </summary>
+        /// <returns>
+        /// True if credits are over (endVector is past the top of the window)
+        /// Otherwise false.
+        /// </returns>
+        public bool IsEnded()
+        {
+            if (endVector.Y < 0)
+            {
+                return true;
+            }
+            return false;
         }
     }
 }
