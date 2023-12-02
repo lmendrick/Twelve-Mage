@@ -798,7 +798,7 @@ namespace TwelveMage
                     _spriteBatch.DrawString(
                         titleFont,
                         "Game Over",
-                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("GAME OVER").X / 2),
+                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("Game Over").X / 2),
                         75),
                         Color.DarkBlue);
 
