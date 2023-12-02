@@ -14,6 +14,7 @@ namespace TwelveMage
     internal class CreditsManager
     {
         private SpriteFont titleFont;
+        private SpriteFont medFont;
         private SpriteFont smallFont;
         private float scrollMultiplier;
         private int windowWidth;
@@ -23,11 +24,12 @@ namespace TwelveMage
         private float scrollSpeed = 25f;
         private Vector2 endVector;
 
-        public CreditsManager(int windowWidth, int windowHeight, SpriteFont titleFont, SpriteFont smallFont)
+        public CreditsManager(int windowWidth, int windowHeight, SpriteFont titleFont, SpriteFont medFont, SpriteFont smallFont)
         {
             this.windowWidth = windowWidth;
             this.windowHeight = windowHeight;
             this.titleFont = titleFont;
+            this.medFont = medFont;
             this.smallFont = smallFont;
 
             Reset();
@@ -64,9 +66,9 @@ namespace TwelveMage
 
             // Made By
             spriteBatch.DrawString(
-                titleFont,
+                medFont,
                 "Made By",
-                new Vector2(((windowWidth / 2)) - (titleFont.MeasureString("Made By").X / 2), (scrollLocY + ySpacing)),
+                new Vector2(((windowWidth / 2)) - (medFont.MeasureString("Made By").X / 2), (scrollLocY + ySpacing)),
                 Color.Blue);
 
             // Our names
@@ -85,9 +87,9 @@ namespace TwelveMage
 
             // Assets
             spriteBatch.DrawString(
-                titleFont,
+                medFont,
                 "Assets",
-                new Vector2(((windowWidth / 2)) - (titleFont.MeasureString("Assets").X / 2), (scrollLocY + ySpacing * 5)),
+                new Vector2(((windowWidth / 2)) - (medFont.MeasureString("Assets").X / 2), (scrollLocY + ySpacing * 5)),
                 Color.Blue);
 
             // Wizard Protagonist 

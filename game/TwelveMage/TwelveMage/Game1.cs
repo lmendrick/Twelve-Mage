@@ -37,6 +37,7 @@ namespace TwelveMage
 
 
         private SpriteFont titleFont;
+        private SpriteFont smallFont;
         private SpriteFont menuFont;
         private int windowWidth;
         private int windowHeight;
@@ -126,7 +127,9 @@ namespace TwelveMage
             // Load in fonts (Lucas)
             //titleFont = this.Content.Load<SpriteFont>("TitleFont");
             titleFont = this.Content.Load<SpriteFont>("AlagardFont");
-            menuFont = this.Content.Load<SpriteFont>("MenuFont");
+            menuFont = this.Content.Load<SpriteFont>("AlagardFontMed");
+            smallFont = this.Content.Load<SpriteFont>("AlagardFontSmall");
+
 
             // Instantiate player (Lucas)
             Rectangle playerRec = new Rectangle(windowWidth / 2, windowHeight / 2, playerWidth, playerHeight);
@@ -156,7 +159,7 @@ namespace TwelveMage
 
             enemiesActive = true;
 
-            creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont);
+            creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont, smallFont);
 
             // Instantiate single default enemy (Lucas)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
@@ -270,7 +273,7 @@ namespace TwelveMage
             _graphics.GraphicsDevice,
             new Rectangle(10, 10, buttonWidth / 2, buttonHeight / 2),
             "Credits",
-            menuFont,
+            smallFont,
             Color.DarkBlue));
             mainMenuButtons[2].OnButtonClick += this.Credits;
 
@@ -293,7 +296,7 @@ namespace TwelveMage
             _graphics.GraphicsDevice,
             new Rectangle(10, 10, buttonWidth / 2, buttonHeight / 2),
             "Menu",
-            menuFont,
+            smallFont,
             Color.DarkBlue));
             creditsButtons[0].OnButtonClick += this.MainMenu;
 
@@ -667,17 +670,17 @@ namespace TwelveMage
 
                     // Controls
                     _spriteBatch.DrawString(
-                        menuFont,
+                        smallFont,
                         "Instructions: Use WASD to move and click to shoot enemies.",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Instructions: Use WASD to move and click to shoot enemies.").X / 2),
+                        new Vector2((windowWidth / 2) - (smallFont.MeasureString("Instructions: Use WASD to move and click to shoot enemies.").X / 2),
                         ((windowHeight / 2) + 150)),
                         Color.Black);
 
                     // Instructions
                     _spriteBatch.DrawString(
-                        menuFont,
+                        smallFont,
                         "Survive as long as you can. If your health reaches 0, you lose.",
-                        new Vector2((windowWidth / 2) - (menuFont.MeasureString("Survive as long as you can. If your health reaches 0, you lose.").X / 2),
+                        new Vector2((windowWidth / 2) - (smallFont.MeasureString("Survive as long as you can. If your health reaches 0, you lose.").X / 2),
                         ((windowHeight / 2) + 175)),
                         Color.Black);
 
@@ -815,7 +818,7 @@ namespace TwelveMage
                     _spriteBatch.DrawString(
                         titleFont,
                         "Game Over",
-                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("GAME OVER").X / 2),
+                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("Game Over").X / 2),
                         75),
                         Color.DarkBlue);
 
