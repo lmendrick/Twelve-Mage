@@ -738,16 +738,16 @@ namespace TwelveMage
 
                     //Wave counter display
                     _spriteBatch.DrawString(
-                        menuFont,
+                        smallFont,
                         "Wave: " + wave + " Score: " + score,
                         new Vector2(10, 10),
                         Color.Black);
 
                     // Pause button (P) (Lucas)
                     _spriteBatch.DrawString(
-                        menuFont,
+                        smallFont,
                         "Pause (P)",
-                        new Vector2((windowWidth) - (2 * menuFont.MeasureString("Pause (P)").X / 2),
+                        new Vector2((windowWidth) - (2 * smallFont.MeasureString("Pause (P)").X / 2),
                         (10)),
                         Color.Black);
 
