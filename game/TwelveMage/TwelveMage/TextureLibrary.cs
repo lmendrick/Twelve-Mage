@@ -32,7 +32,6 @@ namespace TwelveMage
         private readonly ContentManager contentManager; // ContentManager to load textures
         public readonly Texture2D DefaultTexture; // Default texture in the case of a failed GrabTexture. Can also be accessed publicly.
 
-
         public TextureLibrary(ContentManager contentManager)
         {
             // Initialize the contentManager and fail-state default texture
@@ -42,6 +41,7 @@ namespace TwelveMage
             // ADD NEW ENTRIES HERE:
             // Characters
             AddEntry("PlayerSheet", "CharacterSheet");
+            AddEntry("PlayerSheet2", "GrayWizardSprite");
             AddEntry("ZombieCorpse", "corpse-back");
             AddEntry("ZombieSheet", "ZombieWalkSheet");
 

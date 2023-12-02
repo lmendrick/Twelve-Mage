@@ -42,9 +42,6 @@ namespace TwelveMage
         private Player player;
         #endregion
 
-        #region PROPERTIES
-        #endregion
-
         #region CONSTRUCTORS
         public FileManager(Player player, TextureLibrary textureLibrary, int windowHeight, int windowWidth, Random rng)
         {
@@ -86,8 +83,7 @@ namespace TwelveMage
                 // Write Enemy data
                 foreach(Enemy enemy in enemies)
                 {
-                    line = "";
-                    line += (int)enemy.Position.X + "," + (int)enemy.Position.Y + "," + enemy.Health; // Add basic data
+                    line = (int)enemy.Position.X + "," + (int)enemy.Position.Y + "," + enemy.Health; // Add basic data
 
                     switch(enemy) // Add enemy's type to the front of the line and write it
                     {
@@ -99,7 +95,7 @@ namespace TwelveMage
                             writer.WriteLine("Charger," + line);
                             break;
 
-                        default:
+                        default: // Default to Enemy
                         case Enemy:
                             writer.WriteLine("Enemy," + line);
                             break;
@@ -109,8 +105,7 @@ namespace TwelveMage
                 // Write HealthPickup data
                 foreach(HealthPickup healthPickup in healthPickups)
                 {
-                    line = "";
-                    line += "HealthPickup," + (int)healthPickup.Rec.X + "," + (int)healthPickup.Rec.Y + ","
+                    line = "HealthPickup," + (int)healthPickup.Rec.X + "," + (int)healthPickup.Rec.Y + ","
                         + healthPickup.Health + "," + healthPickup.Lifespan + "," + healthPickup.Age;
                     writer.WriteLine(line);
                 }

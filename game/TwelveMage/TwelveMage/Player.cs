@@ -58,11 +58,11 @@ namespace TwelveMage
         double timePerFrame;    // The amount of time (in fractional seconds) per frame
 
         // Constants for "source" rectangle (inside the image)
-        const int WalkFrameCount = 3;       // The number of frames in the animation
-        const int WizardRectOffsetY = 36;   // How far down in the image are the frames?
-        const int WizardRectOffsetX = 4;
-        const int WizardRectHeight = 30;     // The height of a single frame
-        const int WizardRectWidth = 34;      // The width of a single frame
+        const int WalkFrameCount = 6;       // The number of frames in the animation
+        const int WizardRectOffsetY = 0;   // How far down in the image are the frames?
+        const int WizardRectOffsetX = 0;
+        const int WizardRectHeight = 32;     // The height of a single frame
+        const int WizardRectWidth = 32;      // The width of a single frame
 
         // Move player with vector2
         private Vector2 dir;
@@ -215,7 +215,7 @@ namespace TwelveMage
         #region CONSTRUCTORS
         public Player(Rectangle rec, TextureLibrary textureLibrary, int health, int windowWidth, int windowHeight) : base (rec, textureLibrary, health)
         {
-            texture = _textureLibrary.GrabTexture("PlayerSheet"); // Wizard spritesheet
+            texture = _textureLibrary.GrabTexture("PlayerSheet2"); // Wizard spritesheet
             spell = new Spell(this);
             blinkTimer = 0;
             fireballTimer = 0;
@@ -447,7 +447,7 @@ namespace TwelveMage
             {
                 frame += 1;                     // Adjust the frame to the next image
 
-                if (frame > WalkFrameCount)     // Check the bounds - have we reached the end of walk cycle?
+                if (frame >= WalkFrameCount)     // Check the bounds - have we reached the end of walk cycle?
                     frame = 1;                  // Back to 1 (since 0 is the "standing" frame)
 
                 timeCounter -= timePerFrame;    // Remove the time we "used" - don't reset to 0
