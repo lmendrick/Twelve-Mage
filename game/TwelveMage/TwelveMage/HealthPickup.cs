@@ -8,6 +8,13 @@ using System.Threading.Tasks;
 
 namespace TwelveMage
 {
+    /*
+ * Ben Fawley
+ * Twelve-Mage
+ * Health pickup makes an off chance the enemy drops a health pack for the player
+ * 
+ * 
+ */
     internal class HealthPickup : GameObject
     {
         private Player player;

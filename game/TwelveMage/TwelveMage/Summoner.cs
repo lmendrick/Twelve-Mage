@@ -6,6 +6,14 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
+/*
+ * Ben Fawley
+ * Twelve-Mage
+ * Zombie summoner enemy
+ * Manages how this special zombie spawns in new zombies
+ * zombies spanwed in through summoner do not add score
+ * as to give that persistent annoyance feeling
+ */
 namespace TwelveMage
 {
     internal class Summoner : Enemy

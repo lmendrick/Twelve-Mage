@@ -7,6 +7,17 @@ using System.Text;
 using System.Threading.Tasks;
 
 
+/*
+ * Ben Fawley
+ * Twelve-Mage
+ * Zombie special type charger
+ * gives a relentless chase 
+ * hints at charging before bursting forward
+ * calculates player movement and rushes at them based on it
+ * 
+ * 
+ */
+
 namespace TwelveMage
 {
     internal class Charger : Enemy
