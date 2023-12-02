@@ -274,6 +274,18 @@ namespace TwelveMage
             Color.DarkBlue));
             mainMenuButtons[2].OnButtonClick += this.Credits;
 
+
+            // Exit Button
+            Button ExitButton = new Button(
+            _graphics.GraphicsDevice,
+            new Rectangle(710, 10, buttonWidth / 2, buttonHeight / 2),
+            "Quit",
+            menuFont,
+            Color.DarkBlue);
+            mainMenuButtons.Add(ExitButton);
+            mainMenuButtons[3].OnButtonClick += this.Exit;
+            
+
             // CREDITS BUTTONS
 
             // Return to Main Menu
@@ -305,6 +317,10 @@ namespace TwelveMage
             Color.DarkBlue));
             gameOverButtons[1].OnButtonClick += this.MainMenu;
 
+            //exit gameover
+            gameOverButtons.Add(ExitButton);
+            gameOverButtons[2].OnButtonClick += this.Exit;
+
             // PAUSE MENU BUTTONS
 
             // Resume button
@@ -324,6 +340,10 @@ namespace TwelveMage
             menuFont,                               
             Color.DarkBlue));
             pauseMenuButtons[1].OnButtonClick += this.Save;
+
+            //exit
+            pauseMenuButtons.Add(ExitButton);
+            pauseMenuButtons[2].OnButtonClick += this.Exit;
             #endregion
 
             // Load highest scores
