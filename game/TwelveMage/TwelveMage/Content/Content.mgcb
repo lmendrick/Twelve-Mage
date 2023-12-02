@@ -20,6 +20,20 @@
 /processorParam:TextureFormat=Compressed
 /build:AlagardFont.spritefont
 
+#begin AlagardFontMed.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:AlagardFontMed.spritefont
+
+#begin AlagardFontSmall.spritefont
+/importer:FontDescriptionImporter
+/processor:FontDescriptionProcessor
+/processorParam:PremultiplyAlpha=True
+/processorParam:TextureFormat=Compressed
+/build:AlagardFontSmall.spritefont
+
 #begin BlinkSpellSlot.png
 /importer:TextureImporter
 /processor:TextureProcessor
