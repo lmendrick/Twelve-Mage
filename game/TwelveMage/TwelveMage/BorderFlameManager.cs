@@ -13,6 +13,10 @@ using System.Collections.Generic;
  * Intended to provide visual feedback for the player being damaged by wrapping.
  */
 
+// Make flames stay at extended position longer
+// Make flames only appear near where player is instead of entire border?
+// Make flames "reach" out as you go towards them
+// Distance that flames are extended could be proportional to how close the player is to the border
 namespace TwelveMage
 {
 
