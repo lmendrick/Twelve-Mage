@@ -74,7 +74,7 @@ namespace TwelveMage
         private Vector2 moveDirection;
 
         // Speed at which the flames extend and retract
-        private float moveSpeed = 100f;
+        private float moveSpeed = 75f;
 
         public FlameState State
         {

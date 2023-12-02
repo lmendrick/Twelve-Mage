@@ -48,7 +48,7 @@ namespace TwelveMage
             scrollLocY = windowHeight + scrollMultiplier;
 
             // Vector to check if the credits are over. Need to adjust integer based on position of last credit
-            endVector = new Vector2(0, (scrollLocY + ySpacing * 30));
+            endVector = new Vector2(0, (scrollLocY + ySpacing * 32));
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -56,6 +56,13 @@ namespace TwelveMage
             /* Still need credits for:
              * Fireball sprite
              */
+
+            // Title Outline
+            spriteBatch.DrawString(
+                        titleFont,
+                        "Twelve Mage",
+                        new Vector2(((windowWidth / 2)) - (titleFont.MeasureString("Twelve Mage").X / 2) + 2, (scrollLocY - ySpacing) + 2),
+                        Color.DarkBlue);
 
             // Title
             spriteBatch.DrawString(
@@ -182,6 +189,16 @@ namespace TwelveMage
                 "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 22)),
                 Color.Yellow);
 
+            // Fireball Sprites
+            spriteBatch.DrawString(
+                smallFont,
+                "Fireball Sprites by Styloo" +
+                "\nstyloo.itch.io",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Wizard Protagonist by Penzilla" +
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 24)),
+                Color.Yellow);
+
             // Title Font
             spriteBatch.DrawString(
                 smallFont,
@@ -189,7 +206,7 @@ namespace TwelveMage
                 "\ndeviantart.com/pix3m",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Wizard Protagonist by Penzilla" +
-                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 24)),
+                "\npenzilla.itch.io").X / 2), (scrollLocY + ySpacing * 26)),
                 Color.Yellow);
 
             // End
@@ -197,14 +214,14 @@ namespace TwelveMage
                 smallFont,
                 "Made for IGME 106-01 with Professor Bierre",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
-                "Made for IGME 106-01 with Professor Bierre").X / 2), (scrollLocY + ySpacing * 28)),
+                "Made for IGME 106-01 with Professor Bierre").X / 2), (scrollLocY + ySpacing * 30)),
                 Color.Yellow);
 
             spriteBatch.DrawString(
                 smallFont,
                 "Copyright 2023 Team Uninstallation Fee, All Rights Reserved",
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
-                "Copyright 2023 Team Uninstallation Fee, All Rights Reserved").X / 2), (scrollLocY + ySpacing * 29)),
+                "Copyright 2023 Team Uninstallation Fee, All Rights Reserved").X / 2), (scrollLocY + ySpacing * 31)),
                 Color.Yellow);
 
             

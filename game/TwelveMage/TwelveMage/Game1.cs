@@ -39,6 +39,7 @@ namespace TwelveMage
         private SpriteFont titleFont;
         private SpriteFont smallFont;
         private SpriteFont menuFont;
+        private SpriteFont titleBorderFont;
         private int windowWidth;
         private int windowHeight;
         private bool isPaused;
@@ -283,7 +284,7 @@ namespace TwelveMage
             _graphics.GraphicsDevice,
             new Rectangle(710, 10, buttonWidth / 2, buttonHeight / 2),
             "Quit",
-            menuFont,
+            smallFont,
             Color.DarkBlue);
             mainMenuButtons.Add(ExitButton);
             mainMenuButtons[3].OnButtonClick += this.Exit;
@@ -658,7 +659,13 @@ namespace TwelveMage
 
                     // Main Menu display (Lucas)
 
-
+                    // Title Outline
+                    _spriteBatch.DrawString(
+                        titleFont,
+                        "Twelve Mage",
+                        new Vector2((windowWidth / 2) - (titleFont.MeasureString("Twelve Mage").X / 2) + 2,
+                        75 + 2),
+                        Color.DarkBlue);
 
                     // Title
                     _spriteBatch.DrawString(
@@ -667,6 +674,8 @@ namespace TwelveMage
                         new Vector2((windowWidth / 2) - (titleFont.MeasureString("Twelve Mage").X / 2),
                         75),
                         Color.Yellow);
+
+                    
 
                     // Controls
                     _spriteBatch.DrawString(
