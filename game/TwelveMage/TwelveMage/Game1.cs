@@ -445,7 +445,7 @@ namespace TwelveMage
                                 EndGame();
                             }
 
-                            // Heal player
+                            // Heal player to 100 (H)
                             if (SingleKeyPress(Keys.H, currentKBState))
                             {
                                 player.Health = 100;
