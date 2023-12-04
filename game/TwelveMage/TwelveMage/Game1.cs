@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 
+
 namespace TwelveMage
 {
     //Anthony Maldonado
@@ -79,6 +80,8 @@ namespace TwelveMage
 
         private CreditsManager creditsManager;
 
+        private bool cheatsActive;
+
         #endregion
 
         public Game1()
@@ -103,14 +106,13 @@ namespace TwelveMage
             buttonCenterX = (windowWidth / 2) - (buttonWidth / 2);
             buttonCenterY = (windowHeight / 2) - (buttonHeight / 2);
 
-            
-            
-
             wave = 1;
             waveIncrease = 3;
             score = 0;
             /*highScore = 0;
             highWave = 0;*/
+
+            cheatsActive = false;
 
             base.Initialize();
         }
@@ -372,6 +374,8 @@ namespace TwelveMage
             switch (currentState)
             {
                 case GameState.Menu:
+
+                    // Update menu buttons
                     foreach(Button button in mainMenuButtons.ToList())
                     {
                         button.Update();
@@ -380,11 +384,16 @@ namespace TwelveMage
 
                 case GameState.Credits:
 
+                    // Update credits
                     creditsManager.Update(gameTime);
+
+                    // Update buttons
                     foreach (Button button in creditsButtons.ToList())
                     {
                         button.Update();
                     }
+
+                    // Check if credits are over and return to main menu
                     if (creditsManager.IsEnded())
                     {
                         currentState = GameState.Menu;
@@ -402,38 +411,57 @@ namespace TwelveMage
 
                         spawner.Position = player.PosVector;
 
+                        // Update gun rotation
                         gun.Update(gameTime, bullets);
                         
-                        //Spawn an enemy
-                        if (SingleKeyPress(Keys.U, currentKBState))
+                        // Cheats
+                        if (cheatsActive)
                         {
-                            spawner.SpawnCharger();
+                            // Spawn a test enemy (U)
+                            if (SingleKeyPress(Keys.U, currentKBState))
+                            {
+                                spawner.SpawnCharger();
 
-                            //spawners[rng.Next(0,4)].SpawnEnemyd
-                        }
+                                //spawners[rng.Next(0,4)].SpawnEnemyd
+                            }
 
-                        //Activate/Deactivate enemy Update()
-                        if(SingleKeyPress(Keys.X, currentKBState))
-                        {
-                            enemiesActive = !enemiesActive;
-                        }
+                            // Activate/Deactivate enemy Update (X)
+                            if (SingleKeyPress(Keys.X, currentKBState))
+                            {
+                                enemiesActive = !enemiesActive;
+                            }
 
-                        if (SingleKeyPress(Keys.C, currentKBState))
-                        {
-                            enemies.Clear();
-                            summoners.Clear();
-                            deadEnemies.Clear();
-                        }
+                            // Clear all enemies (C)
+                            if (SingleKeyPress(Keys.C, currentKBState))
+                            {
+                                enemies.Clear();
+                                summoners.Clear();
+                                deadEnemies.Clear();
+                            }
 
-                        // Enemy movement (Lucas)
-                        // Pass current player position to enemies (Lucas)
-                        // Set enemy TimeFreeze status according to if player used ability
+                            // Go to GameOver state (Q)
+                            if (SingleKeyPress(Keys.Q, currentKBState))
+                            {
+                                EndGame();
+                            }
+
+                            // Heal player
+                            if (SingleKeyPress(Keys.H, currentKBState))
+                            {
+                                player.Health = 100;
+                            }
+                        }                       
+
                         foreach (Enemy enemy in enemies)
                         {
+                            // Pass current player position to enemies
                             enemy.PlayerPos = player.PosVector;
+
+                            // Set TimeFreeze status according to if player used ability
                             enemy.IsFrozen = player.IsFrozen;
                             enemy.DamageTaken = player.DamageGiven;
 
+                            // Update enemy logic and animation
                             if (enemiesActive)
                             {
                                 enemy.Update(gameTime, bullets);
@@ -442,6 +470,7 @@ namespace TwelveMage
                             
                         }
 
+                        // Make sure summoners stop summoning enemies while frozen
                         foreach(Summoner summoner in summoners)
                         {
                             if (!summoner.IsFrozen)
@@ -450,11 +479,13 @@ namespace TwelveMage
                             }
                         }
 
+                        // Update HealthPickup collisions and despawning
                         foreach (HealthPickup healthPickup in healthPickups)
                         {
                             healthPickup.Update(gameTime, bullets);
                         }
 
+                        // Remove health objects if no longer active
                         for(int i = healthPickups.Count - 1; i >= 0; i--)
                         {
                             if (!healthPickups[i].IsActive)
@@ -463,6 +494,7 @@ namespace TwelveMage
                             }
                         }
                         
+                        // Update fireball spell
                         foreach (GameObject fire in fireBalls)
                         {
                             Projectile fireball;
@@ -497,10 +529,7 @@ namespace TwelveMage
                             }
                         }
 
-                        //Enemy damage logic moved to enemy class
-
                         //if enemy collides with player health goes down
-                        //have to tweak to tick multiple times for one player instance
                         foreach (Enemy enemy in enemies)
                         {
                             if (player.CheckCollision(enemy) && enemy.IsActive)
@@ -574,6 +603,7 @@ namespace TwelveMage
 
                             enemies[rng.Next(0, enemies.Count())].HasHealthpack = true; // Give two random enemies a healthpack
 
+                            // Increment health pickup age
                             foreach (HealthPickup healthPickup in healthPickups)
                             {
                                 healthPickup.Age++;
@@ -596,7 +626,13 @@ namespace TwelveMage
 
                             wave++;
                         }
-                        
+                       
+                    }
+
+                    // Toggle Cheats (~)
+                    if (SingleKeyPress(Keys.OemTilde, currentKBState))
+                    {
+                        ToggleCheats();
                     }
 
                     // Pause game logic and switch to pause state (Lucas)
@@ -610,12 +646,7 @@ namespace TwelveMage
                     {
                         EndGame();
                     }
-
-                    // Press Q to go to Game Over state for testing (Lucas)
-                    if (currentKBState.IsKeyDown(Keys.Q))
-                    {
-                        EndGame();
-                    }
+                  
                     break;
 
                 case GameState.Pause:
@@ -703,6 +734,7 @@ namespace TwelveMage
 
                 case GameState.Credits:
 
+                    // Credits text
                     creditsManager.Draw(_spriteBatch);
                     foreach (Button button in creditsButtons.ToList())
                     {
@@ -785,6 +817,20 @@ namespace TwelveMage
 
                     // Spells UI
                     player.DrawSpellSlots(_spriteBatch);
+
+                    if (cheatsActive)
+                    {
+                        // Cheats menu
+                        _spriteBatch.DrawString(
+                            smallFont,
+                            "Test Enemy: U" +
+                            "\nFreeze Enemies: X" +
+                            "\nClear Enemies: C" +
+                            "\nGame Over: Q" +
+                            "\nHeal: H",
+                            new Vector2(10, 100),
+                            Color.Cyan);
+                    }
 
                     break;
 
@@ -975,6 +1021,10 @@ namespace TwelveMage
             }*/
         }
 
+        /// <summary>
+        /// Lucas
+        /// Activates Credits state and resets them to default position
+        /// </summary>
         private void Credits()
         {
             creditsManager.Reset();
@@ -1026,6 +1076,21 @@ namespace TwelveMage
             if(score > highScore) highScore = score;
             if(wave > highWave) wave = highWave;
             fileManager.SavePersistentStats(highScore, highWave);
+        }
+
+        /// <summary>
+        /// Toggle dev commands (cheats)
+        /// </summary>
+        private void ToggleCheats()
+        {
+            if (!cheatsActive)
+            {
+                cheatsActive = true;
+            }
+            else
+            {
+                cheatsActive = false;
+            }
         }
     }
 }
