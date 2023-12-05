@@ -144,6 +144,9 @@ namespace TwelveMage
             // Pass window dimensions to Player (Lucas)
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
+
+            // Pass font to Player for spell CD
+            player.TimerFont = menuFont;
             
             // Load Health Bar Assets (Lucas)
             healthBar = _textureLibrary.GrabTexture("HealthBar");

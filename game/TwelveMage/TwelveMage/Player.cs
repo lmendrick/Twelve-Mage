@@ -109,6 +109,9 @@ namespace TwelveMage
         private double freezeTimer = 0;
         private double hasteTimer = 0;
 
+        // Spell CD font
+        private SpriteFont timerFont;
+
         // Invulnerability works similarly to spell effects
         private double invulnerableTimer = 0;
         private double invulnerableDuration = 1.0;
@@ -117,6 +120,7 @@ namespace TwelveMage
         private double wrapTimer = 0.25;
         private bool hasWrapped = false;
         private BorderFlameManager borderFlameManager;
+
 
         // Note: When a spell is used, its CooldownDuration will be added to its timer.
         //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
@@ -209,6 +213,12 @@ namespace TwelveMage
         {
             get { return borderFlameManager; }
             set {  borderFlameManager = value; }
+        }
+
+        public SpriteFont TimerFont
+        {
+            get { return  timerFont; }
+            set {  timerFont = value; }
         }
         #endregion
 
@@ -660,13 +670,30 @@ namespace TwelveMage
 
             // Draw base icons
             // If the spells are on cooldown, draw the base icons in gray
-            if (blinkTimer > 0) spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.Gray * 0.7f);
+            // Lucas: Cooldowns are now drawn as an overlay as well
+            if (blinkTimer > 0)
+            {
+                spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.Gray * 0.7f);
+                DrawTimers(spriteBatch, blinkTimer, blinkRec);
+            }
             else spriteBatch.Draw(blinkSpellIcon, blinkRec, Color.White * 0.7f);
-            if (fireballTimer > 0) spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.Gray * 0.7f);
+            if (fireballTimer > 0)
+            {
+                spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.Gray * 0.7f);
+                DrawTimers(spriteBatch, fireballTimer, fireballRec);
+            }
             else spriteBatch.Draw(fireballSpellIcon, fireballRec, Color.White * 0.7f);
-            if (freezeTimer > 0) spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.Gray * 0.7f);
+            if (freezeTimer > 0)
+            {
+                spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.Gray * 0.7f);
+                DrawTimers(spriteBatch, freezeTimer, freezeRec);
+            }
             else spriteBatch.Draw(freezeSpellIcon, freezeRec, Color.White * 0.7f);
-            if (hasteTimer > 0) spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.Gray * 0.7f);
+            if (hasteTimer > 0)
+            {
+                spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.Gray * 0.7f);
+                DrawTimers(spriteBatch, hasteTimer, hasteRec);
+            }
             else spriteBatch.Draw(hasteSpellIcon, hasteRec, Color.White * 0.7f);
 
             // Rectangles for cooldown overlays
@@ -920,6 +947,28 @@ namespace TwelveMage
                 }
             }
             #endregion
+        }
+
+        /// <summary>
+        /// Lucas
+        /// Displays spell cooldowns as an overlay
+        /// </summary>
+        /// <param name="spriteBatch">
+        /// SpriteBatch for drawing
+        /// </param>
+        /// <param name="timer">
+        /// The spell timer
+        /// </param>
+        /// <param name="spellRec">
+        /// The spell UI rectangle
+        /// </param>
+        private void DrawTimers(SpriteBatch spriteBatch, double timer, Rectangle spellRec)
+        {
+            spriteBatch.DrawString(
+                    timerFont,
+                    "" + (int)timer,
+                    new Vector2(spellRec.Center.X - (timerFont.MeasureString("" + (int)timer).X / 2), spellRec.Y + (timerFont.MeasureString("" + (int)timer).Y) / 2),
+                    Color.White);
         }
         #endregion
     }
