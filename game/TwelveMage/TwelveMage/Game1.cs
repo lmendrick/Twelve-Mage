@@ -298,12 +298,13 @@ namespace TwelveMage
             // CREDITS BUTTONS
 
             // Return to Main Menu
-            creditsButtons.Add(new Button(
+            Button MenuButton = new Button(
             _graphics.GraphicsDevice,
             new Rectangle(10, 10, buttonWidth / 2, buttonHeight / 2),
             "Menu",
             smallFont,
-            Color.DarkBlue));
+            Color.DarkBlue);
+            creditsButtons.Add(MenuButton);
             creditsButtons[0].OnButtonClick += this.MainMenu;
 
             // GAME OVER MENU BUTTONS
@@ -353,6 +354,9 @@ namespace TwelveMage
             //exit
             pauseMenuButtons.Add(ExitButton);
             pauseMenuButtons[2].OnButtonClick += this.Exit;
+
+            pauseMenuButtons.Add(MenuButton);
+            pauseMenuButtons[3].OnButtonClick += this.MainMenu;
             #endregion
 
             // Load highest scores
@@ -1017,6 +1021,8 @@ namespace TwelveMage
         /// </summary>
         private void MainMenu()
         {
+            isPaused = false;
+            hasSaved = false;
             currentState = GameState.Menu;
             /*foreach(Button button in mainMenuButtons.ToList())
             {

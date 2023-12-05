@@ -1,2 +1,5 @@
-547,235,100,0,FaceLeft
-Enemy,506,186,100
+318,256,100,0,FaceLeft
+Enemy,342,125,100
+Enemy,197,80,100
+Enemy,372,128,100
+HealthPickup,306,240,10,0,1

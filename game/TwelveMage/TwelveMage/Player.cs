@@ -951,7 +951,7 @@ namespace TwelveMage
 
         /// <summary>
         /// Lucas
-        /// Displays spell cooldowns as an overlay
+        /// Displays spell cooldowns as an overlay for each spell UI
         /// </summary>
         /// <param name="spriteBatch">
         /// SpriteBatch for drawing
