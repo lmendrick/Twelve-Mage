@@ -457,6 +457,12 @@ namespace TwelveMage
                             {
                                 player.Health = 100;
                             }
+
+                            // Toggle God Mode (G)
+                            if (SingleKeyPress(Keys.G, currentKBState))
+                            {
+                                ToggleGodMode();
+                            }
                         }                       
 
                         foreach (Enemy enemy in enemies)
@@ -834,9 +840,10 @@ namespace TwelveMage
                             "\nFreeze Enemies: X" +
                             "\nClear Enemies: C" +
                             "\nGame Over: Q" +
-                            "\nHeal: H",
+                            "\nHeal: H" +
+                            "\nGod Mode: G",
                             new Vector2(10, 100),
-                            Color.Cyan);
+                            Color.Yellow);
                     }
 
                     break;
@@ -1088,6 +1095,7 @@ namespace TwelveMage
         }
 
         /// <summary>
+        /// Lucas
         /// Toggle dev commands (cheats)
         /// </summary>
         private void ToggleCheats()
@@ -1099,6 +1107,24 @@ namespace TwelveMage
             else
             {
                 cheatsActive = false;
+                player.IsGod = false;
+            }
+        }
+
+        /// <summary>
+        /// Lucas
+        /// Toggle God Mode cheat.
+        /// Infinite health and no spell cooldowns
+        /// </summary>
+        private void ToggleGodMode()
+        {
+            if (!player.IsGod)
+            {
+                player.IsGod = true;
+            }
+            else
+            {
+                player.IsGod = false;
             }
         }
     }

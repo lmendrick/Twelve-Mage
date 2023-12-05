@@ -121,6 +121,9 @@ namespace TwelveMage
         private bool hasWrapped = false;
         private BorderFlameManager borderFlameManager;
 
+        // God Mode
+        private bool isGod;
+
 
         // Note: When a spell is used, its CooldownDuration will be added to its timer.
         //       Spells can only be used when their timer is 0, and each will count down every frame until they reach 0.
@@ -205,6 +208,7 @@ namespace TwelveMage
         public bool IsInvulnerable
         {
             get { return (invulnerableTimer > 0); }
+            set { invulnerableTimer = 0; }
         }
 
         public double InvulnerableTimer { get; }
@@ -219,6 +223,12 @@ namespace TwelveMage
         {
             get { return  timerFont; }
             set {  timerFont = value; }
+        }
+
+        public bool IsGod
+        {
+            get { return isGod; }
+            set { isGod = value; }
         }
         #endregion
 
@@ -258,6 +268,9 @@ namespace TwelveMage
             // Initialize flame manager for going offscreen (visual feedback)
             borderFlameManager = new BorderFlameManager(textureLibrary, windowWidth, windowHeight);
             borderFlameManager.Reset();
+
+            // Default god mode to false
+            isGod = false;
         }
         #endregion
 
@@ -326,6 +339,17 @@ namespace TwelveMage
             previousKB = currentKB;
             prevMState = mState;
             #endregion
+
+            // God Mode Cheat
+            if (isGod)
+            {
+                invulnerableTimer = 1;
+                health = 100;
+                blinkTimer = 0;
+                fireballTimer = 0;
+                freezeTimer = 0;
+                hasteTimer = 0;
+            }
         }
 
         //Anthony Maldonado

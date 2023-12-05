@@ -48,7 +48,7 @@ namespace TwelveMage
             scrollLocY = windowHeight + scrollMultiplier;
 
             // Vector to check if the credits are over. Need to adjust integer based on position of last credit
-            endVector = new Vector2(0, (scrollLocY + ySpacing * 32));
+            endVector = new Vector2(0, (scrollLocY + ySpacing * 34));
         }
 
         public void Draw(SpriteBatch spriteBatch)
@@ -224,8 +224,16 @@ namespace TwelveMage
                 "Copyright 2023 Team Uninstallation Fee, All Rights Reserved").X / 2), (scrollLocY + ySpacing * 31)),
                 Color.Yellow);
 
-            
-            
+            // Cheat Button Hint
+            spriteBatch.DrawString(
+                smallFont,
+                "Hint: Cheating is an 'approximation' of skill.",
+                new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
+                "Hint: Cheating is an 'approximation' of skill.").X / 2), (scrollLocY + ySpacing * 33)),
+                Color.Yellow);
+
+
+
         }
 
         /// <summary>
