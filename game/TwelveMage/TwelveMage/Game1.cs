@@ -27,6 +27,7 @@ namespace TwelveMage
         private Random rng;
 
         private Texture2D healthBar;
+        private Texture2D buttonBackground;
 
         private int playerWidth = 34;
         private int playerHeight = 30;
@@ -150,6 +151,8 @@ namespace TwelveMage
             
             // Load Health Bar Assets (Lucas)
             healthBar = _textureLibrary.GrabTexture("HealthBar");
+
+            buttonBackground = _textureLibrary.GrabTexture("ButtonBackground");
 
             // Create a FileManager (Chloe)
             fileManager = new FileManager(player, _textureLibrary, windowHeight, windowWidth, rng);
@@ -724,16 +727,16 @@ namespace TwelveMage
                     // Controls
                     _spriteBatch.DrawString(
                         smallFont,
-                        "Instructions: Use WASD to move and click to shoot enemies.",
-                        new Vector2((windowWidth / 2) - (smallFont.MeasureString("Instructions: Use WASD to move and click to shoot enemies.").X / 2),
+                        "Use WASD to move and click to shoot enemies.",
+                        new Vector2((windowWidth / 2) - (smallFont.MeasureString("Use WASD to move and click to shoot enemies.").X / 2),
                         ((windowHeight / 2) + 150)),
                         Color.Black);
 
                     // Instructions
                     _spriteBatch.DrawString(
                         smallFont,
-                        "Survive as long as you can. If your health reaches 0, you lose.",
-                        new Vector2((windowWidth / 2) - (smallFont.MeasureString("Survive as long as you can. If your health reaches 0, you lose.").X / 2),
+                        "Survive as long as you can!",
+                        new Vector2((windowWidth / 2) - (smallFont.MeasureString("Survive as long as you can!").X / 2),
                         ((windowHeight / 2) + 175)),
                         Color.Black);
 

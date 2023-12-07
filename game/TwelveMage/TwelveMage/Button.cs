@@ -42,6 +42,16 @@ namespace TwelveMage
             set { active = value; }
         }
 
+        public Texture2D ButtonImg
+        {
+            get { return buttonImg; }
+        }
+
+        public Rectangle Position
+        {
+            get { return position;}
+        }
+
         // Event for the button being clicked, tied to the OnButtonClick method
         public event OnButtonClickDelegate OnButtonClick;
 

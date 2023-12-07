@@ -54,6 +54,7 @@ namespace TwelveMage
 
             // UI Textures
             AddEntry("BlinkSpellSlot", "BlinkSpellSlot");
+            AddEntry("ButtonBackground", "buttonBackground");
             AddEntry("FireballSpellSlot", "FireballSpellSlot");
             AddEntry("FreezeSpellSlot", "FreezeSpellSlot");
             AddEntry("HasteSpellSlot", "HasteSpellSlot");
