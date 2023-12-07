@@ -16,10 +16,6 @@ namespace TwelveMage
     * This class manages file loading/saving
     * and assigning them textures based on their type
     * No known issues.
-    * Added stats save method (score, wave)
-    * Added persistent stats save method (highScore, highWave)
-    * Added HealthPickup save/load methods
-    * Added Spells save/load methods
     */
     internal class FileManager
     {
@@ -30,16 +26,14 @@ namespace TwelveMage
         private readonly Random rng;
         private int windowHeight;
         private int windowWidth;
+        private Player player;
 
-        private const string PlayerFilename = "../../../PlayerData.txt";
-        private const string EnemiesFilename = "../../../EnemyData.txt";
+        // Constants for filepaths
         private const string StatsFilename = "../../../StatsData.txt";
         private const string PersistentStatsFilename = "../../../PersistentStatsData.txt";
         private const string Level1Filename = "../../../Level1Data.txt";
-        private const string HealthPickupsFilename = "../../../HealthPickupsData.txt";
         private const string SpellsFilename = "../../../SpellData.txt";
         private const string GameObjectsFilename = "../../../Objects.txt";
-        private Player player;
         #endregion
 
         #region CONSTRUCTORS

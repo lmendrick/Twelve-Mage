@@ -15,7 +15,7 @@ namespace TwelveMage
     * This class manages the tileable background,
     * such as loading it from a file,
     * holding the tiles in memory,
-    * and assigning them textures based on their type
+    * and assigning them textures based on their type.
     * No known issues.
     */
     internal class BackgroundManager
