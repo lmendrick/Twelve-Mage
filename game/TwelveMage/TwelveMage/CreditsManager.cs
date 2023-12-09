@@ -2,7 +2,7 @@
  * Lucas Mendrick
  * Twelve Mage
  * Displays scrolling credits in order to attribute assets.
- * Work in progress
+ * No known issues.
  */
 
 using Microsoft.Xna.Framework;
@@ -51,11 +51,14 @@ namespace TwelveMage
             endVector = new Vector2(0, (scrollLocY + ySpacing * 34));
         }
 
+        /// <summary>
+        /// Draws the Credits
+        /// </summary>
+        /// <param name="spriteBatch">
+        /// SpriteBatch from main
+        /// </param>
         public void Draw(SpriteBatch spriteBatch)
         {
-            /* Still need credits for:
-             * Fireball sprite
-             */
 
             // Title Outline
             spriteBatch.DrawString(
@@ -231,9 +234,6 @@ namespace TwelveMage
                 new Vector2(((windowWidth / 2)) - (smallFont.MeasureString(
                 "Hint: Cheating is an 'approximation' of skill.").X / 2), (scrollLocY + ySpacing * 33)),
                 Color.Yellow);
-
-
-
         }
 
         /// <summary>

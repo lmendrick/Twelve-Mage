@@ -14,7 +14,7 @@ namespace TwelveMage
          * Twelve-Mage
          * This class handles the gun being used by the player
          * might remove in place of having the sprite put directly on the wizard
-         * Lucas: Added Draw and Update methods based on Player states
+         * Lucas: Added Draw and Update methods based on Player states, now rotates around player
          */
 
     internal class Gun : GameObject

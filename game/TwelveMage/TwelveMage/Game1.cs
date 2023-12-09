@@ -1,17 +1,21 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
-using Microsoft.Xna.Framework.Media;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 
+/*
+ * Twelve Mage
+ * This class handles the all of the general logic for the menus and game.
+ */
 
 namespace TwelveMage
 {
     //Anthony Maldonado
     //creating enum for game states
     enum GameState { Menu, Game, Pause, GameOver, Credits}
+
     public class Game1 : Game
     {
         #region FIELDS
@@ -107,12 +111,12 @@ namespace TwelveMage
             buttonCenterX = (windowWidth / 2) - (buttonWidth / 2);
             buttonCenterY = (windowHeight / 2) - (buttonHeight / 2);
 
+            // Default starting data
             wave = 1;
             waveIncrease = 3;
             score = 0;
-            /*highScore = 0;
-            highWave = 0;*/
 
+            // Default cheats to false
             cheatsActive = false;
 
             base.Initialize();
@@ -142,6 +146,7 @@ namespace TwelveMage
             //created set of bullets
             bullets = new List<GameObject>();
             fireBalls = new List<GameObject>();
+
             // Pass window dimensions to Player (Lucas)
             player.WindowHeight = windowHeight;
             player.WindowWidth = windowWidth;
@@ -152,6 +157,7 @@ namespace TwelveMage
             // Load Health Bar Assets (Lucas)
             healthBar = _textureLibrary.GrabTexture("HealthBar");
 
+            // Load button background asset
             buttonBackground = _textureLibrary.GrabTexture("ButtonBackground");
 
             // Create a FileManager (Chloe)
@@ -165,21 +171,26 @@ namespace TwelveMage
             Rectangle gunRec = new Rectangle(15, 15, gunWidth, gunHeight);
             gun = new Gun(gunRec, _textureLibrary, 10, player);
 
-
+            // Default enemies to active
             enemiesActive = true;
 
+            // Instantiate the credits manager
             creditsManager = new CreditsManager(windowWidth, windowHeight, titleFont, menuFont, smallFont);
 
             // Instantiate single default enemy (Lucas)
             Rectangle enemyRec = new Rectangle(250, 250, 30, 30);
 
+            // Create lists for game objects
             healthPickups = new List<HealthPickup>();
-
             deadEnemies = new List<Enemy>();
             enemies = new List<Enemy>();
             summoners = new List<Summoner>();
+
+            // Create default enemy to be cloned
             defaultEnemy = new Enemy(enemyRec, _textureLibrary, 100, enemies, player, rng);
             enemies.Add(defaultEnemy);
+
+            // Create default spawner
             spawner = new Spawner(
                 player.PosVector,
                 100,
@@ -193,6 +204,8 @@ namespace TwelveMage
                 windowWidth,
                 windowHeight,
                 rng);
+
+            // List to hold spawners
             spawners = new List<Spawner>();
 
             //spawners[0] is top spawner
@@ -419,6 +432,7 @@ namespace TwelveMage
                         // Player movement (Lucas)
                         player.Update(gameTime, bullets);
 
+                        // Pass player positions to spawner
                         spawner.Position = player.PosVector;
 
                         // Update gun rotation
@@ -562,6 +576,7 @@ namespace TwelveMage
                             }
                         }
                             
+                        // Handle health pickups and dead enemies
                         for(int i = enemies.Count - 1; i >= 0; i--) // Remove every inactive enemy
                         {
                             if (!enemies[i].IsActive)
@@ -657,6 +672,7 @@ namespace TwelveMage
                         isPaused = true;
                         currentState = GameState.Pause;
                     }
+
                     //Anthony if health is 0 game over
                     if (player.Health <= 0)
                     {
@@ -698,6 +714,7 @@ namespace TwelveMage
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
+            // Draw background
             backgroundManager.Draw(windowWidth, windowHeight);
 
             switch (currentState)
@@ -722,8 +739,6 @@ namespace TwelveMage
                         75),
                         Color.Yellow);
 
-                    
-
                     // Controls
                     _spriteBatch.DrawString(
                         smallFont,
@@ -740,8 +755,7 @@ namespace TwelveMage
                         ((windowHeight / 2) + 175)),
                         Color.Black);
 
-                    
-
+                    // Draw buttons
                     foreach (Button button in mainMenuButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
@@ -752,6 +766,8 @@ namespace TwelveMage
 
                     // Credits text
                     creditsManager.Draw(_spriteBatch);
+
+                    // Draw buttons
                     foreach (Button button in creditsButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
@@ -800,7 +816,7 @@ namespace TwelveMage
                         new Vector2(10, 10),
                         Color.Black);
 
-                    // Pause button (P) (Lucas)
+                    // Pause "button" (P) (Lucas)
                     _spriteBatch.DrawString(
                         smallFont,
                         "Pause (P)",
@@ -834,6 +850,7 @@ namespace TwelveMage
                     // Spells UI
                     player.DrawSpellSlots(_spriteBatch);
 
+                    // Display cheats menu if cheats are active
                     if (cheatsActive)
                     {
                         // Cheats menu
@@ -848,7 +865,6 @@ namespace TwelveMage
                             new Vector2(10, 100),
                             Color.Yellow);
                     }
-
                     break;
 
                 case GameState.Pause:
@@ -874,7 +890,7 @@ namespace TwelveMage
                         Color.Black);
                     }
                     
-
+                    // Draw buttons
                     foreach(Button button in pauseMenuButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
@@ -910,6 +926,7 @@ namespace TwelveMage
                         ((windowHeight - 50))),
                         Color.Black);
 
+                    // Update buttons
                     foreach(Button button in gameOverButtons.ToList())
                     {
                         button.Draw(_spriteBatch);
@@ -917,7 +934,6 @@ namespace TwelveMage
 
                     break;
             }
-
             _spriteBatch.End();
             base.Draw(gameTime);
         }
@@ -967,8 +983,6 @@ namespace TwelveMage
             enemies.Add(defaultEnemy.Clone()); // Add the default enemy
             enemies[0].OnDeath += IncreaseScore; // Add the score increase method to the enemy's OnDeath event
             enemies[0].HasHealthpack = true; // Give the enemy a healthpack
-
-            //DeactivateButtons();
         }
 
         /// <summary>
@@ -981,7 +995,6 @@ namespace TwelveMage
 
             // Sets save status back to false, disabling "Game Saved" text
             hasSaved = false;
-            //DeactivateButtons();
         }
 
         /// <summary>
@@ -1034,10 +1047,6 @@ namespace TwelveMage
             isPaused = false;
             hasSaved = false;
             currentState = GameState.Menu;
-            /*foreach(Button button in mainMenuButtons.ToList())
-            {
-                button.Active = true; // Activate all butons
-            }*/
         }
 
         /// <summary>

@@ -696,7 +696,7 @@ namespace TwelveMage
         }
 
         /// <summary>
-        /// Lucas:
+        /// Lucas
         /// Updates the enemy animation
         /// Adapted from Mario Walking PE
         /// </summary>

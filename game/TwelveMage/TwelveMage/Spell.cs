@@ -1,29 +1,28 @@
 ﻿using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using TwelveMage;
+
+/*
+ * Twelve Mage
+ * This class was supposed to handle all spells, but was easier to add
+ * them in the Player class. Only handles the blink spell.
+ */
 internal class Spell
 {
 	private Player player;
 
 	public Spell(Player player)
 	{
-		this.player = player;
-		
+		this.player = player;	
 	}
 
-	public void Fireball() //can only use fireball 3 times
+	public void Fireball() 
     {
-
+		// Handled in Player class as a projectile
 	}
 
 	public void Haste()
 	{
-
+		// Handled in Player class
 	}
 
 	public void TimeFreeze()

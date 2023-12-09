@@ -13,6 +13,7 @@ using System.Collections.Generic;
  * Intended to provide visual feedback for the player being damaged by wrapping.
  */
 
+// Possible additions: 
 // Make flames stay at extended position longer
 // Make flames only appear near where player is instead of entire border?
 // Make flames "reach" out as you go towards them
@@ -47,14 +48,16 @@ namespace TwelveMage
         // Extra length to the starting position of each "wall" of flames so they start off screen 
         private int borderPadding = -30;
 
+        // Lists to hold each border's flames
         private List<Flame> topFlames;
         private List<Flame> bottomFlames;
         private List<Flame> rightFlames;
         private List<Flame> leftFlames;
 
-
+        // Random to make flame animations dynamic
         private Random rng;
 
+        // Default flame object to clone
         Flame flame;
 
         private FlameState currentState;
@@ -82,6 +85,12 @@ namespace TwelveMage
             set { currentState = value; }
         }
 
+        /// <summary>
+        /// Gets necessary information from main and sets up flame lists and positions
+        /// </summary>
+        /// <param name="textureLibrary"></param>
+        /// <param name="windowWidth"></param>
+        /// <param name="windowHeight"></param>
         public BorderFlameManager(TextureLibrary textureLibrary, int windowWidth, int windowHeight)
         {
             this.textureLibrary = textureLibrary;
@@ -103,9 +112,6 @@ namespace TwelveMage
 
             // Random to make flame animations dynamic
             rng = new Random();
-
-            
-
 
             // Fill top list with Flame objects
             for (int i = 0; i < numXSprites; i++)
@@ -136,11 +142,16 @@ namespace TwelveMage
                 leftFlames.Add(newFlame);
             }
 
-
             // Set each flame's position to default values and set state to inactive
             Reset();
         }
 
+        /// <summary>
+        /// Triggers flame movement based on current state
+        /// </summary>
+        /// <param name="gameTime">
+        /// GameTime from main
+        /// </param>
         public void Update(GameTime gameTime)
         {
 
@@ -156,7 +167,6 @@ namespace TwelveMage
                     // Positive Y direction (flames extend down)
                     moveDirection = Vector2.UnitY;
                     UpdateFlameMovement(topFlames, gameTime, extendedTopPosition, startTopPosition);
-
                     break;
 
                 // BOTTOM
@@ -165,7 +175,6 @@ namespace TwelveMage
                     // Negative Y direction (flames extend up)
                     moveDirection = Vector2.UnitY * new Vector2(0, -1);
                     UpdateFlameMovement(bottomFlames, gameTime, extendedBottomPosition, startBottomPosition);
-
                     break;
 
                 // RIGHT
@@ -174,7 +183,6 @@ namespace TwelveMage
                     // Negative X direction (flames extend left)
                     moveDirection = Vector2.UnitX * new Vector2(-1, 0);
                     UpdateFlameMovement(rightFlames, gameTime, extendedRightPosition, startRightPosition);
-
                     break;
 
                 // LEFT
@@ -183,7 +191,6 @@ namespace TwelveMage
                     // Positive X direction (flames extend right)
                     moveDirection = Vector2.UnitX;
                     UpdateFlameMovement(leftFlames, gameTime, extendedLeftPosition, startLeftPosition);
-
                     break;
             }
         }
