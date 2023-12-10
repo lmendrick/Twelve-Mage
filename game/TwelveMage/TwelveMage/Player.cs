@@ -16,7 +16,7 @@ using System.Collections.Generic;
  * including movement, actions, scores, etc.
  * No known issues
  * Anthony: Removed uneeded fields and enum, added projectile capability to player 
- * Lucas: Added Player Movement, States, and Animations
+ * Lucas: Added Player Movement, States, and Animations. Added offscreen wrap around and damage.
  * Chloe: Completely reworked spell functionality
  */
 
