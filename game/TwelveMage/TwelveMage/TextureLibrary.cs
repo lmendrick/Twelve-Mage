@@ -68,6 +68,12 @@ namespace TwelveMage
             AddEntry("HalfPaversV", "VerticalHalfPaversTileset");
             AddEntry("MiscTileset", "MiscTileset");
             AddEntry("PaversTileset", "PaversTileset");
+
+            // Background Props
+            AddEntry("PropsTileset", "TX_Props");
+            AddEntry("PropsShadows", "TX_Shadow");
+            AddEntry("PlantsTileset", "TX_Plant");
+            AddEntry("PlantsShadows", "TX_Shadow_Plant");
         }
 
         // Helper method to simplify loading new textures in the constructor

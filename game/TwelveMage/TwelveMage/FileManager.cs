@@ -325,7 +325,7 @@ namespace TwelveMage
 
                             Rectangle zombieRec = new Rectangle(X, Y, 30, 30); // Enemy rectangle is 30x30
 
-                            // Add the new Charger to enemies
+                            // Add the new Enemy to enemies
                             enemies.Add(new Enemy(zombieRec, _textureLibrary, health, enemies, player, rng));
 
                             break;

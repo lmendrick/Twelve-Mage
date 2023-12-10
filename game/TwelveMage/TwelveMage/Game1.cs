@@ -158,7 +158,7 @@ namespace TwelveMage
             fileManager = new FileManager(player, _textureLibrary, windowHeight, windowWidth, rng);
 
             // Do BackgroundManager initialization
-            backgroundManager = new BackgroundManager(_textureLibrary, rng, _spriteBatch);
+            backgroundManager = new BackgroundManager(_textureLibrary, rng);
             backgroundManager.LoadLevel(fileManager);
 
             // Instantiate gun
@@ -593,23 +593,25 @@ namespace TwelveMage
                         // Wave handling
                         if(enemies.Count == 0)
                         {
+                            // Add a number of regular Enemies equal to wave * waveIncrease
                             for(int i = 0; i < wave * waveIncrease; i++)
                             {
                                 spawners[rng.Next(0, 4)].SpawnEnemy();
                                 enemies[i].OnDeath += IncreaseScore;
                             }
 
+                            // On a wave that's a multiple of 5,
                             if((wave + 1) % 5 == 0)
                             {
-                                if (wave + 1 >= 15)
+                                if (wave + 1 >= 15) // If the wave is 15 or higher,
                                 {
-                                    for (int i = 0; i < (wave + 1) / 10 && i < 4; i++)
+                                    for (int i = 0; i < (wave + 1) / 10 && i < 4; i++) // Add another special enemy for every 10 waves
                                     {
-                                        spawners[rng.Next(0, 4)].SpawnSpecial();
+                                        spawners[rng.Next(0, 4)].SpawnSpecial(); // Randomly selects from one of the special types
                                         enemies[enemies.Count - 1].OnDeath += IncreaseScore;
                                         enemies[enemies.Count - 1].OnDeath += IncreaseScore;
                                     }
-                                }
+                                } // Otherwise, add a summoner
                                 else {
                                     spawners[rng.Next(0, 4)].SpawnSummoner();
                                     enemies[enemies.Count - 1].OnDeath += IncreaseScore;
@@ -698,11 +700,14 @@ namespace TwelveMage
             // TODO: Add your drawing code here
             _spriteBatch.Begin();
 
-            backgroundManager.Draw(windowWidth, windowHeight);
+            backgroundManager.Draw(windowWidth, windowHeight, _spriteBatch);
 
             switch (currentState)
             {
                 case GameState.Menu:
+
+                    // Draw BG props (Chloe)
+                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
 
                     // Main Menu display (Lucas)
 
@@ -749,6 +754,8 @@ namespace TwelveMage
                     break;
 
                 case GameState.Credits:
+                    // Draw BG props (Chloe)
+                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
 
                     // Credits text
                     creditsManager.Draw(_spriteBatch);
@@ -792,6 +799,9 @@ namespace TwelveMage
                             project.Draw(_spriteBatch);
                         }
                     }
+
+                    // Draw BG props (Chloe)
+                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
 
                     //Wave counter display
                     _spriteBatch.DrawString(
@@ -853,6 +863,9 @@ namespace TwelveMage
 
                 case GameState.Pause:
 
+                    // Draw BG props (Chloe)
+                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
+
                     // Pause Menu display (Lucas)
 
                     // Game Paused title
@@ -883,6 +896,9 @@ namespace TwelveMage
                     break;
 
                 case GameState.GameOver:
+
+                    // Draw BG props (Chloe)
+                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
 
                     // Game Over display (Lucas)
 

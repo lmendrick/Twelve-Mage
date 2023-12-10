@@ -198,9 +198,6 @@ namespace TwelveMage
                 } while (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50);
             }
 
-
-
-
             enemies.Add(spawned);
 
             return spawned;
@@ -260,13 +257,9 @@ namespace TwelveMage
                 } while (Math.Abs(xDistanceFromPlayer) <= 50 || Math.Abs(yDistanceFromPlayer) <= 50);
             }
             
-            
-            
-
             enemies.Add(spawned);
 
             return spawned;
-
         }
 
         public Enemy SpawnSpecial()
