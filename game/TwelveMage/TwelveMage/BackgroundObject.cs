@@ -14,6 +14,7 @@ namespace TwelveMage
         private Rectangle rec;
         private Rectangle source;
         private Texture2D texture;
+        private Texture2D shadowTexture;
         #endregion
 
         #region PROPERTIES
@@ -21,11 +22,12 @@ namespace TwelveMage
         #endregion
 
         #region CONSTRUCTORS
-        public BackgroundObject(Rectangle source, Rectangle rec, Texture2D texture)
+        public BackgroundObject(Rectangle source, Rectangle rec, Texture2D texture, Texture2D shadowTexture)
         {
             this.rec = rec;
             this.source = source;
             this.texture = texture;
+            this.shadowTexture = shadowTexture;
         }
         #endregion
 
@@ -40,15 +42,8 @@ namespace TwelveMage
         /// </summary>
         public void Draw(SpriteBatch _spriteBatch)
         {
-            Draw(_spriteBatch, Color.White);
-        }
-
-        /// <summary>
-        /// Draws this BackgroundObject with a specific color
-        /// </summary>
-        public void Draw(SpriteBatch _spriteBatch, Color color)
-        {
-            _spriteBatch.Draw(texture, rec, source, color);
+            _spriteBatch.Draw(shadowTexture, rec, source, Color.White * 0.5f);
+            _spriteBatch.Draw(texture, rec, source, Color.White);
         }
         #endregion
     }

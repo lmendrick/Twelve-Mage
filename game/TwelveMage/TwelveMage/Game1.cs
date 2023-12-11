@@ -723,7 +723,7 @@ namespace TwelveMage
                 case GameState.Menu:
 
                     // Draw BG props (Chloe)
-                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
+                    backgroundManager.DrawForeground(windowWidth, windowHeight, _spriteBatch);
 
                     // Main Menu display (Lucas)
 
@@ -768,7 +768,7 @@ namespace TwelveMage
 
                 case GameState.Credits:
                     // Draw BG props (Chloe)
-                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
+                    backgroundManager.DrawForeground(windowWidth, windowHeight, _spriteBatch);
 
                     // Credits text
                     creditsManager.Draw(_spriteBatch);
@@ -816,7 +816,7 @@ namespace TwelveMage
                     }
 
                     // Draw BG props (Chloe)
-                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
+                    backgroundManager.DrawForeground(windowWidth, windowHeight, _spriteBatch);
 
                     //Wave counter display
                     _spriteBatch.DrawString(
@@ -879,7 +879,7 @@ namespace TwelveMage
                 case GameState.Pause:
 
                     // Draw BG props (Chloe)
-                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
+                    backgroundManager.DrawForeground(windowWidth, windowHeight, _spriteBatch);
 
                     // Pause Menu display (Lucas)
 
@@ -913,7 +913,7 @@ namespace TwelveMage
                 case GameState.GameOver:
 
                     // Draw BG props (Chloe)
-                    backgroundManager.DrawProps(windowWidth, windowHeight, _spriteBatch);
+                    backgroundManager.DrawForeground(windowWidth, windowHeight, _spriteBatch);
 
                     // Game Over display (Lucas)
 
@@ -1017,7 +1017,7 @@ namespace TwelveMage
         /// </summary>
         private void LoadGame()
         {
-            // Does all GameObject-related saving
+            bullets.Clear();
             deadEnemies.Clear();
             player.BorderFlameManager.Reset(); // Reset border flame positions
             fileManager.LoadGameObjects(player, enemies, summoners, healthPickups, spawners);
