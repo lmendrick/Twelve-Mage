@@ -17,6 +17,10 @@ namespace TwelveMage
     * such as loading it from a file,
     * holding the tiles in memory,
     * and assigning them textures based on their type.
+    * 
+    * It also manages background props,
+    * such as trees, rocks, crates, and the like.
+    * 
     * No known issues.
     */
     internal class BackgroundManager
@@ -122,8 +126,13 @@ namespace TwelveMage
 
             _myRand = myRand;
 
+            // "Background" objects render in BGManager.Draw(), right after the level tiles.
+            // "Foreground" objects render in their own public method, BGManager.DrawForeground(),
+            // which can be called at any time in game1.Draw() to, for example, render foreground objects
+            // over the player and enemies.
+
             // ~~~~~~~~~~~~~~~~~~BACKGROUND OBJECTS~~~~~~~~~~~~~~~~~~
-            // Group of rock, bushe, and sign by the intersection
+            // Group of rock, bush, and sign by the intersection
             AddToBackground(new Point(360, 65), Bush4Rec, PropType.Plant);
             AddToBackground(new Point(375, 95), Rock3Rec, PropType.Prop);
             AddToBackground(new Point(360, 85), SignWestRec, PropType.Prop);
@@ -163,7 +172,6 @@ namespace TwelveMage
             AddToForeground(new Point(-57, 285), Tree2Rec, PropType.Plant); // West edge tree
             AddToForeground(new Point(675, 360), Tree0Rec, PropType.Plant); // Southeast tree
             AddToForeground(new Point(140, 5), Tree2Rec, PropType.Plant); // Northwest tree
-
         }
         #endregion
 

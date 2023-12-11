@@ -98,7 +98,7 @@ namespace TwelveMage
         private double hasteEffect = 5.0;
 
         // Values for spell cooldown duration
-        private double blinkCooldown = 6.0;
+        private double blinkCooldown = 12.0;
         private double freezeCooldown = 20.0;
         private double hasteCooldown = 10.0;
         private double fireballCooldown = 10.0;
@@ -372,8 +372,6 @@ namespace TwelveMage
             fireBalls.Add(fireball);
         }
 
-
-
         /// <summary>
         /// Gets the mousePos and direction, and than gets a number of different nearby vectors.
         /// These vectors will be used to generate a shotgun blast.
@@ -392,7 +390,6 @@ namespace TwelveMage
             //Don't turn too low(less than 50) or it breaks
             mouseDir *= 100;
 
-
             List<GameObject> shots = new List<GameObject>();
             List<Vector2> shotDirections = GenerateVectors(mouseDir ,numShots);
             
@@ -410,10 +407,7 @@ namespace TwelveMage
             {
                 bullets.Add(shot);
             }
-
-            
         }
-
 
         /// <summary>
         /// Takes in a Vector2 and generates a list containing a number of nearby vectors.
@@ -606,10 +600,14 @@ namespace TwelveMage
             Position.Y = (windowHeight / 2) - (rec.Height / 2);
         }
 
+        /// <summary>
+        /// Handles all spell checks and calculations
+        /// </summary>
         private void UpdateSpells(GameTime gameTime, Spell spell, List<GameObject> fire)
         {
             // Check which spells can be used this frame
-            canBlink = (blinkTimer <= 0 && !(dir.X == 0 && dir.Y == 0));
+            canBlink = (blinkTimer <= 0 && 
+                (mState.Position.X >= 0 && mState.Position.X <= windowWidth && mState.Position.Y >= 0 && mState.Position.Y <= windowHeight)); // Prevent teleporting off-screen
             canFireball = (fireballTimer <= 0);
             canFreeze = (freezeTimer <= 0);
             canHaste = (hasteTimer <= 0);
@@ -617,7 +615,7 @@ namespace TwelveMage
             // Handle spell input
             if (canBlink && currentKB.IsKeyDown(Keys.Space) && previousKB.IsKeyUp(Keys.Space))
             {
-                spell.Blink(dir);
+                spell.Blink(mState);
                 blinkTimer = blinkCooldown;
             }
             if (canFireball && currentKB.IsKeyDown(Keys.F) && previousKB.IsKeyUp(Keys.F))

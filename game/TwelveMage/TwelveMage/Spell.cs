@@ -1,4 +1,5 @@
 ﻿using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 using TwelveMage;
 
 /*
@@ -34,10 +35,8 @@ internal class Spell
 	/// Blinks the player forward in the direction they are moving
 	/// </summary>
 	/// <param name="direction">The players current direction</param>
-	public void Blink(Vector2 direction)
+	public void Blink(MouseState mState)
 	{
-		Vector2 blinkDistance = new Vector2(direction.X * 100, direction.Y * 100);
-
-		player.PosVector += blinkDistance;
+		player.Position = mState.Position.ToVector2();
 	}
 }
