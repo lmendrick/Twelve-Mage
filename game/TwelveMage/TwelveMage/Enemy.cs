@@ -49,6 +49,7 @@ namespace TwelveMage
 
         // Collision
         private Vector2 playerPos;
+        private Rectangle collider;
         private bool intersectionDetected = false;
         private int damageTaken;
 
@@ -179,6 +180,11 @@ namespace TwelveMage
             get { return corpseAge; }
             set { corpseAge = value; }
         }
+
+        public Rectangle Collider
+        {
+            get { return collider; }
+        }
         #endregion
 
         #region CONSTRUCTORS
@@ -190,6 +196,7 @@ namespace TwelveMage
             corpseSprite = textureLibrary.GrabTexture("ZombieCorpse");
 
             pos = new Vector2(rec.X, rec.Y);
+            collider = new Rectangle((int)(Position.X + (Width * 0.5f)), (int)(Position.Y + (Height * 0.5f)), (int)(Width * 0.2f), (int)(Height * 0.2f));
             this.enemies = enemies;
             this.player = player;
 
@@ -226,6 +233,8 @@ namespace TwelveMage
             // Set enemy direction based on current player position (Lucas)
             dir = playerPos - this.pos;
             dir.Normalize();
+
+            HandleCollisions(gameTime);
 
             //Collision avoidance logic
             adjustment = GetAdjustmentVector(enemies, gameTime);
@@ -366,6 +375,7 @@ namespace TwelveMage
         /// </param>
         public void HandleKnockback(GameTime gameTime)
         {
+
             if(knocked)
             {
                 knockbackVec = dir * -5;
@@ -385,6 +395,60 @@ namespace TwelveMage
                 knocked = false;
             }
 
+        }
+
+
+        /// <summary>
+        /// Handles collisions between enemies
+        /// </summary>
+        /// <param name="gameTime"></param>
+        public void HandleCollisions(GameTime gameTime)
+        {
+            //Updates collider location
+            collider.X = (int)(Position.X + (Width * 0.5f));
+            collider.Y = (int)(Position.Y + (Height * 0.5f));
+
+
+            //Checks every enemy for collisions
+            foreach(Enemy enemy in enemies)
+            {
+                if (enemy.Collider.Intersects(collider))
+                {
+                    Rectangle intersected = enemy.Collider;
+                    Rectangle intersection = Rectangle.Intersect(enemy.Collider, collider);
+                    int intersectionWidth = intersection.Width;
+                    int intersectionHeight = intersection.Height;
+
+                    //Once a collision has been detected, determine whether to move sideways or up/down to resolve it
+                    if(intersectionWidth > intersectionHeight)
+                    {
+                        //Move up/downward
+                        if(intersected.Y < collider.Y)
+                        {
+                            //Intersected above
+                            pos.Y += intersectionHeight;
+                        }
+                        else if(intersected.Y > collider.Y)
+                        {
+                            //Intersected below
+                            pos.Y -= intersectionHeight;
+                        }
+                    }else if(intersectionWidth < intersectionHeight)
+                    {
+                        //Move right/left
+                        if(intersected.X < collider.X)
+                        {
+                            //Intersected left
+                            pos.X += intersectionWidth;
+                        }
+                        else if(intersected.X > collider.X)
+                        {
+                            //Intersected right
+                            pos.X -= intersectionWidth;
+                        }
+                    }
+                }
+            }
         }
 
 
@@ -461,29 +525,42 @@ namespace TwelveMage
                     {
                         Projectile shot = (Projectile)bulletList[i];
 
-                        if (bulletList[i] is Fireball) // Bullet is a Fireball
+                        if (shot.NumHit < shot.MaxHit)
                         {
-                            IsActive = false;
-                            state = EnemyState.Dead;
-                        }
-                        else // Bullet is a basic Projectile
-                        {
-                            health -= DamageTaken;
+                            if (bulletList[i] is Fireball) // Bullet is a Fireball
+                            {
+                                IsActive = false;
+                                health -= health;
+                                state = EnemyState.Dead;
+                            }
+                            else // Bullet is a basic Projectile
+                            {
+                                shot.NumHit++;
+                                health -= DamageTaken;
+                                hit = true;
+
+                                if (!(this is Charger))
+                                {
+                                    knocked = true;
+                                }
+                                if (health <= 0)
+                                {
+                                    IsActive = false;
+                                    state = EnemyState.Dead;
+                                }
+                            }
                         }
 
+                        
                         shot.NumPen++; // Check the number of times this bullet has penetrated; remove it if higher than MaxPen
-                        if(shot.NumPen >= shot.MaxPen)
+                        if(shot.NumPen >= shot.MaxPen || shot.NumHit >= shot.MaxPen)
                         {
                             bulletList.RemoveAt(i);
                         }
+                        
                     }
                     
-                    hit = true;
 
-                    if (!(this is Charger))
-                    {
-                        knocked = true;
-                    }
                 }
             }
 

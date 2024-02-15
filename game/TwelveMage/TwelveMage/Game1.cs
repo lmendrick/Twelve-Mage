@@ -491,9 +491,11 @@ namespace TwelveMage
                             enemy.IsFrozen = player.IsFrozen;
                             enemy.DamageTaken = player.DamageGiven;
 
+
                             // Update enemy logic and animation
                             if (enemiesActive)
                             {
+                                
                                 enemy.Update(gameTime, bullets);
                                 enemy.UpdateAnimation(gameTime);
                             }
@@ -562,6 +564,7 @@ namespace TwelveMage
                         //if enemy collides with player health goes down
                         foreach (Enemy enemy in enemies)
                         {
+
                             if (player.CheckCollision(enemy) && enemy.IsActive)
                             {
                                 //Anthony if player collides with enemy tick health down and add to invulnerbale timer
@@ -606,7 +609,7 @@ namespace TwelveMage
                         }
                         
                         // Wave handling
-                        if(enemies.Count == 0)
+                        if(enemies.Count <= 0)
                         {
                             // Add a number of regular Enemies equal to wave * waveIncrease
                             for(int i = 0; i < wave * waveIncrease; i++)

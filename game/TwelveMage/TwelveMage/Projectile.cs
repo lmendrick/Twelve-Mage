@@ -24,6 +24,8 @@ namespace TwelveMage
         private float displacement;
         protected int maxPen = 1;
         protected int numPen = 0;
+        protected int maxHit = 1;
+        protected int numHit = 0;
 
 
 
@@ -40,6 +42,17 @@ namespace TwelveMage
             set { numPen = value; }
         }
 
+        public int NumHit
+        {
+            get { return numHit; }
+            set { numHit = value; }
+        }
+
+        public int MaxHit
+        {
+            get { return maxHit; }
+        }
+
 
         //methods
         public Projectile(Rectangle position, TextureLibrary textureLibrary, int health, float range) : base(position, textureLibrary, health)
@@ -48,6 +61,7 @@ namespace TwelveMage
             this.range = range;
             displacement = 0;
             texture = textureLibrary.GrabTexture("Bullet");
+            maxHit = maxPen;
         }
 
 
@@ -62,6 +76,10 @@ namespace TwelveMage
                 IsRemoved = true;
             }
 
+            if(numHit >= maxHit)
+            {
+                IsRemoved = true;
+            }
             
             //base position of direction and velocity of bullet
             Position += Direction * LinearVelocity;
