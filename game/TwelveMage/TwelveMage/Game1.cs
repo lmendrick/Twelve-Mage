@@ -61,9 +61,9 @@ namespace TwelveMage
         int buttonCenterY;
 
 
-        private int wave;
+        private int currentWave;
         private int waveIncrease;
-        private int score;
+        public int score;
         private int highScore;
         private int highWave;
         private Spawner spawner;
@@ -73,6 +73,7 @@ namespace TwelveMage
         private BackgroundManager backgroundManager;
 
         // List of enemies to add to for each wave
+        private WaveManager waveManager;
         private List<Enemy> enemies;
         private List<Enemy> deadEnemies;
         private List<Summoner> summoners;
@@ -112,7 +113,7 @@ namespace TwelveMage
             buttonCenterY = (windowHeight / 2) - (buttonHeight / 2);
 
             // Default starting data
-            wave = 1;
+            currentWave = 1;
             waveIncrease = 3;
             score = 0;
 
@@ -268,6 +269,9 @@ namespace TwelveMage
                 windowWidth,
                 windowHeight,
                 rng));
+
+
+            waveManager = new WaveManager(enemies, spawners, healthPickups, deadEnemies);
 
             #region Menu Buttons
             // MAIN MENU BUTTONS
@@ -607,23 +611,40 @@ namespace TwelveMage
                                 enemies.RemoveAt(i);
                             }
                         }
-                        
+
+                        //Wave Logic
+
+                        List<Enemy> addedEnemies = waveManager.HandleWaveLogic(gameTime);
+                        currentWave = waveManager.CurrentWave;
+                        foreach(Enemy enemy in addedEnemies)
+                        {
+                            if(enemy is Summoner || enemy is Charger)
+                            {
+                                enemy.OnDeath += IncreaseScore;
+                                enemy.OnDeath += IncreaseScore;
+                            }
+                            else
+                            {
+                                enemy.OnDeath += IncreaseScore;
+                            }
+                        }
+                        /*
                         // Wave handling
                         if(enemies.Count <= 0)
                         {
                             // Add a number of regular Enemies equal to wave * waveIncrease
-                            for(int i = 0; i < wave * waveIncrease; i++)
+                            for(int i = 0; i < currentWave * waveIncrease; i++)
                             {
                                 spawners[rng.Next(0, 4)].SpawnEnemy();
                                 enemies[i].OnDeath += IncreaseScore;
                             }
 
                             // On a wave that's a multiple of 5,
-                            if((wave + 1) % 5 == 0)
+                            if((currentWave + 1) % 5 == 0)
                             {
-                                if (wave + 1 >= 15) // If the wave is 15 or higher,
+                                if (currentWave + 1 >= 15) // If the wave is 15 or higher,
                                 {
-                                    for (int i = 0; i < (wave + 1) / 10 && i < 4; i++) // Add another special enemy for every 10 waves
+                                    for (int i = 0; i < (currentWave + 1) / 10 && i < 4; i++) // Add another special enemy for every 10 waves
                                     {
                                         spawners[rng.Next(0, 4)].SpawnSpecial(); // Randomly selects from one of the special types
                                         enemies[enemies.Count - 1].OnDeath += IncreaseScore;
@@ -660,8 +681,9 @@ namespace TwelveMage
                                 }
                             }
 
-                            wave++;
+                            currentWave++;
                         }
+                        */
                        
                     }
 
@@ -824,7 +846,7 @@ namespace TwelveMage
                     //Wave counter display
                     _spriteBatch.DrawString(
                         smallFont,
-                        "Wave: " + wave + " Score: " + score,
+                        "Wave: " + currentWave + " Score: " + score,
                         new Vector2(10, 10),
                         Color.Black);
 
@@ -988,7 +1010,7 @@ namespace TwelveMage
             player.WindowWidth = windowWidth;
             player.BorderFlameManager.Reset();      // Reset the border flame positions
             currentState = GameState.Game; // Set GameState
-            wave = 1; // Set to wave 1
+            currentWave = 1; // Set to wave 1
             score = 0; // Reset score
             int[] stats = fileManager.LoadStats(); // Load stats
             if(stats[1] > highScore) highScore = stats[1]; // Load the saved highscores
@@ -1027,7 +1049,7 @@ namespace TwelveMage
             player.OverwriteSpellData(fileManager.LoadSpells());
             int[] stats = fileManager.LoadStats();
             score = stats[0];
-            wave = stats[2];
+            currentWave = stats[2];
             if (stats[1] > highScore) highScore = stats[1];
             if (stats[3] > highWave) highWave = stats[3];
 
@@ -1049,9 +1071,9 @@ namespace TwelveMage
         private void Save()
         {
             if(score > highScore) highScore = score;
-            if(wave > highWave) highWave = wave;
+            if(currentWave > highWave) highWave = currentWave;
             if (fileManager.SaveGameObjects(player, enemies, healthPickups) && // Does all GameObject-related loading
-            fileManager.SaveStats(score, wave) &&
+            fileManager.SaveStats(score, currentWave) &&
             fileManager.SavePersistentStats(highScore, highWave) &&
             fileManager.SaveSpells(player.GetSpellData()))
             { hasSaved = true; } // Enables "Game Saved" text notification
@@ -1120,7 +1142,7 @@ namespace TwelveMage
         {
             currentState = GameState.GameOver;
             if(score > highScore) highScore = score;
-            if(wave > highWave) wave = highWave;
+            if(currentWave > highWave) currentWave = highWave;
             fileManager.SavePersistentStats(highScore, highWave);
         }
 
