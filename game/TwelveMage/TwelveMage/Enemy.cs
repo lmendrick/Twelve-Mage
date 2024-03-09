@@ -571,9 +571,12 @@ namespace TwelveMage
 
             if(health <= 0)
             {
-                if (OnDeath != null) OnDeath(); // Use OnDeath event
-                isActive = false;
-                state = EnemyState.Dead;
+                if (OnDeath != null)
+                {
+                    OnDeath(); // Use OnDeath event
+                    isActive = false;
+                    state = EnemyState.Dead;
+                }
             }
         }
 

@@ -628,6 +628,7 @@ namespace TwelveMage
                                 enemy.OnDeath += IncreaseScore;
                             }
                         }
+                        addedEnemies.Clear();
                         /*
                         // Wave handling
                         if(enemies.Count <= 0)
