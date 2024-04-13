@@ -1024,16 +1024,16 @@ namespace TwelveMage
             player.BorderFlameManager.Reset();      // Reset the border flame positions
             currentState = GameState.Game; // Set GameState
             currentWave = 1; // Set to wave 1, in currentWave AND waveManager
-            waveManager.CurrentWave = 1;
+            waveManager.Reset();
             score = 0; // Reset score
             int[] stats = fileManager.LoadStats(); // Load stats
             if(stats[1] > highScore) highScore = stats[1]; // Load the saved highscores
             if(stats[3] > highWave) highWave = stats[3];
             player.Reset(); // Reset the player
-            enemies.Clear(); // Clear enemies
-            summoners.Clear(); // Clear summoners (Lucas)
-            deadEnemies.Clear(); // Clear corpses (Lucas)
-            healthPickups.Clear(); // Clears HealthPickups
+            //enemies.Clear(); // Clear enemies
+            //summoners.Clear(); // Clear summoners (Lucas)
+            //deadEnemies.Clear(); // Clear corpses (Lucas)
+            //healthPickups.Clear(); // Clears HealthPickups
             enemies.Add(defaultEnemy.Clone()); // Add the default enemy
             enemies[0].OnDeath += IncreaseScore; // Add the score increase method to the enemy's OnDeath event
             enemies[0].HasHealthpack = true; // Give the enemy a healthpack

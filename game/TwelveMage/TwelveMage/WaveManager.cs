@@ -172,6 +172,23 @@ namespace TwelveMage
             secondWaveArrived = true;
         }
 
-        
+        // Reset to default values (Chloe)
+        public void Reset()
+        {
+            // Clear all relevant Lists
+            enemies.Clear();
+            healthPickups.Clear();
+            deadEnemies.Clear();
+            addedEnemies.Clear();
+
+            // Reset relevant values
+            currentWave = 1;
+            isSpecialWave = false;
+            secondWaveArrived = false;
+            timer = 20.0f;
+            startEnemies = 0;
+            numSpecials = 1;
+            maxSpecials = 5;
+        }
     }
 }
