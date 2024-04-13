@@ -1,4 +1,4 @@
-Blink:,0,6
+Blink:,0,12
 Fireball:,0,10
 Freeze:,0,20,5
 Haste:,0,10,5

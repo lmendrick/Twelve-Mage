@@ -1,2 +1,5 @@
-452,346,60,0,FaceLeft
-Charger,519,230,460
+250,293,90,0,FaceRight
+Enemy,550,208,100
+Enemy,544,138,100
+Enemy,535,279,100
+HealthPickup,159,198,10,0,0

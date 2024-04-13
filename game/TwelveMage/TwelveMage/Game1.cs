@@ -90,17 +90,29 @@ namespace TwelveMage
 
         #endregion
 
+
+        
+
         public Game1()
         {
             _graphics = new GraphicsDeviceManager(this);
             //added fullscreen capability
            //_graphics.IsFullScreen = true;
+           //window resizing
+           //Window.AllowUserResizing = true;
+           // Window.ClientSizeChanged += OnResize;
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
         }
 
         protected override void Initialize()
         {
+            //testing
+            //_graphics.IsFullScreen = false;
+            //_graphics.PreferredBackBufferWidth = 1440;
+            //_graphics.PreferredBackBufferHeight = 480;
+            //_graphics.ApplyChanges();
+
             // TODO: Add your initialization logic here
             currentState = GameState.Menu;
 
@@ -1011,7 +1023,8 @@ namespace TwelveMage
             player.WindowWidth = windowWidth;
             player.BorderFlameManager.Reset();      // Reset the border flame positions
             currentState = GameState.Game; // Set GameState
-            currentWave = 1; // Set to wave 1
+            currentWave = 1; // Set to wave 1, in currentWave AND waveManager
+            waveManager.CurrentWave = 1;
             score = 0; // Reset score
             int[] stats = fileManager.LoadStats(); // Load stats
             if(stats[1] > highScore) highScore = stats[1]; // Load the saved highscores
@@ -1143,7 +1156,7 @@ namespace TwelveMage
         {
             currentState = GameState.GameOver;
             if(score > highScore) highScore = score;
-            if(currentWave > highWave) currentWave = highWave;
+            if(currentWave > highWave) highWave = currentWave;
             fileManager.SavePersistentStats(highScore, highWave);
         }
 
